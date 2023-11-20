@@ -1,0 +1,15 @@
+.container{
+    display: flex;
+    background-color: rgb(2, 0, 36);
+}
+.menu {
+    flex: 1;
+    background-color:rgb(2, 0, 36);
+    padding: 20px;
+}
+
+.content {
+    flex: 4;
+    padding: 20px;
+    background: linear-gradient(180deg, rgb(216, 215, 229) 0%, rgb(71, 71, 147) 35%, rgba(0, 212, 255, 1) 100%);
+}

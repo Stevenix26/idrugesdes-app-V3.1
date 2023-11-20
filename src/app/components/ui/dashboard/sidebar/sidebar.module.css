@@ -1,0 +1,14 @@
+.container{
+    position: sticky;
+    top: 40px;
+}
+
+.li{
+    list-style: none;
+}
+
+.cat{
+    font-weight: 500;
+    font-size: medium;
+    margin: 10px 0px;
+}
