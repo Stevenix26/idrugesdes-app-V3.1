@@ -9,13 +9,13 @@ const Navbar = () => {
   return (
     <div className='container'>
     <div className='row'>
-      <div className='flex text-blue-300 bg-secondary-foreground rounded-lg'>
-        <div className='px-2'>
+      <div className='flex flex-col bg-cyan-950 text-white rounded-lg'>
+        <div className='px-2 capitalize'>
         {pathname.split("/").pop()}
-          <div className='items-end'>
-            <Notification size={32}/>
+          {/* <div className='items-end'>
+            {/* <Notification size={32}/>
             <Chat size={32}/>
-          </div>
+          </div> */}
         </div>
         
         </div>
