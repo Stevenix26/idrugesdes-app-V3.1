@@ -35,15 +35,20 @@ model PharmacyStore{
 
 }
 
-model Prescriptions {
-  id   String  @id @default(cuid())
-  userId String?
-  name String?
-  medication String
-  description String
-  prescriptionDate DateTime @default(now())
-  Upload Bytes
+// schema.prisma
 
+
+model Prescription {
+  id                Int      @id @default(autoincrement())
+  patientName       String
+  medication        String
+  doctorName        String
+  prescriptionDate  DateTime
+  uploadedPrescription String? // Nullable field to store the file path or URL
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
+
 
 

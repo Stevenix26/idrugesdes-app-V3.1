@@ -1,85 +1,128 @@
 'use client'
-import React,{useEffect, useState} from 'react'
+import React, { useState } from 'react';
 import Image from 'next/image'
-import Dashboard from '../../dashboard/page'
-import { SignInButton, SignedIn, SignedOut } from '@clerk/nextjs'
-import Link from 'next/link'
-import { Card } from 'react-bootstrap'
+import { SignInButton, SignedIn, SignedOut} from '@clerk/nextjs';
+import Link from 'next/link';
+import { Card, Button, } from '@nextui-org/react';
 
-
-const page = ({params}) => {
-
-  const [pharmacies, setPharmacies]=useState( [
+const PharmacyDetails = ({ params }) => {
+    const [pharmacies, setPharmacies] = useState([
     {
-        id:1,
-        name:'Abiola Micheal Pharmacy',
-        image:'/images/shelf.jpg',
-
-        address: 'Folorunso Street, Alaba, Lagos',
-        phone:9020993323,
-
+      id: 1,
+      name: "HealthPlus Pharmacy",
+      image: "/images/shop1 (1).jpg",
+      address: "Block 144, Plot 11, Adebayo Doherty Road, Lekki Phase 1, Lagos",
+      phone: 9020993323,
     },
-     {
-        id:2,
-        name:'First Mercy Pharmacy',
-        image:'/images/shelf.jpg',
-
-        address: 'Daniels Street, Olando, Asaba',
-        phone:9024736789,
-
-
-    }, {
-        id:3,
-        name:'Ola\'s Pharmacy',
-        image:'/images/shelf.jpg',
-        address: 'Peterson\'s Street, Alaba, Akure',
-        phone:9027099323,
-
-
-    }, {
-        id:4,
-        name:'Ajiboye Tayo Pharmacy',
-        image:'/images/shelf.jpg',
-        address: 'Ungary Street, Alaba, Akure',
-        phone:9023456789,
-
+    {
+      id: 2,
+      name: "Medplus Pharmacy",
+      image: "/images/shop1 (2).jpg", 
+      address: "12, Admiralty Way, Lekki Phase 1, Lagos",
+      phone: 9024736789,
     },
-])
-const selectPharmacy = pharmacies.find(pharmacy => pharmacy.id ===Number(params.slug))
-console.log(selectPharmacy);
-  console.log(params.slug);
+    {
+      id: 3,
+      name: "Swiss Pharma Nigeria Limited",
+      image: "/images/shop1 (3).jpg", 
+      address: "Plot 7, Acme Road, Ogba Industrial Scheme, Ikeja, Lagos",
+      phone: 9027099323,
+    },
+    {
+      id: 4,
+      name: "Emzor Pharmaceutical Industries Limited",
+      image: "/images/shop1 (4).jpg", 
+      address: "Plot 3C, Block A, Aswani Market Road, Isolo, Lagos",
+      phone: 9023456789,
+    },
+    {
+      id: 5,
+      name: "May&Baker Nigeria Plc",
+      image: "/images/shop1 (5).jpg", 
+      address: "3/5 Sapara Street, Ikeja Industrial Estate, Ikeja, Lagos",
+      phone: 9021234567,
+    },
+    {
+      id: 6,
+      name: "Alpha Pharmacy",
+      image: "/images/shop1 (6).jpg", 
+      address: "19, Admiralty Way, Lekki Phase 1, Lagos",
+      phone: 9020993323,
+    },
+    {
+      id: 7,
+      name: "Greenlife Pharmaceuticals Limited",
+      image: "/images/ladycot.jpg", // Replace with the actual image URL
+      address: "No. 2, Bank Lane, Off Town Planning Way, Ilupeju, Lagos",
+      phone: 9024736789,
+    },
+    {
+      id: 8,
+      name: "Emeka Pharmacy",
+      image: "/images/shop1 (8).jpg", 
+      address: "45, Igwe Orizu Road, Otolo Nnewi, Anambra State",
+      phone: 9027099323,
+    },
+    {
+      id: 9,
+      name: "Good Health Pharmacy",
+      image: "/images/shop1 (9).jpg",
+      address: "21, Akerele Street, Surulere, Lagos",
+      phone: 9023456789,
+    },
+    {
+      id: 10,
+      name: "Excel Pharmacy",
+      image: "/images/shop1 (10).jpg", 
+      address: "8, Chief Igwe Street, Umuchu, Aguata, Anambra State",
+      phone: 9021234567,
+    },
+
+
+   ]);
+
+  const selectedPharmacy = pharmacies.find((pharmacy) => pharmacy.id === Number(params.slug));
+
   return (
-    <div className='container '>
-      <div className="row card w-50 ">
-        <div className="col-md-6 col-lg-6 card-body align-items-center">
-        <Image className= "mt-2 rounded-xl object-cover " src={selectPharmacy.image} width={300} height={300} />
-          <div className='text-secondary'>
-          <h5 className="card-title text-danger">{selectPharmacy.name}</h5>
-          <p className='card-text'>{selectPharmacy.address}</p>
-          <small>{selectPharmacy.phone}</small>
-          <div>
-          <SignedIn>
-              {/* <Dashboard/> */}
-               <Link className="btn btn-outline-secondary" href='/prescriptions'>Submit prescription</Link>
-          </SignedIn>
-            <SignedOut>
-              <SignInButton mode='modal'>
-                <button className='btn btn-outline-secondary rounded border border-gray-400 px-3 py-0.5'>
-                  Submit prescription
-                </button>
-              </SignInButton>
-            </SignedOut>
+    <div className="container mx-auto mt-10">
+      <Card shadow bordered>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-6">
+            <Image
+              isZoomed
+              src={selectedPharmacy.image}
+              alt={selectedPharmacy.name}
+              width={500}
+              height={300}
+              className=" rounded-md object-cover card"
+            />
+          </div>
+          <div className="p-6">
+            <h1 className="text-2xl font-bold text-danger">{selectedPharmacy.name}</h1>
+            <p className="text-gray-600">{selectedPharmacy.address}</p>
+            <p className="text-gray-600">Phone: {selectedPharmacy.phone}</p>
+            <div className="mt-4">
+              <SignedIn>
+                <Link href="/prescriptions">
+                  <Button color="default" variant="shadow">
+                    Submit prescription
+                  </Button>
+                </Link>
+              </SignedIn>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <Button color="secondary" variant='bordered'>
+                    Submit prescription
+                  </Button>
+                </SignInButton>
+              </SignedOut>
             </div>
+          </div>
         </div>
-            
-        </div>
+      </Card>
     </div>
-    
+  );
+};
 
+export default PharmacyDetails;
 
-
-    </div>
-  )
-}
-
-export default page

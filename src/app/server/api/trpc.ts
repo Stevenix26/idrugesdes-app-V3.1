@@ -16,9 +16,9 @@
  * processing a request
  *
  */
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { getAuth } from "@clerk/nextjs/server";
-import type {
+import {
   SignedInAuthObject,
   SignedOutAuthObject,
 } from "@clerk/nextjs/api";

@@ -23,7 +23,7 @@ const RootLayout = ({ children }) => {
       lang='en'
       className={`${inter.className} h-full scroll-smooth antialiased`}
     >
-      <body className='flex h-full flex-col text-slate-200 purple-dark bg-background col-md-6 col-lg-12'>
+      <body className='flex h-full flex-col text-slate-200 pharmacy bg-background col-md-6 col-lg-12'>
          <ClerkProvider>
           <Header />
               <Providers>

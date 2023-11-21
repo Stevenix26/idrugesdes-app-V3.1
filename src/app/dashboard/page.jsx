@@ -1,109 +1,51 @@
-
 'use client'
-import React, { useState } from "react";
-import {Navbar, NavbarBrand, NavbarMenuToggle, NavbarMenuItem, NavbarMenu, NavbarContent, NavbarItem, Link, Button} from "@nextui-org/react";
-import { SignInButton, UserButton } from '@clerk/nextjs'
-import { SignedIn, SignedOut } from '@clerk/nextjs'
+// components/Dashboard.js
+import { Card, Spacer, Upload, Button } from '@nextui-org/react';
+import Image from 'next/image';
 
-export default function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const menuItems = [
-    "Shops",
-    "Store",
-    "Dashboard",
-    "Log Out",
-  ];
+const Dashboard = () => {
+  const handleUpload = (files) => {
+    // Handle file upload logic here
+    console.log('Uploaded files:', files);
+  };
 
   return (
-    <Navbar
-      isBordered
-      isMenuOpen={isMenuOpen}
-      onMenuOpenChange={setIsMenuOpen}
-    >
-      <NavbarContent className="sm:hidden" justify="start">
-        <NavbarMenuToggle aria-label={isMenuOpen ? "Close menu" : "Open menu"} />
-      </NavbarContent>
-
-      <NavbarContent className="sm:hidden pr-3" justify="center">
-        <NavbarBrand>
+    <div className="p-4">
+      <h1 className="text-3xl font-bold mb-4">Pharmacy Dashboard</h1>
       
-          <Link
-              href='/'
-              className='navbar-brand  rounded-2' 
-            >    
-              <img src='/images/logo.png' width="100" height="100" className="d-inline-block"/>
+      <Card>
+        <div className="flex items-center justify-center">
+          <Image
+            src="/images/p7.jpg" // Replace with your actual SVG image
+            alt="Pharmacy Store"
+            width={200}
+            height={200}
+          />
+        </div>
+      </Card>
 
-            </Link>
-        </NavbarBrand>
-      </NavbarContent>
+      <Spacer y={2} />
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarBrand>
-         <Link
-              href='/'
-              className='navbar-brand  rounded-2' 
-            >    
-              <img src='/images/logo.png' width="100" height="100" className="d-inline-block"/>
-
-            </Link>
-         
-        </NavbarBrand>
-        <NavbarItem>
+      <Card>
+        <h2 className="text-xl font-semibold mb-2">Upload Documents</h2>
+        <p className="text-gray-600 mb-4">Upload necessary documents here.</p>
+          <Button  >Upload Files
+        <input type="file" name="file" id="" onUpload={handleUpload} accept=".pdf,.doc,.docx,.jpg,.png"/>
           
-            <Link href='/shops' color="foreground">Shops</Link>
-          
-        </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            <Link href='/shops'>Shops</Link>
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            <Link href='/shops'>Shops</Link>
-          </Link>
-          <SignedIn>
-              <Link className='text-sm font-medium uppercase tracking-wider'>
-                <Link href='/dashboard'>Dashboard</Link>
-              </Link>
-            </SignedIn>
-        </NavbarItem>
-      </NavbarContent>
-      
-
-      <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-          <Link href="#">Login</Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="warning" href="#" variant="flat">
-            Sign Up
           </Button>
-        </NavbarItem>
         
-      </NavbarContent>
-      
+      </Card>
 
-       <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              className="w-full"
-              color={
-                index === 2 ? "warning" : index === menuItems.length - 1 ? "danger" : "foreground"
-              }
-              href="#"
-              size="lg"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
-      </NavbarMenu>
-    </Navbar>
+      <Spacer y={2} />
 
-
-
+      <Card>
+        <h2 className="text-xl font-semibold mb-2">Sample Content</h2>
+        <p className="text-gray-600">
+          This is some sample content for your pharmacy dashboard.
+        </p>
+      </Card>
+    </div>
   );
-}
+};
+
+export default Dashboard;

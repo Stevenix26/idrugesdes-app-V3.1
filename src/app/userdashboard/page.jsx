@@ -2,15 +2,13 @@
 
 
 // src/components/AdminDashboard.js
-
-
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { clerkClient, useClerk } from '@clerk/nextjs';
 import { UserProfile, useUser } from '@clerk/nextjs';
 
 const UserDashboard = () => {
-  const { users } = useClerk();
+  const users = useClerk();
   const [profile, setProfile] =useState([])
 
   useEffect(()=>{

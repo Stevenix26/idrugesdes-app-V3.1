@@ -2,7 +2,7 @@
 import React from 'react'
 import styles  from "./sidebar.module.css";
 import { HomeIcon } from '@heroicons/react/24/outline';
-import { Prescription, ShoppingBag, House, Gear, Info, AddressBook } from '@phosphor-icons/react/dist/ssr'; 
+import { Prescription, ShoppingBag, House, Gear, Info, AddressBook, SubtractSquare } from '@phosphor-icons/react/dist/ssr'; 
 import MenuLink from "./menulink/menulink"
 import Link from 'next/link';
 import { Avatar,image} from '@nextui-org/react';
@@ -32,6 +32,12 @@ const Sidebar = () => {
          path: "/dashboard/orders",
          icon: <ShoppingBag />
      },
+     {
+      title: "Submitted",
+      path: "/dashboard/submitted",
+      icon: <SubtractSquare/>
+
+     }
      ]
    },
     {
@@ -57,7 +63,7 @@ const Sidebar = () => {
 ];
 
   return (
-    <div className="container"> 
+    <div className="container bg-stripe-gradient"> 
      <div className='row'>
      <UserButton/>
      <div className="text-cyan-200">Josh</div>
