@@ -1,5 +1,5 @@
 
-import { SignUp } from "@clerk/nextjs/app-beta"
+import { SignUp } from "@clerk/nextjs"
 
 const Page = async () => {
   return (
