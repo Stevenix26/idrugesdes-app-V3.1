@@ -1,21 +1,20 @@
 const Footer = () => {
   return (
-    <footer className='z-10 py-7 text-stone-400'>
-      <div className='container'>
+    <>
+    <footer className='p-6 py-12 z-10 md:p-10 sm:p- xl:p-10 flex items-start justify-between'>
+      <div>
         <h5 className='text-lg'>IDRUGDES CO.</h5>
-        <p className='mt-4 text-sm text-stone-500'>
+        <p className='mt-4 text-sm '>
           &copy; {new Date().getFullYear()} idrugdes Co.
         </p>
-        <div className='text-sm text-stone-400'>
+        <div className='text-sm '>
           Developed by{' Agboola Stephen '}
-          <a
-            className='text-sky-600'
-            href='##'
-            rel='noreferrer'
-            target='_blank'
+          <span
+            className='text-white' 
           >
-            HB
-          </a>{' '}
+            CPE/17/3096
+          </span>
+          {/* {' '}
           using{' '}
           <a
             className='text-cyan-600'
@@ -24,12 +23,13 @@ const Footer = () => {
             target='_blank'
           >
             React
-          </a>
+          </a> */}
           .
         </div>
       </div>
     </footer>
+    </>
   )
 }
 
-export default Footer
+export default Footer;

@@ -19,10 +19,10 @@ const SellerStore = () => {
             <meta name="description" content="Pharmacy Store" />
             <link rel="icon" href="favicon.ico"/>
         </head>
-        <main className='flex min-h-screen flex-col items-center justify-center bg-slate-500'>
+        <main className='flex min-h-screen flex-col items-center justify-center text-black bg-light'>
             <div className='col-md-6 container flex flex-col items-center justify-center gap-12 px-4 py-16'>
-                <h1>Create your store</h1>
-        <Card className='container flex flex-4'>
+                <h1>CREATE YOUR STORE</h1>
+        <Card className='container flex flex-4 bg-orange-500 shadow-lg'>
         <form className='container flex flex-col gap-3 pt-4 pb-3 px-6' onSubmit={handleSubmit(onSubmit)}> 
             <div >
                 <label for="Pharmacy_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter your Store</label>
@@ -51,7 +51,7 @@ const SellerStore = () => {
                     {errors.addressRequired && <span>This field is required</span>}
             </div>
                   
-                    <Button  type="submit" color="success" size="lg" variant="shadow">
+                    <Button  type="submit" className='bg-orange-100' size="lg" variant="shadow">
                         <input type='submit'/> 
                         </Button>
                    

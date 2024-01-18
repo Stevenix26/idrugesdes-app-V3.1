@@ -1,15 +1,19 @@
 
 import Footer from './components/layout/footer'
-import Header from './components/layout/header'
+// import Header from './components/layout/header'
 import { Inter } from 'next/font/google'
 import './components/ui/globals.css' 
-import { ClerkProvider, CreateOrganization } from '@clerk/nextjs' 
+import { ClerkProvider } from '@clerk/nextjs' 
 import { Providers } from './provider'
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+// import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import Providing from './components/resolver'
+import Navnew from './components/layout/navbars'
+
 
 
 const inter = Inter({
-  subsets: ['latin']
+  subsets: ["latin"]
 })
 
 export const metadata = {
@@ -22,16 +26,33 @@ const RootLayout = ({ children }) => {
     <html
       lang='en'
       className={`${inter.className} h-full scroll-smooth antialiased`}
+      datatheme="light"
+    
     >
-      <body className='flex h-full flex-col text-slate-200 pharmacy bg-background col-md-6 col-lg-12'>
-         <ClerkProvider>
-          <Header />
-              <Providers>
-             <main className='grow text-slate-200 bg-background'>{children}</main>
-             </Providers>
-          <Footer />
-        </ClerkProvider>
-      
+      <body className='flex flex-col bg-base-100'>
+        
+          <ClerkProvider>
+          <Providing>
+          
+             {/* <Providers>  */}
+            
+              <Navnew />
+
+
+             
+              {/* <Header /> */}
+              <main className='grow bg-base-100'>
+                <article>
+                  {children}
+                </article>
+              </main>
+              
+              <Footer />
+             {/* </Providers> */}
+          </Providing>
+            
+          </ClerkProvider>
+        
       </body>
     </html>
   )

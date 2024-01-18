@@ -6,24 +6,55 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.dc"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
-  posts Post[]
+  // posts Post[]
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
+  id        String     @id @default(cuid())
   title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+  content   String  
+  createdAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  tagId        String
+  tags        Tag @relation(fields: [tagId], references: [id])
+  // pharmacy          PharmacyStore @relation(fields: [pharmacyId]  , references: [id ])
+  // pharmacyId        String 
+  // user              User       @relation(fields: [userEmail], references: [email])
+  // userEmail         String     @unique
+
+  
+
+  // published Boolean @default(false)
+  // author    User    @relation(fields: [authorId], references: [id])
+  // authorId  Int
+}
+
+model Prescribe {
+  id        String @id  @default(cuid())
+  userId    String
+  createdAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  name        String
+  description String
+  upload      String?
+
+}
+
+model Admin{
+  id           Int     @id @default(100)
+  email        String  @unique
+  password     String
+  isActive     Boolean    @default(true)
+  lastLogin    DateTime @default(now())
+  privileges    String
 }
 
 model PharmacyStore{
@@ -31,12 +62,10 @@ model PharmacyStore{
   name String
   address String
   phoneNumber BigInt
+  // Post Post[]
 
-
+ 
 }
-
-// schema.prisma
-
 
 model Prescription {
   id                Int      @id @default(autoincrement())
@@ -44,11 +73,72 @@ model Prescription {
   medication        String
   doctorName        String
   prescriptionDate  DateTime
-  uploadedPrescription String? // Nullable field to store the file path or URL
+  prescriptionFilePath String?
+  status              String    @default("pending") // Status can be "pending", "approved", or "declined"
+  declineReason       String?   @db.VarChar(255) // Optional reason for decline
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  
+}
 
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+model Tag{
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(100)  
+  // description String?   @db.Text
+  Post Post[]
+}
+
+model ShoppingCart{
+  id               String   @id @default(uuid())
+  cartid        String
+  userId         String
 }
 
 
+model Order{
+  id                  Int             @id @default(autoincrement())
+  quantity            Float           
+  price               Float         
+  orderid             String
+  drugs               String
+  totalAmount         Float
+  status              StatusOrderEnum
+  orderDate           DateTime        @default(now())
+  deliveryDate        DateTime?      
+  clientEmail         String          @db.VarChar(50)
+  clientPhoneNumber   BigInt          @db.BigInt
+  // adressDelivery      AddressTypeEnum
+  // cityDelivery         CityTypeEnum    @map("city_delivery")
+  // reference            String?         @db.VarChar(255)
+  // specialInstructions SpecialInstructionEnum?
+  // product              Product
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+  }
 
+
+// model Post {
+//   id          String   @id @default(cuid())
+//   name        String   @db.VarChar(225)  
+//   title       String   
+//   content     String
+//   createdAt   DateTime @default(now())
+//   updateAt   DateTime @updatedAt
+//   tagId        String
+//   tags        Tag @relation(fields: [tagId], references: [id])
+//   // description String?  @db.Text
+//   // date        DateTime @default(now())
+//   // views       Int      @default(0)
+//   }
+
+
+
+
+
+enum StatusOrderEnum {
+  Waiting 
+  In_progress 
+  Delivered
+  }
+
+  

@@ -7,11 +7,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { Blinker } from './ui/loading' 
-import { formatCurrency } from '../../../lib/utils' 
+import { formatCurrency } from '../../../libsd/utils' 
 
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { removeFromCart } from '../../../lib/swell/cart'
+import { removeFromCart } from '../../../libsd/swell/cart'
 import { useSWRConfig } from 'swr'
 
 const CartSlider = ({ cart, cartIsLoading, open, setCartSliderIsOpen }) => {

@@ -85,41 +85,41 @@ const PharmacyDetails = ({ params }) => {
 
   return (
     <div className="container mx-auto mt-10">
-      <Card shadow bordered>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="p-6">
+      <div className='card border shadow-md'>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
+          <div className="p-3">
             <Image
               isZoomed
               src={selectedPharmacy.image}
               alt={selectedPharmacy.name}
               width={500}
               height={300}
-              className=" rounded-md object-cover card"
+              className="rounded-md hover:cursor-zoom-out object-cover card"
             />
           </div>
           <div className="p-6">
             <h1 className="text-2xl font-bold text-danger">{selectedPharmacy.name}</h1>
-            <p className="text-gray-600">{selectedPharmacy.address}</p>
-            <p className="text-gray-600">Phone: {selectedPharmacy.phone}</p>
+            <p className="text-primary">{selectedPharmacy.address}</p>
+            <p className="text-primary">Phone: {selectedPharmacy.phone}</p>
             <div className="mt-4">
               <SignedIn>
-                <Link href="/prescriptions">
-                  <Button color="default" variant="shadow">
-                    Submit prescription
-                  </Button>
+                <Link href="/dashboard/prescription">
+                  <button className=' btn btn-md btn-outline btn-ghost'>
+                    <span className='items-start'>Submits prescription to {selectedPharmacy.name}</span>
+                  </button>
                 </Link>
               </SignedIn>
               <SignedOut>
                 <SignInButton mode="modal">
-                  <Button color="secondary" variant='bordered'>
-                    Submit prescription
-                  </Button>
+                  <button className=' btn btn-md btn-outline btn-ghost'>
+                    <span className='items-start' >Submits prescription to {selectedPharmacy.name}</span>
+                  </button>
                 </SignInButton>
               </SignedOut>
             </div>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

@@ -7,7 +7,7 @@ const Settings = () => {
     <div className='flex container p-5'>
       <div className="row">
         <Card>
-          <div className="flex flex-1 sm:w-1/2 md:w-1/2 lg:w-1/3">
+          <div className="flex flex-col sm:w-1/2 md:w-1/2 lg:w-1/3">
           <UserProfile className='w-10'/>
         </div>
         </Card>

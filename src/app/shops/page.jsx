@@ -1,8 +1,10 @@
 'use client'
 import React from "react";
-Link
 import {Card,CardBody, CardFooter,Button, Link} from "@nextui-org/react";
 import Image from "next/image";
+import Page from '../checkoutpage/page'
+
+
 export default function App() {
     const list = [
     {
@@ -50,6 +52,9 @@ export default function App() {
     <div className="container">
         <div className="row ">
         <div className="col">
+        <div>
+          <Page/>
+        </div>
             <Card
             isFooterBlurred
             radius="lg"
@@ -92,6 +97,7 @@ export default function App() {
             <p className="text-default-500">{item.price}</p>
           </CardFooter>
         </Card>
+        
       ))}
     </div>
     </div>

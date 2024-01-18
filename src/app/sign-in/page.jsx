@@ -1,4 +1,4 @@
-import { SignIn } from '@clerk/nextjs/app-beta'
+import { SignIn } from '@clerk/nextjs'
 
 const Page = async ({ searchParams }) => {
   const { redirectUrl } = searchParams
@@ -15,3 +15,5 @@ const Page = async ({ searchParams }) => {
 }
 
 export default Page
+
+   

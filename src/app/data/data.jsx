@@ -1,4 +1,4 @@
-'use client'
+
 import React from "react";
 const columns = [
   {name: "NAME", uid: "name"},

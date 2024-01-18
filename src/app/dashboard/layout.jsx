@@ -2,19 +2,21 @@ import React from 'react'
 import Navbar from '../components/ui/dashboard/navbar/navbar'
 import Sidebar from '../components/ui/dashboard/sidebar/sidebar'
 import styles from '../components/ui/dashboard/dashboard.module.css';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { Card } from '@nextui-org/react';
 
 const Layout = ({ children }) => {
   return (
-      <div className= {styles.container}> 
-        <div className={styles.menu}>
+      <div className='flex'> 
+        <aside className='menu bg-base-300'>
            <Sidebar />
-        </div>
-        <div className={styles.content}>
-            <Navbar/>
-            {children}
-        </div>
+        </aside>
+      <main className='justify-center bg-base-200 items-center md:flex-col xl:flex-row px-6 pb-16 xl:pr-2'>
+            <article>
+          <Navbar />
+          {children}
+            </article>
+
+            
+        </main>
     </div>
   )
 }

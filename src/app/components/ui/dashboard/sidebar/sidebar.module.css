@@ -12,3 +12,20 @@
     font-size: medium;
     margin: 10px 0px;
 }
+/* styles/sidebar.module.css */
+.sidebarClosed {
+    transform: translateX(-100%);
+}
+
+.sidebarOpen {
+    transform: translateX(0);
+}
+
+.row {
+    transition: transform 0.3s ease;
+}
+
+.menuToggle {
+    cursor: pointer;
+    /* Your menu icon styles */
+}
