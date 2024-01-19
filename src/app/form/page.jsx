@@ -11,7 +11,29 @@ import { useForm } from "react-hook-form";
 
 const SellerStore = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
-  const onSubmit = formsData => { console.log("you submitted this data",{formsData}); };
+  // Inside your React component
+  const onSubmit = async (formData) => {
+    try {
+      const response = await fetch('/api/prescriptions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log('Store created successfully:', formData);
+        // You can add any additional logic here after successful submission
+      } else {
+        console.error('Failed to create store:', response.statusText);
+        // Handle error cases, show an error message, etc.
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      // Handle unexpected errors
+    }
+  };
   return (
     <>
       <head>
@@ -28,7 +50,7 @@ const SellerStore = () => {
                 <label for="Pharmacy_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter your Store</label>
                 {/* include validation with required or other standard HTML validation rules */}
                 <input type="text" id="first_name" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' placeholder="Enter Your pharmacy Store" required
-                  {...register("name", { required: true })} />
+                  {...register("pharmacyName", { required: true })} />
                 {/* errors will return when field validation fails  */}
                 {errors.nameRequired && <span>This field is required</span>}
               </div>
@@ -37,16 +59,16 @@ const SellerStore = () => {
                 {/* include validation with required or other standard HTML validation rules */}
                 <input type="text" id="Address" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   placeholder="" required
-                  {...register("address", { required: true })} />
+                  {...register("medication", { required: true })} />
                 {/* errors will return when field validation fails  */}
                 {errors.addressRequired && <span>This field is required</span>}
               </div>
               <div>
                 <label for="phoneNum" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
                 {/* include validation with required or other standard HTML validation rules */}
-                <input type="tel" id="phoneNum" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                <input type="text" id="phoneNum" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   placeholder="" required
-                  {...register("phone number", { required: true })} />
+                  {...register("doctorName", { required: true })} />
                 {/* errors will return when field validation fails  */}
                 {errors.addressRequired && <span>This field is required</span>}
               </div>
