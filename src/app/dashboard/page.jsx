@@ -10,9 +10,12 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex p-4 items-center justify-between bg-base-200">
-      <div className="flex-col shadow-md p-3">
-    <div className="items-center justify-center">
+
+    <section className='px-5 xl:px-0'>
+      <div className="max-w-[1170px] items-center justify-center">
+        <div className='grid grid-cols-1 card lg:grid-flow-cols-2 p-6 rounded-md shadow-m'>
+   
+    <div className="grid items-center justify-center">
       <h1 className="text-3xl font-bold mb-4">User Dashboard</h1>
       <div className="stats shadow">
 
@@ -80,8 +83,10 @@ const Dashboard = () => {
         </p>
       </Card>
     </div>
+    
     </div>
     </div>
+    </section>
   );
 };
 

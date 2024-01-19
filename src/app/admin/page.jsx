@@ -1,5 +1,4 @@
 // pages/index.js
-'use client'
 
 import PrescriptionList from "./prescriptionList/page";
 

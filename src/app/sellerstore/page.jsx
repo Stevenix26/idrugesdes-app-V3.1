@@ -1,68 +1,89 @@
-"use client"
+import { PaperClipIcon } from '@heroicons/react/20/solid'
 
-import { Card, Button } from '@nextui-org/react'
-
-import React from 'react'
-import { useForm } from "react-hook-form";
-
-
-
-
-
-const SellerStore = () => {
-      const { register, handleSubmit, formState: { errors } } = useForm();
-    const onSubmit = formData => {console.log(formData);};
-  return (
-    <>
-        <head>
-            <title>Store Detials</title>
-            <meta name="description" content="Pharmacy Store" />
-            <link rel="icon" href="favicon.ico"/>
-        </head>
-        <main className='flex min-h-screen flex-col items-center justify-center text-black bg-light'>
-            <div className='col-md-6 container flex flex-col items-center justify-center gap-12 px-4 py-16'>
-                <h1>CREATE YOUR STORE</h1>
-        <Card className='container flex flex-4 bg-orange-500 shadow-lg'>
-        <form className='container flex flex-col gap-3 pt-4 pb-3 px-6' onSubmit={handleSubmit(onSubmit)}> 
-            <div >
-                <label for="Pharmacy_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter your Store</label>
-                 {/* include validation with required or other standard HTML validation rules */}
-                    <input type="text" id="first_name" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' placeholder="Enter Your pharmacy Store" required
-                    {...register("name", { required: true })} />
-                    {/* errors will return when field validation fails  */}
-                    {errors.nameRequired && <span>This field is required</span>}
+export default function Page() {
+    return (
+        <div className='container text-white p-6 items-center justify-between'>
+            <div className='grid items-center '>
+            <div className=" px-4 sm:px-0">
+                <h3 className="text-base font-semibold leading-7 text-gray-900">Applicant Information</h3>
+                <p className="mt-1 max-w-2xl text-sm leading-6 text-gray-500">Personal details and application.</p>
             </div>
-            <div>
-                <label for="Address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
-                 {/* include validation with required or other standard HTML validation rules */}
-                    <input type="text" id="Address" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                     placeholder="" required
-                    {...register("address", { required: true })} />
-                    {/* errors will return when field validation fails  */}
-                    {errors.addressRequired && <span>This field is required</span>}
+            <div className="mt-6 border-t border-gray-100">
+                <dl className="divide-y divide-gray-100">
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <dt className="text-sm font-medium leading-6 text-gray-900">Full name</dt>
+                        <input
+                            type="text"
+                            placeholder="Type here"
+                            className="input input-primary w-full max-w-lg border" />
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <dt className="text-sm font-medium leading-6 text-gray-900">Application for</dt>
+                        <input
+                            type="text"
+                            placeholder="Type here"
+                            className="input input-primary w-full max-w-lg border" />
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <dt className="text-sm font-medium leading-6 text-gray-900">Email address</dt>
+                        <input
+                            type="text"
+                            placeholder="Type here"
+                            className="input input-primary w-full max-w-lg border" />
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <dt className="text-sm font-medium leading-6 text-gray-900">Salary expectation</dt>
+                        <input
+                            type="text"
+                            placeholder="Type here"
+                            className="input input-primary w-full max-w-lg border" />
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <dt className="text-sm font-medium leading-6 text-gray-900">About</dt>
+                        <dd className="mt-1 text-sm leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
+                            Fugiat ipsum ipsum deserunt culpa aute sint do nostrud anim incididunt cillum culpa consequat. Excepteur
+                            qui ipsum aliquip consequat sint. Sit id mollit nulla mollit nostrud in ea officia proident. Irure nostrud
+                            pariatur mollit ad adipisicing reprehenderit deserunt qui eu.
+                        </dd>
+                    </div>
+                    <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                        <dt className="text-sm font-medium leading-6 text-gray-900">Attachments</dt>
+                        <dd className="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                            <ul role="list" className="divide-y divide-gray-100 rounded-md border border-gray-200">
+                                <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                                    <div className="flex w-0 flex-1 items-center">
+                                        <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                                        <div className="ml-4 flex min-w-0 flex-1 gap-2">
+                                            <span className="truncate font-medium">resume_back_end_developer.pdf</span>
+                                            <span className="flex-shrink-0 text-gray-400">2.4mb</span>
+                                        </div>
+                                    </div>
+                                    <div className="ml-4 flex-shrink-0">
+                                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                            Download
+                                        </a>
+                                    </div>
+                                </li>
+                                <li className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                                    <div className="flex w-0 flex-1 items-center">
+                                        <PaperClipIcon className="h-5 w-5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+                                        <div className="ml-4 flex min-w-0 flex-1 gap-2">
+                                            <span className="truncate font-medium">coverletter_back_end_developer.pdf</span>
+                                            <span className="flex-shrink-0 text-gray-400">4.5mb</span>
+                                        </div>
+                                    </div>
+                                    <div className="ml-4 flex-shrink-0">
+                                        <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                            Download
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </dd>
+                    </div>
+                </dl>
             </div>
-             <div>
-                <label for="phoneNum" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
-                 {/* include validation with required or other standard HTML validation rules */}
-                    <input type="tel" id="phoneNum" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                     placeholder="" required
-                    {...register("phone number", { required: true })} />
-                    {/* errors will return when field validation fails  */}
-                    {errors.addressRequired && <span>This field is required</span>}
             </div>
-                  
-                    <Button  type="submit" className='bg-orange-100' size="lg" variant="shadow">
-                        <input type='submit'/> 
-                        </Button>
-                   
-                    </form>
-                </Card>
-            </div>
-
-        </main>
-
-    </>
-  )
+        </div>
+    )
 }
-
-export default SellerStore

@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { Prescription, ShoppingBag, House, Gear, Info, AddressBook, SubtractSquare } from '@phosphor-icons/react/dist/ssr'; 
-import MenuLink from "./menulink/menulink"
+import MenuLink from "./menulinkAdmin/menulinkAdmin"
 import Link from 'next/link';
 import { Avatar,image} from '@nextui-org/react';
 import { UserButton, UserProfile } from '@clerk/nextjs';
@@ -10,7 +10,7 @@ import { UserButton, UserProfile } from '@clerk/nextjs';
 
 
 
-const Sidebar = () => {
+const SidebarAdmin = () => {
   const menuItems = [
    {
      title: "Pages",
@@ -26,8 +26,8 @@ const Sidebar = () => {
          icon: <Prescription/>
      },
       {
-         title:"Orders",
-         path: "/dashboard/orders",
+         title:"Message",
+         path: "/dashboard/Message",
          icon: <ShoppingBag />
      },
      {
@@ -39,7 +39,7 @@ const Sidebar = () => {
      ]
    },
     {
-     title: "User",
+     title: "Admin",
      list: [
        {
          title:"Settings",
@@ -51,11 +51,7 @@ const Sidebar = () => {
          path: "/dashboard/help",
          icon: <Info/>
      },
-       {
-         title: "Contact Us",
-         path: "/dashboard/contact",
-         icon: <AddressBook />
-       },
+       
      ]
   }
 ];
@@ -83,4 +79,4 @@ const Sidebar = () => {
   );
 }
 
-export default Sidebar
+export default SidebarAdmin

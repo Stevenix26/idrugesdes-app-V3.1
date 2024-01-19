@@ -5,18 +5,16 @@ import styles from '../components/ui/dashboard/dashboard.module.css';
 
 const Layout = ({ children }) => {
   return (
-      <div className='flex'> 
-        <aside className='menu bg-base-300'>
-           <Sidebar />
-        </aside>
-      <main className='justify-center bg-base-200 items-center md:flex-col xl:flex-row px-6 pb-16 xl:pr-2'>
-            <article>
-          <Navbar />
-          {children}
-            </article>
+    <div className={styles.container}>
+      <aside className='bg-base-200 shadow-lg'>
+        <div className='p-2 m-2'>
+          <Sidebar />
+        </div>
+      </aside>
 
-            
-        </main>
+      <div className={` ${styles.content}`}>
+        {children}
+      </div>
     </div>
   )
 }

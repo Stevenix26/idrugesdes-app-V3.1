@@ -1,36 +1,64 @@
 // PrescriptionList.js
 "use client"
 import React from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient} from '@tanstack/react-query';
+import { db } from '../../../lib/db'
 import axios from 'axios';
+
+async function getPrescription() {
+    const response = await db.prescription.findMany({
+        select: {
+            id: true,
+            patientName: true,
+            doctorName: true,
+            medication: true,
+            createdAt: true,
+
+
+        },
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+    return response;
+}
+
 
 const fetchPrescriptions = async () => {
     const { data } = await axios.get('/api/prescriptions');
     return data;
 };
 
-const PrescriptionList = () => {
-    const { data: prescriptions, status } = useQuery('prescriptions', fetchPrescriptions);
+const PrescriptionList = async () => {
+    const prescription = await getPrescription();
+    console.log(prescription)
+
+
+    const { data: prescriptions, status } = useQuery({
+        queryKey:['prescriptions'], 
+        queryFn: fetchPrescriptions});
+        
     const queryClient = useQueryClient();
 
-    const approvePrescription = useMutation(
-        (prescriptionId) => axios.post(`/api/prescriptions/${prescriptionId}/approve`),
-        {
+    const {mutate: approvePrescription} = useMutation({
+       mutationFn: async (prescriptionId) => {
+        return axios.post(`/api/prescriptions/${prescriptionId}/approve`)},
+        
             onSuccess: () => {
                 queryClient.invalidateQueries('prescriptions');
             },
-        }
-    );
+        
+    } );
 
-    const declinePrescription = useMutation(
-        ({ prescriptionId, reason }) =>
-            axios.post(`/api/prescriptions/${prescriptionId}/decline`, { reason }),
-        {
+    const {mutate: declinePrescription} = useMutation({
+        mutationFn: async({ prescriptionId, reason }) => {
+            return axios.post(`/api/prescriptions/${prescriptionId}/decline`, { reason })},
+        
             onSuccess: () => {
                 queryClient.invalidateQueries('prescriptions');
             },
-        }
-    );
+        
+        });
 
     if (status === 'loading') return <p>Loading...</p>;
     if (status === 'error') return <p>Error loading prescriptions</p>;
@@ -48,7 +76,7 @@ const PrescriptionList = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {prescriptions.map((prescription) => (
+                    {prescriptions?.map((prescription) => (
                         <tr key={prescription.id}>
                             <td>{prescription.id}</td>
                             <td>{prescription.patientName}</td>

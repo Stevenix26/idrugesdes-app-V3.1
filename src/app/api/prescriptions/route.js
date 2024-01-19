@@ -1,6 +1,6 @@
 // pages/api/prescriptions.js
 import { PrismaClient } from '@prisma/client';
-import uploadMiddleware from '../../middleware/uploadMiddleware';
+import uploadMiddleware from '../../../middleware/uploadMiddleware'
 
 const prisma = new PrismaClient();
 

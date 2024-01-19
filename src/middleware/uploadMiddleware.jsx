@@ -1,5 +1,6 @@
 // middleware/uploadMiddleware.js
-import multer from 'multer';
+import multer from 'multer'
+
 
 const storage = multer.diskStorage({
     destination: './public/uploads', // Set your desired upload directory

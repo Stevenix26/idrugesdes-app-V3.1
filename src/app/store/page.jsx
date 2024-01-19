@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image"
 import React, { useState } from "react";
 import { Card, Button, Skeleton} from "@nextui-org/react";
+import BackButton from "../components/BackButton";
 
 // Store component
 const Store = () => {
@@ -133,7 +134,10 @@ const [pharmacies, setPharmacies] = useState([
   // Return the improved Store component
   return (
     <section className="py-10 p-12">
-      <div className="container mx-auto">
+      <div className="container mx-auto justify-between items-center">
+        <div className="mb-3">
+          <BackButton />
+        </div>   
         <div className="flex flex-1 flex-wrap mx-4">{mapPharmacies}</div>
       </div>
     </section>
