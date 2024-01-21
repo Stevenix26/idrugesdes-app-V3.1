@@ -71,13 +71,13 @@ const Navnew = () => {
              <SignedOut>
                <SignInButton mode='modal'>
                  <button className='btn btn-sm hover:bg-indigo-800 hover:text-white'>
-                   Sign In
+                   Sign In 
                  </button>
                </SignInButton>
              </SignedOut>
           </div>
         </div>
-        
+                
         </Navbar>
         
     </div>

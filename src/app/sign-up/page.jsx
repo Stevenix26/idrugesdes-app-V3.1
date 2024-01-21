@@ -1,16 +1,19 @@
+'use client'
+import {
+  CreateOrganization, OrganizationSwitcher, OrganizationProfile, SignedIn, SignedOut,
+  RedirectToOrganizationProfile, } from "@clerk/nextjs";
 
-import { SignUp } from "@clerk/nextjs"
-
-const Page = async () => {
+export default function OrganizationSwitcherPage() {
   return (
-    <section className='py-24'>
-      <div className='container'>
-        <div className='flex justify-center'>
-          <SignUp />
-        </div>
-      </div>
-    </section>
-  )
+    <div>
+      Hellon helloe
+  
+      <SignedOut>
+        Please Sign In
+      </SignedOut>
+      <CreateOrganization />
+      <OrganizationProfile routing='path' path="/organization-profile" />
+      <OrganizationSwitcher />
+    </div>
+  );
 }
-
-export default Page

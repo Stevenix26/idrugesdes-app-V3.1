@@ -2,6 +2,7 @@ import React from 'react'
 import SidebarAdmin from '../components/ui/dashboard/sidebarAdmin/sidebarAdmin'
 import styles from '../components/ui/dashboard/dashboard.module.css';
 
+
 const Layout = ({ children }) => {
     return (
         <div className={styles.container}>

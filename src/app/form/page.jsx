@@ -1,20 +1,16 @@
 "use client"
 
-import { Card, Button } from '@nextui-org/react'
-import React from 'react'
+import React,{useState} from 'react'
 import { useForm } from "react-hook-form";
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios'
 
-
-
-
-
-
-const SellerStore = () => {
+const PrescriptionForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   // Inside your React component
-  const onSubmit = async (formData) => {
+  const submit = async (formData) => {
     try {
-      const response = await fetch('/api/prescriptions', {
+      const response = await fetch('../api/prescriptions/route.js', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -23,10 +19,10 @@ const SellerStore = () => {
       });
 
       if (response.ok) {
-        console.log('Store created successfully:', formData);
+        console.log('Prescription created successfully:', formData);
         // You can add any additional logic here after successful submission
       } else {
-        console.error('Failed to create store:', response.statusText);
+        console.error('Failed to create Prescription:', response.statusText);
         // Handle error cases, show an error message, etc.
       }
     } catch (error) {
@@ -36,55 +32,50 @@ const SellerStore = () => {
   };
   return (
     <>
-      <head>
-        <title>Store Detials</title>
-        <meta name="description" content="Pharmacy Store" />
-        <link rel="icon" href="favicon.ico" />
-      </head>
-      <main className='flex min-h-screen flex-col items-center justify-center text-black bg-light'>
+      <div className='flex min-h-screen flex-col items-center justify-center text-black bg-light'>
         <div className='col-md-6 container flex flex-col items-center justify-center gap-12 px-4 py-16'>
-          <h1>CREATE YOUR STORE</h1>
-          <Card className='container flex flex-4 bg-orange-500 shadow-lg'>
-            <form className='container flex flex-col gap-3 pt-4 pb-3 px-6' onSubmit={handleSubmit(onSubmit)}>
+          <h1>CREATE YOUR Prescription</h1>
+          <div className='card flex flex-4 bg-orange-500 shadow-lg'>
+            <form className='container flex flex-col gap-3 pt-4 pb-3 px-6' onSubmit={handleSubmit(submit)}>
               <div >
-                <label for="Pharmacy_name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter your Store</label>
+                <label for="patientName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter your Pharmacy</label>
                 {/* include validation with required or other standard HTML validation rules */}
-                <input type="text" id="first_name" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' placeholder="Enter Your pharmacy Store" required
-                  {...register("pharmacyName", { required: true })} />
+                <input type="text" id="patientName" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500' placeholder="Enter Your pharmacy Store" required
+                  {...register("patientName", { required: true })} />
                 {/* errors will return when field validation fails  */}
-                {errors.nameRequired && <span>This field is required</span>}
+                {/* {errors.nameRequired && <span>This field is required</span>} */}
               </div>
               <div>
-                <label for="Address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Address</label>
+                <label for="medication" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter ur medication</label>
                 {/* include validation with required or other standard HTML validation rules */}
-                <input type="text" id="Address" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                <input type="text" id="medication" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   placeholder="" required
                   {...register("medication", { required: true })} />
                 {/* errors will return when field validation fails  */}
-                {errors.addressRequired && <span>This field is required</span>}
+                {/* {errors.addressRequired && <span>This field is required</span>} */}
               </div>
               <div>
-                <label for="phoneNum" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone Number</label>
+                <label for="doctorName" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter doctorName</label>
                 {/* include validation with required or other standard HTML validation rules */}
-                <input type="text" id="phoneNum" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                <input type="text" id="doctorName" className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
                   placeholder="" required
                   {...register("doctorName", { required: true })} />
                 {/* errors will return when field validation fails  */}
-                {errors.addressRequired && <span>This field is required</span>}
+                {/* {errors.addressRequired && <span>This field is required</span>} */}
               </div>
 
-              <Button type="submit" className='bg-orange-100' size="lg" variant="shadow">
-                <input type='submit' />
-              </Button>
+              <button type="submit" className='btn btn-square w-full bg-orange-100'>
+              submit
+                </button>
 
             </form>
-          </Card>
+          </div>
         </div>
 
-      </main>
+      </div>
 
     </>
   )
 }
 
-export default SellerStore
+export default PrescriptionForm

@@ -1,5 +1,9 @@
-import { db } from "../../../../lib/db";
+
 import { NextResponse } from "next/server";
+import { PrismaClient } from '@prisma/client'
+import { withAccelerate } from '@prisma/extension-accelerate'
+
+const prisma = new PrismaClient().$extends(withAccelerate())
 
 interface contextProps{
     params:{
@@ -12,7 +16,7 @@ export async function DELETE(req: Request, context: contextProps ) {
     try{
         const{params} = context;
        
-         await db.post.delete({
+         await prisma.post.delete({
            where:{
             id: params.postId
            }
@@ -33,7 +37,7 @@ export async function DELETE(req: Request, context: contextProps ) {
         const{params} =context;
         const body = await req.json();
        
-         await db.post.update({
+         await prisma.post.update({
            where:{
             id: params.postId
            },

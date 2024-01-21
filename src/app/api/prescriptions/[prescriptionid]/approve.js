@@ -1,30 +1,38 @@
-// pages/api/prescriptions/[prescriptionId]/approve.js
-import { PrismaClient } from '@prisma/client';
+// import { db } from '../../../../lib/db'
 
-const prisma = new PrismaClient();
+// export default async function handler(req, res) {
+//     const { prescriptionId } = req.query
 
-export default async function handler(req, res) {
-    const { prescriptionId } = req.query;
+//     if (typeof prescriptionId !== 'string') {
+//         return res.status(400).json({ error: 'Invalid prescription ID' })
+//     }
 
-    try {
-        // Fetch the prescription by ID
-        const prescription = await prisma.prescription.findUnique({
-            where: { id: parseInt(prescriptionId, 10) },
-        });
+//     const prescriptionIdNumber = Number.parseInt(prescriptionId, 10)
 
-        if (!prescription) {
-            return res.status(404).json({ error: 'Prescription not found' });
-        }
+//     try {
+//         // Fetch the prescription by ID
+//         const prescription = await db.prescription.findUnique({
+//             where: { id: prescriptionIdNumber },
+//         })
 
-        // Update the prescription status to "approved"
-        const updatedPrescription = await prisma.prescription.update({
-            where: { id: prescription.id },
-            data: { status: 'approved' },
-        });
+//         if (!prescription) {
+//             return res.status(404).json({ error: 'Prescription not found' })
+//         }
 
-        res.status(200).json(updatedPrescription);
-    } catch (error) {
-        console.error('Error approving prescription:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-}
+//         // Validate the prescription object before updating its status
+//         if (prescription.status === 'approved') {
+//             return res.status(400).json({ error: 'Prescription is already approved' })
+//         }
+
+//         // Update the prescription status to "approved"
+//         const updatedPrescription = await db.prescription.update({
+//             where: { id: prescription.id },
+//             data: { status: 'approved' },
+//         })
+
+//         res.status(200).json(updatedPrescription)
+//     } catch (error) {
+//         console.error('Error approving prescription:', error)
+//         res.status(500).json({ error: 'Internal Server Error' })
+//     }
+// }

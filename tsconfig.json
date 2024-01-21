@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "src/app/dashboard/page.tsx", "script.ts", "src/app/dashboard/users/page.jsx", "src/app/ThemeSwitcher.ts", "src/app/provider.tsx", "src/app/ThemeSwitcher.tsx", "src/app/prescriptions/page.jsx", "src/app/components/FormPost.tsx", "src/app/Blog/CreateDoc/page.tsx", "src/app/admin/prescriptionForm/page.jsx"  ],
+, "src/app/dashboard/page.tsx", "script.ts", "src/app/dashboard/users/page.jsx", "src/app/ThemeSwitcher.ts", "src/app/provider.tsx", "src/app/ThemeSwitcher.tsx", "src/app/prescriptions/page.jsx", "src/app/components/FormPost.tsx", "src/app/Blog/CreateDoc/page.tsx", "src/app/admin/prescriptionForm/page.jsx", "src/app/api/prescriptions/route.js", "src/app/sign-up/page.jsx", "middleware.js", "src/app/api/pres/route.js", "src/app/api/posts/creates/route.js"  ],
   "exclude": [
     "node_modules"
   ]

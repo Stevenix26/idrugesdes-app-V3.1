@@ -1,32 +1,41 @@
-// api/createStore.js
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { NextResponse } from 'next/server'
+import { db } from '../../../lib/db'
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ message: 'Method Not Allowed' });
+        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
     }
 
     try {
-        const { patientname, medication, doctorName } = req.body;
+        const { patientname, medication, doctorName, phoneNumber, prescriptionDate } = req.body
 
-        // Use Prisma Client to create a store in the database
-        const prescriptions = await prisma.prescription.create({
+        if (!patientname || !medication || !doctorName || !phoneNumber || !prescriptionDate) {
+            return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
+        }
+
+        const prescription = await db.prescription.create({
             data: {
                 patientname,
                 medication,
                 doctorName,
+                phoneNumber,
+                prescriptionDate,
             },
-        });
+        })
 
-        console.log('Store created:', prescriptions);
+        console.log('Prescription created:', prescription)
 
-        return res.status(201).json({ message: 'precription created successfully' });
+        return NextResponse.json({ message: 'Prescription created successfully' }, { status: 201 })
+        
     } catch (error) {
-        console.error('Error:', error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error:', error)
+
+        if (error.code === 'P2002') {
+            return NextResponse.json({ message: 'Duplicate prescription' }, { status: 409 })
+        }
+
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     } finally {
-        await prisma.$disconnect();
+        await db.$disconnect()
     }
 }

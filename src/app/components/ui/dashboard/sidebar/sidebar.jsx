@@ -53,7 +53,7 @@ const Sidebar = () => {
      },
        {
          title: "Contact Us",
-         path: "/dashboard/contact",
+         path: "/dashboard/contact_us",
          icon: <AddressBook />
        },
      ]
