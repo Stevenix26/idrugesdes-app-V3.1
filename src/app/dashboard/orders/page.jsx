@@ -1,19 +1,5 @@
 'use client'
 import React, { useState } from "react";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  User,
-  Chip,
-  Tooltip,
-  Button,
-  Input,
-  Modal,
-} from "@nextui-org/react";
 import { EditIcon } from "../../EditIcon";
 import { DeleteIcon } from "../../DeleteIcon";
 import { EyeIcon } from "../../EyeIcon";
@@ -98,91 +84,92 @@ export default function Orders() {
   return (
     <div className="container p-5">
       <div className="row text-orange-800">
-        <Table aria-label="Prescription Details">
-          <TableHeader columns={columns}>
+        <table aria-label="Prescription Details">
+          <div className="table-header-group" columns={columns}>
             {(column) => (
-              <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
+              <div className="table-column" key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
                 {column.name}
-              </TableColumn>
+              </div>
             )}
-          </TableHeader>
-          <TableBody items={users}>
+          </div>
+          <div className="table-caption" items={users}>
             {(user) => (
-              <TableRow key={user.id}>
+              <div className="table-row" key={user.id}>
                 {(columnKey) => (
-                  <TableCell>
+                  <div className="table-cell">
                     {columnKey === "actions" ? (
                       <div className="relative flex items-center gap-2">
-                        <Tooltip content="Details">
+                        <div className="tooltip" content="Details">
                           <span
                             className="text-lg text-default-400 cursor-pointer active:opacity-50"
                             onClick={() => handleActionClick("preview", user)}
                           >
                             <EyeIcon />
                           </span>
-                        </Tooltip>
-                        <Tooltip content="Edit user">
+                        </div>
+                        <div className=" tooltip" content="Edit user">
                           <span
                             className="text-lg text-default-400 cursor-pointer active:opacity-50"
                             onClick={() => handleActionClick("edit", user)}
                           >
                             <EditIcon />
                           </span>
-                        </Tooltip>
-                        <Tooltip color="danger" content="Delete user">
+                        </div>
+                        <div className=" tooltip" color="danger" content="Delete user">
                           <span
                             className="text-lg text-danger cursor-pointer active:opacity-50"
                             onClick={() => handleActionClick("delete", user)}
                           >
                             <DeleteIcon />
                           </span>
-                        </Tooltip>
+                        </div>
                         {user.status === "submitted" && (
-                          <Tooltip content="Accept prescription">
+                          <div className=" tooltip" content="Accept prescription">
                             <span
                               className="text-lg text-success cursor-pointer active:opacity-50"
                               onClick={() => handleActionClick("accept", user)}
                             >
                               ✓
                             </span>
-                          </Tooltip>
+                          </div>
                         )}
                         {user.status === "submitted" && (
-                          <Tooltip color="danger" content="Decline prescription">
+                          <div  color="danger" content="Decline prescription">
                             <span
                               className="text-lg text-danger cursor-pointer active:opacity-50"
                               onClick={() => handleActionClick("decline", user)}
                             >
                               ✗
                             </span>
-                          </Tooltip>
+                          </div>
                         )}
                       </div>
                     ) : (
                       user[columnKey]
                     )}
-                  </TableCell>
+                  </div>
                 )}
-              </TableRow>
+              </div>
             )}
-          </TableBody>
-        </Table>
-        <Modal visible={modalVisible} onClose={handleModalClose}>
-          <Modal.Header>Decline Prescription</Modal.Header>
-          <Modal.Body>
+          </div>
+        </table>
+        <div className=" modal modal-scroll" visible={modalVisible} onClose={handleModalClose}>
+          <div className="modal header">Decline Prescription</div>
+          <div className="modal body">
             <p>Please provide a reason for declining the prescription:</p>
-            <Input
+            <input
+              className=" input input-bordered"
               type="text"
               value={selectedUser ? selectedUser.reasonForCancellation : ""}
               onChange={handleReasonChange}
               placeholder="Reason for cancellation"
             />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button color="default" onClick={handleModalClose}>
+          </div>
+          <div className="modal footer">
+            <button className="btn" color="default" onClick={handleModalClose}>
               Cancel
-            </Button>
-            <Button
+            </button>
+            <button className="btn"
               color="danger"
               onClick={() => {
                 handleModalClose();
@@ -190,9 +177,9 @@ export default function Orders() {
               }}
             >
               Decline
-            </Button>
-          </Modal.Footer>
-        </Modal>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

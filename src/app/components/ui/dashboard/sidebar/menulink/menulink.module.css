@@ -9,6 +9,7 @@
 
 .container:hover, .active{
     background-color: #2e374a;
+    color: aliceblue;
 }
 .list {
     list-style: none;

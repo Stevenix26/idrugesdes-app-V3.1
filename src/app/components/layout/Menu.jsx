@@ -24,8 +24,8 @@ const Menu = () => {
             ) : (
                 <XCircle className='h-7 w-7' onClick={()=> setOpen(false)}/>)}
       {Open && (         
-         <div className='drawer text-white absolute left-0 top-24 h-[cal(110vh-6rem)] w-full z-10 flex flex-col gap-2 items-end justify-between text-lg'>
-          <ul className='menu menu-vertical bg-indigo-600 rounded-xl w-80 min-h-full'> {links.map((item) =>(
+         <div className='drawer text-white absolute left-200 top-24 w-full z-10 flex flex-col gap-2 items-start justify-between text-lg'>
+          <ul className='menu menu-vertical bg-neutral rounded-xl w-80 min-h-full'> {links.map((item) =>(
               
             <li>
                <a> <Link href={item.url} key={item.id}>
@@ -50,6 +50,7 @@ const Menu = () => {
                 </SignedIn>
             
             </li>
+        
             <div className="dropdown">
               <div tabIndex={0} role="button" className="btn btn-sm m-1">
                 Theme
@@ -63,6 +64,7 @@ const Menu = () => {
                 <li><input type="radio" name="theme-dropdown" className="theme-controller btn btn-sm btn-block btn-ghost justify-start" aria-label="Aqua" value="aqua" /></li>
               </ul>
             </div>
+
               <li>
               <SignedOut>
                   <SignInButton mode='modal'>

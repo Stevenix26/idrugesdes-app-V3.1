@@ -6,7 +6,7 @@ import styles from '../components/ui/dashboard/dashboard.module.css';
 
 const Layout = ({ children }) => {
   return (
-    <div className={styles.container}>
+    <div className={`w-full ${styles.container}`}>
       <aside className='bg-base-200 shadow-lg'>
         <div className='p-2 m-2'>
           <Sidebar />

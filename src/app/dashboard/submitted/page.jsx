@@ -1,8 +1,8 @@
 // pages/submitted.js
 'use client'
 import { useEffect, useState } from 'react';
-import { Button, Modal, Table } from '@nextui-org/react';
 import { PrismaClient } from '@prisma/client';
+// import { Modal } from '@mui/material';
 // Update the path based on your project structure
 
 const prisma = new PrismaClient();
@@ -56,7 +56,7 @@ const Submitted = () => {
       <div className="card bg-pharmacy-primary-800 p-8 rounded-lg shadow-lg">
         <h2 className="mb-4 text-2xl font-bold text-dark text-center">Submitted Prescriptions</h2>
         {prescriptions.length > 0 ? (
-          <Table striped bordered hover responsive>
+          <table className=' bordered hover responsive striped' >
             <thead>
               <tr>
                 <th>Patient Name</th>
@@ -74,25 +74,26 @@ const Submitted = () => {
                   <td>{prescription.doctorName}</td>
                   <td>{prescription.prescriptionDate.toDateString()}</td>
                   <td>
-                    <Button color="success" variant="outlined" className="mr-2" onClick={() => handlePreview(prescription)}>
+                    <button color="success" variant="outlined" className="mr-2" onClick={() => handlePreview(prescription)}>
                       Preview
-                    </Button>
-                    <Button color="error" variant="outlined" onClick={() => handleDelete(prescription.id)}>
+                    </button>
+                    <button color="error" variant="outlined" onClick={() => handleDelete(prescription.id)}>
                       Delete
-                    </Button>
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
-          </Table>
+          </table>
         ) : (
           <p className="text-dark text-center">No prescriptions submitted yet.</p>
         )}
-        <Button color="white" variant="outlined" className="mt-4" href="/dashboard/prescription">
+        <button color="white" variant="outlined" className="mt-4" href="/dashboard/prescription">
           Back to Submission Page
-        </Button>
+        </button>
       </div>
-      <Modal visible={isPreviewModalOpen} onClose={() => setIsPreviewModalOpen(false)}>
+      
+      <div className='modal modal-action' visible={isPreviewModalOpen} onClose={() => setIsPreviewModalOpen(false)}>
         {selectedPrescription && (
           <div className="p-3">
             <h2 className="mb-4 text-2xl font-bold">Prescription Preview</h2>
@@ -105,7 +106,7 @@ const Submitted = () => {
             )}
           </div>
         )}
-      </Modal>
+      </div>
     </div>
   );
 };

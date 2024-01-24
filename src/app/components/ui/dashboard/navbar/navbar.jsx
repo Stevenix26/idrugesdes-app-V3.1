@@ -1,5 +1,4 @@
 'use client'
-import { Chat, Notification } from '@phosphor-icons/react/dist/ssr';
 import { usePathname } from 'next/navigation'
 import React from 'react'
 

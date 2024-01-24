@@ -1,9 +1,8 @@
 'use client'
 import React from 'react'
-import { Prescription, ShoppingBag, House, Gear, Info, AddressBook, SubtractSquare } from '@phosphor-icons/react/dist/ssr'; 
+import { Prescription, ShoppingBag, House, Gear, Info, AddressBook, SubtractSquare, Person  } from '@phosphor-icons/react/dist/ssr'; 
 import MenuLink from "./menulinkAdmin/menulinkAdmin"
 import Link from 'next/link';
-import { Avatar,image} from '@nextui-org/react';
 import { UserButton, UserProfile } from '@clerk/nextjs';
 // Import Bootstrap CSS
 
@@ -17,22 +16,27 @@ const SidebarAdmin = () => {
      list: [
        {
          title:"Dashboard",
-         path: "/dashboard",
+         path: "/admin",
          icon: <House/>
      },
       {
          title:"Prescription",
-         path: "/dashboard/prescription",
+         path: "/admin/prescription",
          icon: <Prescription/>
      },
       {
          title:"Message",
-         path: "/dashboard/Message",
+         path: "/admin/Message",
          icon: <ShoppingBag />
      },
+       {
+         title: "Teams",
+         path: "/admin/Message",
+         icon: <Person />
+       },
      {
       title: "Submitted",
-      path: "/dashboard/submitted",
+      path: "/admin/submitted",
       icon: <SubtractSquare/>
 
      }

@@ -1,7 +1,5 @@
-'use client'
-// pages/index.js
-
-import { useState } from 'react';
+"use client"
+import React from 'react';
 import { useMutation } from '@tanstack/react-query'; 
 import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form";
@@ -20,7 +18,7 @@ const PrescriptionPage = () => {
   const { mutate: createPrescription, isLoading } = useMutation({
     mutationFn:  async (newPrescription) => {
       // Send a POST request to your backend API
-      const response = await axios.post('/api/prescriptions', newPrescription);
+      const response = await axios.post('../../api/prescription', newPrescription);
       return response.data; // Assuming your API returns data upon successful creation
     },
       onError: (error) => {

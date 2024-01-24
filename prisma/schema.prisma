@@ -8,7 +8,6 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
@@ -80,7 +79,7 @@ model Prescription {
   medication        String
   doctorName        String
   phoneNumber       String
-  prescriptionDate  DateTime
+  prescriptionDate  String 
   prescriptionFilePath String?
   status              String    @default("pending") // Status can be "pending", "approved", or "declined"
   declineReason       String?   @db.VarChar(255) // Optional reason for decline

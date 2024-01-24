@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image"
 import React, { useState } from "react";
-import { Card, Button, Skeleton} from "@nextui-org/react";
+
 import BackButton from "../components/BackButton";
 
 // Store component

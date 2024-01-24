@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
     <>
-    <footer className='p-6 py-12 z-10 md:p-10 sm:p- xl:p-10 flex items-start justify-between'>
+    <footer className='text-primary p-6 py-12 z-10 md:p-10 sm:p- xl:p-10 flex items-start justify-between'>
       <div>
         <h5 className='text-lg'>IDRUGDES CO.</h5>
         <p className='mt-4 text-sm '>
@@ -10,7 +10,7 @@ const Footer = () => {
         <div className='text-sm '>
           Developed by{' Agboola Stephen '}
           <span
-            className='text-white' 
+            className='text-secondary' 
           >
             CPE/17/3096
           </span>

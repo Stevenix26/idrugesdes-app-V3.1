@@ -21,7 +21,6 @@ async function getPosts(){
 
 const tops = async () => {
 
-  const posts = await getPosts();
   console.log(posts)
   
 

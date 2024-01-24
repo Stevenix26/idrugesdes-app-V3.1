@@ -4,7 +4,7 @@ import React from 'react';
 
 const HelpPage = () => {
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-gray-100 p-3">
             <header className="bg-primary text-white p-8">
                 <div className="container mx-auto">
                     <h1 className="text-4xl font-bold">Prescription Help Center</h1>
@@ -12,7 +12,7 @@ const HelpPage = () => {
                 </div>
             </header>
 
-            <div className="container mx-auto mt-8">
+            <div className="container mx-auto mt-8 p-4">
                 <section>
                     <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions (FAQ)</h2>
 
@@ -43,7 +43,7 @@ const HelpPage = () => {
                         <h3 className="text-lg font-semibold mb-2">Email:</h3>
                         <p>Contact our support team via email at <a href="mailto:support@pharmacyexample.com">support@pharmacyexample.com</a></p>
                     </div>
-
+                    
                     <div className="mb-4">
                         <h3 className="text-lg font-semibold mb-2">Phone:</h3>
                         <p>Reach us by phone at <a href="tel:+11234567890">+1 (123) 456-7890</a></p>

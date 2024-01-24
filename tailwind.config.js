@@ -1,6 +1,6 @@
 
 // tailwind.config.js
-import { nextui } from "@nextui-org/react";
+
 import daisyui from "daisyui";
 
 
@@ -11,7 +11,7 @@ const config = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './src/**/*.{js,ts,jsx,tsx}',
-    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
+   
   ],
   theme: {
     extend: {},

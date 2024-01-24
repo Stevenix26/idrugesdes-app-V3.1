@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Image from 'next/image'
 import { SignInButton, SignedIn, SignedOut} from '@clerk/nextjs';
 import Link from 'next/link';
-import { Card, Button, } from '@nextui-org/react';
+
 
 const PharmacyDetails = ({ params }) => {
     const [pharmacies, setPharmacies] = useState([

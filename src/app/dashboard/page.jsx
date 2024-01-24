@@ -1,6 +1,5 @@
 'use client'
 // components/Dashboard.js
-import { Card, Spacer, Upload, Button } from '@nextui-org/react';
 import Image from 'next/image';
 
 const Dashboard = () => {
@@ -62,30 +61,29 @@ const Dashboard = () => {
         </div>
       
 
-      <Spacer y={2} />
+      <div className='space-y-2'/>
+      </div>
 
-      <Card>
+      <div className='card'>
         <h2 className="text-xl font-semibold mb-2">Upload Documents</h2>
         <p className="mb-4">Upload necessary documents here.</p>
-          <Button  >Upload Files
+          <button  className='file-input' >Upload Files
         <input type="file" name="file" id="" onUpload={handleUpload} accept=".pdf,.doc,.docx,.jpg,.png"/>
           
-          </Button>
+          </button>
         
-      </Card>
+      </div>
 
-      <Spacer y={2} />
+       <div className='space-y-2'/>
+      </div>
 
-      <Card>
+      <div className='card'>
         <h2 className="text-xl font-semibold mb-2">Sample Content</h2>
         <p className="text-gray-600">
           This is some sample content for your pharmacy dashboard.
         </p>
-      </Card>
-    </div>
-    
-    </div>
-    </div>
+      </div>
+    </div> 
     </section>
   );
 };

@@ -3,7 +3,6 @@
 
 import React from 'react'
 import { CaretCircleLeft } from '@phosphor-icons/react/dist/ssr';
-import { Button } from "@nextui-org/react";
 import { useRouter} from 'next/navigation';
 
  

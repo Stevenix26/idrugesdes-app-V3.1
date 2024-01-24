@@ -3,7 +3,6 @@ import React from 'react'
 import { Prescription, ShoppingBag, House, Gear, Info, AddressBook, SubtractSquare } from '@phosphor-icons/react/dist/ssr'; 
 import MenuLink from "./menulink/menulink"
 import Link from 'next/link';
-import { Avatar,image} from '@nextui-org/react';
 import { UserButton, UserProfile } from '@clerk/nextjs';
 // Import Bootstrap CSS
 

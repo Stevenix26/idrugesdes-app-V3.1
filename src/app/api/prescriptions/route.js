@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
 import { db } from '../../../lib/db'
 
-export default async function handler(req, res) {
+export async function getPrescriptions(req, res) {
     if (req.method !== 'POST') {
-        return NextResponse.json({ message: 'Method Not Allowed' }, { status: 405 })
+        return NextResponse.json({ message: 'Method Not uyuyuyuy Allowed' }, { status: 405 })
     }
 
     try {
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         console.log('Prescription created:', prescription)
 
         return NextResponse.json({ message: 'Prescription created successfully' }, { status: 201 })
-        
+
     } catch (error) {
         console.error('Error:', error)
 
@@ -37,5 +37,19 @@ export default async function handler(req, res) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     } finally {
         await db.$disconnect()
+    }
+}
+
+export async function postPrescriptions(req, res) {
+    try {
+        // Your logic for handling the POST request
+        // ...
+
+        // Send a response
+        res.status(201).json({ message: 'POST request handled successfully' });
+    } catch (error) {
+        // Handle errors
+        console.error('Error:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 }
