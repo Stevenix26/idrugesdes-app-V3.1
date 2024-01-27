@@ -1,4 +1,3 @@
-
 'use client'
 import React,{useEffect, useState} from 'react'
 import Menu from './Menu'
@@ -30,7 +29,7 @@ const Navnew = () => {
   }, []);
 
   return (
-    <div className={`md:flex bg-base-300 flex w-full items-center justify-center ${isScrolled ? 'fixed top-0 left-0 right-0 z-50' : ''}`}>
+    <div className={`shadow-inner md:flex bg-base-300 flex w-full items-center justify-center ${isScrolled ? 'fixed top-0 left-0 right-0 z-50' : ''}`}>
       {/* <div className=' xl:flex-row h-16 p-4 z-10 mb-3 shadow-md'>
 
 middle items

@@ -1,23 +1,46 @@
 // pages/submitted.js
 'use client'
 import { useEffect, useState } from 'react';
-import { PrismaClient } from '@prisma/client';
+import { db } from '../../../lib/db';
 // import { Modal } from '@mui/material';
 // Update the path based on your project structure
 
-const prisma = new PrismaClient();
+async function getPrescription() {
+  const response = await db.prescription.findMany({
+    select: {
+      id: true,
+      patientName: true,
+      medication: true,
+      doctorName: true,
+      phoneNumber: true,
+      prescriptionDate: true,
+      prescriptionFilePath: true,
+      status: true,
+      declineReason: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
+  });
+  return response;
+}
 
 
 const Submitted = () => {
-  const [prescriptions, setPrescriptions] = useState([]);
+  const prescriptioning = getPrescription();
+  const [prescriptions, setPrescriptions] = useState(prescriptioning);
   const [selectedPrescription, setSelectedPrescription] = useState(null);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+ 
 
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
-        // Fetch all prescriptions from the database using Prisma
-        const data = await prisma.prescription.findMany();
+        // Fetch all prescriptions from the database using Db
+        const data = await db.prescription.findMany(
+        );
         setPrescriptions(data);
       } catch (error) {
         // Handle error, show a message, or perform error logging
@@ -35,8 +58,8 @@ const Submitted = () => {
 
   const handleDelete = async (id) => {
     try {
-      // Delete the selected prescription from the database using Prisma
-      await prisma.prescription.delete({
+      // Delete the selected prescription from the database using Db
+      await db.prescription.delete({
         where: { id },
       });
 
@@ -74,10 +97,10 @@ const Submitted = () => {
                   <td>{prescription.doctorName}</td>
                   <td>{prescription.prescriptionDate.toDateString()}</td>
                   <td>
-                    <button color="success" variant="outlined" className="mr-2" onClick={() => handlePreview(prescription)}>
+                    <button color="success" variant="outlined" className="mr-2 btn btn-success" onClick={() => handlePreview(prescription)}>
                       Preview
                     </button>
-                    <button color="error" variant="outlined" onClick={() => handleDelete(prescription.id)}>
+                    <button color="error" variant="outlined btn btn-danger" onClick={() => handleDelete(prescription.id)}>
                       Delete
                     </button>
                   </td>
@@ -88,7 +111,7 @@ const Submitted = () => {
         ) : (
           <p className="text-dark text-center">No prescriptions submitted yet.</p>
         )}
-        <button color="white" variant="outlined" className="mt-4" href="/dashboard/prescription">
+        <button  className="mt-4 btn btn-sm btn-outline " href="/dashboard/prescription">
           Back to Submission Page
         </button>
       </div>
@@ -111,4 +134,25 @@ const Submitted = () => {
   );
 };
 
+
+
+// export async function getServerSideProps() {
+//   try {
+//     // Fetch prescriptions data on the server side
+//     const prescriptions = await getPrescription();
+//     return {
+//       props: { prescriptions }
+//     };
+//   } catch (error) {
+//     console.error('Error fetching prescriptions:', error);
+//     return {
+//       props: { prescriptions: [] }
+//     };
+//   }
+// }
+
+
+
 export default Submitted;
+
+

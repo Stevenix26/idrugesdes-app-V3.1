@@ -94,7 +94,7 @@ const [pharmacies, setPharmacies] = useState([
 
   // Map pharmacies to cards
   const mapPharmacies = pharmacies.map((pharmacy, i) => (
-    <div key={i} className="mb-4 sm:w-1/2 md:w-1/2 lg:w-1/3 px-4 container ">
+    <div key={i} className="mb-4 sm:w-1/2 md:w-1/2 lg:w-1/3 px-4 container grad ">
       <div
         style={{ borderRadius: "12px", overflow: "hidden", height: "100%" }}
         className = "card bordered shadow-md grid grid-flow-row"

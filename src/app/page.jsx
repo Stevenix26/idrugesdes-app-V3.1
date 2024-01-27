@@ -26,7 +26,7 @@ const Page = () => {
         <Image alt='' src={HeroImage} className='fixed inset-0 -z-10 h-full w-full object-cover' />
         <div aria-hidden='true' className='fixed inset-0 -z-10 bg-black/60 bg-blend-multiply' />
 
-        <div className='relative mx-auto max-w-xl px-4 sm:py-8 md:px-6 lg:py-6 xl:px-2'>
+        <div className='mx-auto max-w-4xl px-4 sm:py-8 md:px-6 lg:py-6 xl:px-2'>
           <div className='hidden sm:mb-8 sm:flex sm:justify-center'>
             <div className='rounded-full py-1 px-3 text-sm leading-6 text-stone-400 ring-1 ring-white/10 hover:ring-white/20'>
               Exciting News! Announcing the Launch of Our New App{' '}
@@ -45,14 +45,16 @@ const Page = () => {
                 height={400}
               />
             </div>
-            <h1 className='text-4xl font-bold tracking-tight text-white sm:text-4xl'>
-              Your Health, Our Priority. <br/> We care for you and your family health.
-            </h1>
-            <p className='mt-4 text-lg leading-8 text-stone-300'>
-              Welcome to Idrugdes, your dedicated partner for a healthier life. <br/> Our mission is to simplify your healthcare journey by providing top-notch services that prioritize your well-being.
-            </p>
-            <p className='mt-4 text-lg leading-8 text-stone-300'>
-              Whether it's managing prescriptions, <br/>delivering medications to your doorstep, or offering expert advice, Idrugdes is here to serve you. Explore our app and experience healthcare like never before.
+            <h2 className=' text-5xl leading-8 font-semibold tracking-tight text-white sm:text-4xl'>
+              Welcome to Idrugdes, your dedicated partner for a healthier life.
+            </h2>
+            <h2 className='mt-3 leading-5 text-white sm:text-4xl'>
+              Your Health, Our Priority, We care for you and your family health.
+            </h2>
+           
+            <p className='mt-4 text-md leading-5 text-stone-300 sm:text-xl'>
+              Whether it's managing prescriptions, delivering medications to your doorstep, or offering expert advice, 
+              Idrugdes is here to serve you. <br/> Explore our app and experience healthcare like never before.
             </p>
             <div className='mt-8 flex items-center justify-center gap-x-6'>
               <Link

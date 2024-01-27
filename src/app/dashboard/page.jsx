@@ -64,24 +64,8 @@ const Dashboard = () => {
       <div className='space-y-2'/>
       </div>
 
-      <div className='card'>
-        <h2 className="text-xl font-semibold mb-2">Upload Documents</h2>
-        <p className="mb-4">Upload necessary documents here.</p>
-          <button  className='file-input' >Upload Files
-        <input type="file" name="file" id="" onUpload={handleUpload} accept=".pdf,.doc,.docx,.jpg,.png"/>
-          
-          </button>
-        
-      </div>
 
        <div className='space-y-2'/>
-      </div>
-
-      <div className='card'>
-        <h2 className="text-xl font-semibold mb-2">Sample Content</h2>
-        <p className="text-gray-600">
-          This is some sample content for your pharmacy dashboard.
-        </p>
       </div>
     </div> 
     </section>
