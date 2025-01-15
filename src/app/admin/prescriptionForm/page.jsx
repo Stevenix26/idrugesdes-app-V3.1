@@ -1,9 +1,10 @@
 // PrescriptionForm.js
-
+"use client"
 import React,{useState} from 'react';
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import './post.css'
 
 const PrescriptionForm = () => {
   const[selectedFile, setSelectedFile] = useState(null);
@@ -59,84 +60,159 @@ const PrescriptionForm = () => {
   return (
     <section className='px-5 xl:px-0'>
     <div className="max-w-[1170px] items-center justify-between">
-      <div className='grid grid-cols-1 card lg:grid-flow-cols-2 p-6 rounded-md shadow-m'>
-        <h2 className="text-2xl font-semibold mb-6 text-center">Prescription Form</h2>
-        <form onSubmit={submitHandler} className='space-y-6'>
-          <div className='grid grid-cols-1 gap-4'>
-            <div className=' mb-2'>
-            <label className="text-sm font-semibold">
-              Patient Name:
-              <input
-                type='text'
-                value={formData.patientName}
-                name='patientName'
-                onChange={handleInputChange}
-                className='input input-primary w-full text-[16px]'
-                // {...register('patientName', { required: true })}
-              />
-            </label>
-              </div>
-              
-              <div className=' mb-2'>
-            <label className="text-sm font-semibold">
-              Doctor Name:
-              <input
-              type='text'
-              value={formData.doctorName}
-                onChange={handleInputChange}
-                name='doctorName'
-                    className='input input-primary w-full text-[16px]'
-                // {...register('doctorName', { required: true })}
-              />
-            </label>
-            </div>
-              
-              <div className=' mb-2'>
-            <label className="text-sm font-semibold">
-              Medication:
-              <input
-              type='text'
-                value={formData.medication}
-                onChange={handleInputChange}
-                name='medication'
-                    className='input input-primary w-full text-[16px]'
-                // {...register('medication', { required: true })}
-              />
-            </label>
-            </div>
-          
-          
-          <div >
-            <label htmlFor='customFile' className="text-sm font-semibold">
-              Upload Prescription:
-              <input
-                id="customFile"
-                type="file"
-                name='prescriptionfile'
-                accept="image/*,application/pdf"
-                onChange={handleFileInputChange}
-                    className='file-input file-input-bordered w-full text-[16px]'
-                // {...register('prescriptionFile', { required: true })}
-              />
-            </label>
-
-            {/* {errors.prescriptionFile && (
-              <span className="text-sm text-red-500">Please upload a prescription file.</span>
-            )}
-
-            {errors.submit && (
-              <span className="text-sm text-red-500">{errors.submit.message}</span>
-            )} */}
-            </div>
-
-            <button
-              type="submit"
-              className='w-full btn btn-primary'>
-              Submit Prescription
-            </button>
+        <div className="dashboard">
+          <div className="dashboard-nav">
+            <div>Dashboard</div>
+            <div>Users</div>
+            <div>Products</div>
+            <div>Transactions</div>
+            <div>Stats</div>
+            <div>Logs</div>
+            <div>Messages</div>
+            <div className="nav-selected">!! Settings</div>
           </div>
-        </form>
-      </div>
+          <div className="dashboard-content">
+            <div className="data-card">
+              <div className="data-card-header">
+                <div>Total Page Views</div>
+                <div>89,400</div>
+                <div className="data-card-subtitle">21% more than last month</div>
+              </div>
+              <div className="data-card-footer">
+                <div className="data-card-stats">
+                  <div>Transactions</div>
+                  <div className="stats-data">
+                    <div>Cy Ganderton</div>
+                    <div>Hart Hagerty</div>
+                    <div>Jim Hagerty</div>
+                    <div>Hart Hagerty</div>
+                    <div>Hart Hagerty</div>
+                    <div>Brice Swyre</div>
+                  </div>
+                </div>
+                <div className="data-card-sources">
+                  <div>Sources</div>
+                  <div className="sources-data">
+                    <div>Direct: 12</div>
+                    <div>Social: 34</div>
+                    <div>Search: 1,230</div>
+                    <div>Email: 1,234</div>
+                    <div>Forms and inputs: 84,920</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="data-card">
+              <div className="data-card-header">
+                <div>Products</div>
+              </div>
+              <div className="data-card-form">
+                <div className="form-section">
+                  <div className="form-label">Product name</div>
+                  <input type="text" />
+                </div>
+                <div className="form-section">
+                  <div className="form-label">Category</div>
+                  <select>
+                    <option value="public">Public</option>
+                    <option value="featured">Featured product</option>
+                  </select>
+                </div>
+                <div className="form-section">
+                  <div className="form-label">Size (cm)</div>
+                  <input type="number" />
+                </div>
+                <div className="form-section">
+                  <div className="form-label">Width</div>
+                  <input type="number" />
+                </div>
+                <div className="form-section">
+                  <div className="form-label">Choose product visibility</div>
+                  <select>
+                    <option value="managers">Visible only for managers</option>
+                    <option value="all">Visible for all users</option>
+                  </select>
+                </div>
+              </div>
+              <div className="data-card-payment">
+                <div className="payment-header">Payment information</div>
+                <div className="payment-form">
+                  <div className="form-section">
+                    <div className="form-label">Card Number</div>
+                    <input type="text" />
+                  </div>
+                  <div className="form-section">
+                    <div className="form-label">Expiration date</div>
+                    <input type="text" />
+                  </div>
+                  <div className="form-section">
+                    <div className="form-label">CVV</div>
+                    <input type="text" />
+                  </div>
+                </div>
+                <div className="payment-total">
+                  <div className="total-label">Total</div>
+                  <div className="total-amount">$250</div>
+                </div>
+                <div className="payment-buttons">
+                  <button>Confirm Payment</button>
+                  <label>
+                    <input type="checkbox" />
+                    Save my card information for future payments
+                  </label>
+                  <label>
+                    Accept terms of use and privac policy
+                    <input type="checkbox" />
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="data-card">
+              <div className="data-card-header">
+                <div>Downloads</div>
+                <div>32,800</div>
+                <div className="data-card-subtitle">From 84 countries</div>
+              </div>
+              <div className="data-card-stats">
+                <div>Recent user transactions</div>
+                <div className="stats-data">
+                  <div>
+                    <div>Hart Hagerty</div>
+                    <div>United States</div>
+                  </div>
+                  <div>
+                    <div>Brice Swyre</div>
+                    <div>China</div>
+                  </div>
+                  <div>
+                    <div>Marjy Ferencz</div>
+                    <div>Russia</div>
+                  </div>
+                  <div>
+                    <div>Yancy Tear</div>
+                    <div>Brazil</div>
+                  </div>
+                  <div>
+                    <div>Marjy Ferencz</div>
+                    <div>Russia</div>
+                  </div>
+                  <div>
+                    <div>Hart Hagerty</div>
+                    <div>United States</div>
+                  </div>
+                  <div>
+                    <div>Hart Hagerty</div>
+                    <div>United States</div>
+                  </div>
+                  <div>
+                    <div>Hart Hagerty</div>
+                    <div>United States</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
     </div>
     </section>
   );

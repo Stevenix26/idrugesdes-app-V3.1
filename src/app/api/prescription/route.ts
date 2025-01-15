@@ -1,9 +1,8 @@
 import { z } from "zod";
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from '@prisma/client'
 
+import { db } from "../../../lib/db";
 
-const prisma = new PrismaClient()
 
 const createSchema = z.object({
     patientName: z.string().min(1).max(255),
@@ -17,14 +16,14 @@ export async function POST(request: NextRequest) {
     try {        
         const body = await request.json(); // Use await to get the JSON body
 
-        console.log(body, 'logg');
+        // console.log(body, 'logg');
         const validation = createSchema.safeParse(body);
 
         if (!validation.success) {
             return NextResponse.json(validation.error.errors, { status: 400 });
         }
 
-        const newPrescription = await prisma.prescription.create({
+        const newPrescription = await db.prescription.create({
             data: {
                 patientName: body.patientName,
                 medication: body.medication,

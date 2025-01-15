@@ -20,8 +20,8 @@ const SidebarAdmin = () => {
          icon: <House/>
      },
       {
-         title:"Prescription",
-         path: "/admin/prescription",
+         title:"Prescriptions",
+         path: "/admin/prescriptionList",
          icon: <Prescription/>
      },
       {
@@ -31,12 +31,12 @@ const SidebarAdmin = () => {
      },
        {
          title: "Teams",
-         path: "/admin/Message",
+         path: "/admin/team",
          icon: <Person />
        },
      {
-      title: "Submitted",
-      path: "/admin/submitted",
+      title: "Drug Checkout",
+       path: "/admin/drugCheckout",
       icon: <SubtractSquare/>
 
      }
@@ -65,7 +65,7 @@ const SidebarAdmin = () => {
      <div className='grid mt-2 text-[16px] '>
      <UserButton/>
      {/* <div className="text-cyan-200">Josh</div> */}
-     <ol> 
+     <ul className='px-2 py-0'> 
       {menuItems.map((cat) => (
             <li key={cat.title}>
                 <span className=' text-lg'> {cat.title}</span>
@@ -76,7 +76,7 @@ const SidebarAdmin = () => {
           
           
         ))}
-      </ol>
+      </ul>
       </div>
     </div>
     

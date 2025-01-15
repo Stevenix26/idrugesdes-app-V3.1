@@ -66,17 +66,32 @@
 
 body {
   color: var(--foreground);
-  background: linear-gradient( var(--background)
-  )
-    
-    
+  background: linear-gradient(var(--background));
 }
 
-
-a{
+a {
   text-decoration: none;
   color: inherit;
 }
-ul,li{
+ul,
+li {
   list-style-type: none;
 }
+/* .rejected {
+  background-color: #ff0000;
+  color: white;
+  text-transform: capitalize;
+}
+
+.approved {
+  background-color: #429d05;
+  text-transform: capitalize;
+
+}
+
+.pending {
+  background-color: rgb(251, 214, 28);
+  color: white;
+  text-transform: capitalize;
+
+} */

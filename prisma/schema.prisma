@@ -74,14 +74,14 @@ model PharmacyStore{
 }
 
 model Prescription {
-  id                Int      @id @default(autoincrement())
+  id                String      @id @default(cuid())
   patientName       String
   medication        String
   doctorName        String
   phoneNumber       String
   prescriptionDate  String 
   prescriptionFilePath String?
-  status              String    @default("pending") // Status can be "pending", "approved", or "declined"
+  status              StatusOrderEnum  @default(pending) // Status can be "pending", "approved", or "declined"
   declineReason       String?   @db.VarChar(255) // Optional reason for decline
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
@@ -143,9 +143,11 @@ model Order{
 
 
 enum StatusOrderEnum {
-  Waiting 
-  In_progress 
-  Delivered
+  pending       
+  approved 
+  rejected
   }
+
+  
 
   

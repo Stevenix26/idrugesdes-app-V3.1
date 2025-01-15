@@ -1,10 +1,11 @@
+
 import React, { FC } from 'react'
 import ButtonAction from "../../components/ButtonAction"
 import BackButton from '../../components/BackButton'
-import { db } from '../../../lib/db'
+import { db } from '../../../lib/db';
 
 
-interface BloomPageProps{
+interface PresPageProps{
   params:{
     id: string;
   };
@@ -12,7 +13,7 @@ interface BloomPageProps{
 
 async function getPost(id: string){
 
-  const response = await db.post.findFirst({
+  const response = await db.prescription.findFirst({
     where:{
       id: id
     },
@@ -27,7 +28,7 @@ async function getPost(id: string){
 
 }
 
-const BloomPage: FC<BloomPageProps> = async ({params}) => {
+const BloomPage: FC<PresPageProps> = async ({params}) => {
   const post = await getPost(params.id);
   console.log(post)
 

@@ -4,6 +4,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useForm } from "react-hook-form";
 import axios from 'axios';
+import { Bounce, ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const PrescriptionPage = () => {
   const {
@@ -37,6 +39,22 @@ const PrescriptionPage = () => {
     createPrescription(values);
   };
 
+  const notify = () => {
+    toast.success('Prescription Submitted!', {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Bounce,
+      
+    });
+  };
+
+
   return (
     <div className="min-h-screen p-4 flex items-center justify-center bg-base-200">
       <div className="w-full shadow-md card max-w-md p-8">
@@ -50,7 +68,7 @@ const PrescriptionPage = () => {
                 {...register("patientName", { required: true })}
                 aria-invalid={errors.patientName ? "true" : "false"}
                 type="text"
-                placeholder="Type here"
+                placeholder="Type Your Full Name"
                 className="input input-primary w-full max-w-lg border"
               />
               {errors.patientName?.type === 'required' && <p className='text-red-600' role="alert">Patient name is required</p>}
@@ -83,7 +101,7 @@ const PrescriptionPage = () => {
                 {...register("phoneNumber", { required: true })}
                 aria-invalid={errors.phoneNumber ? "true" : "false"}
                 type="text"
-                placeholder="Type here"
+                placeholder="Type your personal number"
                 className="input input-primary w-full max-w-lg border"
               />
               {errors.phoneNumber?.type === 'required' && <p className='text-red-600' role="alert">Phone number is required</p>}
@@ -109,9 +127,23 @@ const PrescriptionPage = () => {
               />
               {errors.uploadedPrescription?.type === 'required' && <p className='text-red-600' role="alert">Uploaded prescription is required</p>}
             </div>
-            <button type="submit" className="w-full btn btn-primary">
+            <button type="submit" onClick={notify} className="w-full btn btn-primary">
               Submit Prescription
             </button>
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            transition={Bounce}
+
+            />
         </form>
       </div>
     </div>

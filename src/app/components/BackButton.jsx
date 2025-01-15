@@ -12,7 +12,7 @@ const BackButton = () => {
     const router=useRouter();
 
   return (
-    <button className='btn' onClick={() => router.back()}>
+    <button className='btn sm:btn-sm btn-active lg:btn-md' onClick={() => router.back()}>
         <CaretCircleLeft/>
         <span>Back</span>
     </button>

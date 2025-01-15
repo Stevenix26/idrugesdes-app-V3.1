@@ -15,8 +15,8 @@ const ContactUsPage = () => {
                 </div>
             </header>
 
-            <div className="container mx-auto mt-8">
-                <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="container mx-auto mt-8 p-7">
+                <section className=" grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <h2 className="text-2xl font-bold mb-4">Contact Information</h2>
                         <p className="text-gray-700 mb-4">

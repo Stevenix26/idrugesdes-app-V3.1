@@ -4,9 +4,12 @@ import React,{FC} from 'react';
 import { Tag  } from '@prisma/client';
 
 interface PostCardProps{
+  post:{
+  id: string;  
   title: string;
   content: string;
   tags: Tag;
+};
 }
 
 const PostCard: FC<PostCardProps> = ({post}) => {
