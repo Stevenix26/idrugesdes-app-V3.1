@@ -16,7 +16,7 @@ const Dashboard = () => {
    
     <div className="grid items-center justify-center">
       <h1 className="text-3xl font-bold mb-4">User Dashboard</h1>
-      <div className="stats shadow">
+      <div className="stats shadow-lg ">
 
         <div className="stat">
           <div className="stat-figure text-primary">
@@ -57,6 +57,7 @@ const Dashboard = () => {
             alt="Pharmacy Store"
             width={700}
             height={200}
+            className='shadow'
           />
         </div>
       

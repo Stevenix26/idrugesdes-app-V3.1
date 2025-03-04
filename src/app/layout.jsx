@@ -36,9 +36,10 @@ const RootLayout = ({ children }) => {
 
     >
       <body className={`flex flex-col bg-base-100`}>
-        <>
-          <ClerkProvider>
-            <Providing>
+        <ClerkProvider>
+          <Providing>
+            <>
+
               {/* <Providers>  */}
               <header className='bg-inherit'>
                 <Navnew />
@@ -53,10 +54,10 @@ const RootLayout = ({ children }) => {
 
               <Footer />
               {/* </Providers> */}
-            </Providing>
-          </ClerkProvider>
-        </>
+            </>
+          </Providing>
 
+        </ClerkProvider>
       </body>
     </html>
   )

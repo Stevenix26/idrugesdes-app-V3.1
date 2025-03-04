@@ -169,7 +169,7 @@ const Navnew = () => {
                 <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
                 <div className="drawer-content">
                   {/* Page content here */}
-                  <label htmlFor="my-drawer-4" className="drawer-button btn btn-primary btn-sm">
+                  <label htmlFor="my-drawer-4" className="drawer-button btn bg-gradient-to-tr from-indigo-400 to-orange-200 btn-sm">
 
                     <Basket />
                     <span onClick={cartUpdate}> cart</span>
@@ -191,17 +191,17 @@ const Navnew = () => {
               <span> cart(0)</span>
             </Link> */}
 
-              <div className="dropdown ">
-                <div tabIndex={0} role="button" className="btn btn-sm bg-base-content text-base-300 ndigo-600 m-1">
+              <details className="dropdown ">
+                <summary tabIndex={0} role="button" className="btn btn-sm bg-base-content  bg-gradient-to-tr mb from-indigo-400 to-orange-200">
                   <span>
                     Theme
                     <svg width="12px" height="12px" className="h-2 w-2 fill-current opacity-60 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048"><path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path></svg>
                   </span>
-                </div>
-                <ul tabIndex={0} className="dropdown-content z-[1] p-2 shadow-2xl bg-base-300 rounded-box w-52">
+                </summary>
+                <ul tabIndex={0} className="bg-gradient-to-tr from-indigo-200 to-orange-100 dropdown-content dropdown-left z-[1] p-2 shadow-2xl text-indigo-900 rounded-box w-52">
                   <li><ChangingUI/></li>
                 </ul>
-              </div>
+              </details>
               <div>
                 <SignedIn>
                   <UserButton />
