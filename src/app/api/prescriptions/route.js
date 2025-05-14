@@ -1,6 +1,35 @@
 import { NextResponse } from 'next/server'
 import { db } from '../../../lib/db'
 
+export async function GET(req) {
+    try {
+        const prescriptions = await db.prescription.findMany({
+            select: {
+                id: true,
+                patientName: true,
+                medication: true,
+                doctorName: true,
+                phoneNumber: true,
+                prescriptionDate: true,
+                prescriptionFilePath: true,
+                status: true,
+                declineReason: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        return NextResponse.json(prescriptions);
+    } catch (error) {
+        console.error('Error fetching prescriptions:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    } finally {
+        await db.$disconnect();
+    }
+}
+
 export async function getPrescriptions(req, res) {
     if (req.method !== 'POST') {
         return NextResponse.json({ message: 'Method Not uyuyuyuy Allowed' }, { status: 405 })

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Prescription, CaretLineLeft, CaretLineRight, ShoppingBag, House, Gear, Info, AddressBook, SubtractSquare } from '@phosphor-icons/react/dist/ssr';
 import MenuLink from "./menulink/menulink"
 import Link from 'next/link';
-import { UserButton, UserProfile } from '@clerk/nextjs';
+//import { UserButton, UserProfile } from '@clerk/nextjs';
 // Import Bootstrap CSS
 
 
@@ -62,50 +62,36 @@ const Sidebar = () => {
   const [toSide, setToSide] = useState(false)
 
   return (
-    <div className="flex flex-1 justify-betweeen item-center">
-      <div className='grid mt-2 text-[16px] '>
-        {/* <UserButton/> */}
-        <div className=" justify-end items-end flex">
+    <div className="flex flex-1 justify-between items-center transition-all duration-300 ease-in-out">
+      <div className={`grid mt-2 text-[16px] bg-white/10 backdrop-blur-md rounded-lg shadow-lg p-4 ${toSide ? 'w-16' : 'w-64'} transition-all duration-300`}>
+       
+        <div className="flex justify-end items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer transition-colors">
           {!toSide ? (
-            <CaretLineLeft weight='light' size={16} className=' h-5 w-5' onClick={() => setToSide((toSide) => (!toSide))} />
+            <CaretLineLeft weight='light' size={20} className='text-gray-600 hover:text-indigo-600 transition-colors' onClick={() => setToSide((toSide) => (!toSide))} />
           ) : (
-            <CaretLineRight size={16} className=' h-6 w-6' onClick={() => setToSide((toSide) => (!toSide))} />
-          )
-          }
+            <CaretLineRight size={20} className='text-gray-600 hover:text-indigo-600 transition-colors' onClick={() => setToSide((toSide) => (!toSide))} />
+          )}
         </div>
 
-        <div>
-
-
-          {
-            toSide ? (
-              <ol>
-                {menuItems.map((cat) => (
-                  <li key={cat.title}>
-                    <span className=' text-lg'></span>
-                    {cat.list.map((item) => (
-                      <MenuLink side={toSide} item={item} key={item.title} />
-                    ))}
-                  </li>
-
-
-                ))}
-              </ol>
-            ) : (
-              <ol>
-                {menuItems.map((cat) => (
-                  <li key={cat.title}>
-                    <span className=' text-lg'>{cat.title}</span>
-                    {cat.list.map((item) => (
-                      <MenuLink side={toSide} item={item} key={item.title} />
-                    ))}
-                  </li>
-
-
-                ))}
-              </ol>
-            )
-          }
+        <div className="mt-6">
+          <nav>
+            {menuItems.map((cat) => (
+              <div key={cat.title} className="mb-6">
+                {!toSide && (
+                  <h3 className="mb-2 px-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">
+                    {cat.title}
+                  </h3>
+                )}
+                <ul className="space-y-1">
+                  {cat.list.map((item) => (
+                    <li key={item.title}>
+                      <MenuLink side={toSide} item={item} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
         </div>
 
 

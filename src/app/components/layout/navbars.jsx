@@ -41,8 +41,8 @@ const Navnew = () => {
     return (
       <>
         {
-          changes.map((change) =>  (
-            <Little ui={change} key={change.values}/>
+          changes.map((change) => (
+            <Little ui={change} key={change.values} />
           )
           )
         }
@@ -52,11 +52,11 @@ const Navnew = () => {
 
   }
 
-  function Little({ui}){
+  function Little({ ui }) {
     return (
       <input type="radio" name="theme-dropdown"
         className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
-        aria-label={ui.name} value={ui.values}/>
+        aria-label={ui.name} value={ui.values} />
     )
 
   }
@@ -153,15 +153,18 @@ const Navnew = () => {
             </div>
           </div>
           <div className="navbar-end">
-            <div className='flex'>
-              <button className="btn btn-ghost btn-circle">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
-              </button>
-              <button className="btn btn-ghost btn-circle">
-                <div className="indicator">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" /></svg>
-                  <span className="badge badge-xs badge-primary indicator-item">{cart}</span>
-                </div>
+            <div className='flex items-center gap-3'>
+              <div className="relative">
+                <input type="text" placeholder="Search medicines..." className="input input-bordered input-sm w-48 pl-8" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <button className="btn btn-ghost btn-circle btn-sm relative">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <span className="absolute -top-1 -right-1 bg-indigo-600 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">{cart}</span>
               </button>
             </div>
             <div className='hidden md:flex gap-2 items-center justify-end'>
@@ -191,15 +194,15 @@ const Navnew = () => {
               <span> cart(0)</span>
             </Link> */}
 
-              <details className="dropdown ">
-                <summary tabIndex={0} role="button" className="btn btn-sm bg-base-content  bg-gradient-to-tr mb from-indigo-400 to-orange-200">
-                  <span>
-                    Theme
-                    <svg width="12px" height="12px" className="h-2 w-2 fill-current opacity-60 inline-block" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048"><path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path></svg>
-                  </span>
+              <details className="dropdown dropdown-end">
+                <summary tabIndex={0} role="button" className="btn btn-sm bg-white border-gray-200 hover:bg-gray-50 text-gray-700 gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                  Theme
                 </summary>
                 <ul tabIndex={0} className="bg-gradient-to-tr from-indigo-200 to-orange-100 dropdown-content dropdown-left z-[1] p-2 shadow-2xl text-indigo-900 rounded-box w-52">
-                  <li><ChangingUI/></li>
+                  <li><ChangingUI /></li>
                 </ul>
               </details>
               <div>

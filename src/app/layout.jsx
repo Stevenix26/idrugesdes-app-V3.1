@@ -1,14 +1,12 @@
 
-import Footer from './components/layout/footer'
-// import Header from './components/layout/header'
 import { Montserrat } from 'next/font/google'
+import { ClerkProvider } from '@clerk/nextjs'
+import { CssBaseline } from '@mui/material'
+
 import './global/globals.css'
-import { Providers } from './provider'
-// import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
-import { CssBaseline, ThemeProvider } from "@mui/material";
 import Providing from './components/resolver'
 import Navnew from './components/layout/navbars'
-import { ClerkProvider, useUser, useSession } from '@clerk/nextjs'
+import Footer from './components/layout/footer'
 
 
 const inter = Montserrat({
@@ -30,33 +28,22 @@ const RootLayout = ({ children }) => {
     <html
       lang='en'
       className={`${inter.className} h-full scroll-smooth antialiased`}
-      datatheme="light"
-
-
-
+      data-theme="light"
     >
-      <body className={`flex flex-col bg-base-100`}>
+      <body className="flex min-h-screen flex-col bg-base-100">
         <ClerkProvider>
           <Providing>
-            <>
+            <CssBaseline />
+            <header className="sticky top-0 z-50 w-full bg-inherit shadow-sm">
+              <Navnew />
+            </header>
 
-              {/* <Providers>  */}
-              <header className='bg-inherit'>
-                <Navnew />
-              </header>
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              {children}
+            </main>
 
-              {/* <Header /> */}
-              <main className='grow bg-base-100'>
-                <article>
-                  {children}
-                </article>
-              </main>
-
-              <Footer />
-              {/* </Providers> */}
-            </>
+            <Footer />
           </Providing>
-
         </ClerkProvider>
       </body>
     </html>

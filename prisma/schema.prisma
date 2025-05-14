@@ -16,6 +16,18 @@ model User {
   updatedAt DateTime @updatedAt
   email String @unique
   password Password?
+  firstName String
+  lastName String
+  role UserRole @default(PATIENT)
+  phoneNumber String?
+  prescriptions Prescription[] @relation("UserPrescriptions")
+  pharmacistProfile Pharmacist? @relation("PharmacistProfile")
+}
+
+enum UserRole {
+  PATIENT
+  PHARMACIST
+  ADMIN
 }
 model Password {
   hash String
@@ -69,23 +81,44 @@ model PharmacyStore{
   address String
   phoneNumber String
   // Post Post[]
+  medications Medication[]
+  Pharmacist Pharmacist[]
+}
 
- 
+model Pharmacist {
+  id                String      @id @default(cuid())
+  user              User        @relation("PharmacistProfile", fields: [userId], references: [id])
+  userId            String      @unique
+  licenseNumber     String      @unique
+  specialization    String?
+  yearsOfExperience Int
+  pharmacy          PharmacyStore @relation(fields: [pharmacyId], references: [id])
+  pharmacyId        String
+  managedPrescriptions Prescription[] @relation("PharmacistPrescriptions")
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
 }
 
 model Prescription {
   id                String      @id @default(cuid())
+  patient           User        @relation("UserPrescriptions", fields: [patientId], references: [id])
+  patientId         String
   patientName       String
-  medication        String
+  medication        String      // Name of the medication
+  dosage            String      // Prescribed dosage
+  frequency         String      // How often to take the medication
+  quantity          Int         // Number of units prescribed
+  instructions      String?     // Special instructions for taking the medication
   doctorName        String
   phoneNumber       String
   prescriptionDate  String 
   prescriptionFilePath String?
-  status              StatusOrderEnum  @default(pending) // Status can be "pending", "approved", or "declined"
-  declineReason       String?   @db.VarChar(255) // Optional reason for decline
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  
+  status            StatusOrderEnum  @default(pending)
+  declineReason     String?   @db.VarChar(255)
+  pharmacist        Pharmacist? @relation("PharmacistPrescriptions", fields: [pharmacistId], references: [id])
+  pharmacistId      String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model Tag{
@@ -147,6 +180,23 @@ enum StatusOrderEnum {
   approved 
   rejected
   }
+
+model Medication {
+  id                String      @id @default(cuid())
+  name              String
+  description       String?
+  dosageForm        String      // e.g., tablet, capsule, liquid
+  strength          String      // e.g., 500mg, 50ml
+  manufacturer      String
+  price             Float
+  stockQuantity     Int
+  reorderLevel      Int         // minimum quantity before reorder
+  expiryDate        DateTime
+  pharmacy          PharmacyStore @relation(fields: [pharmacyId], references: [id])
+  pharmacyId        String
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+}
 
   
 
