@@ -1,63 +1,141 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from "react";
 
-const OrdersPage = () => {
-  return (
-    <>
-        <div className='p-4 lg:px-5 xl:px-5'>
-            <div >
-                <h1 className="text-center text-lg">Orders Page</h1>
+const statusOptions = ["pending", "processing", "completed", "cancelled"];
+
+const fetchOrders = async () => {
+    const res = await fetch("/api/storeOrders");
+    if (!res.ok) throw new Error("Failed to fetch orders");
+    return res.json();
+};
+
+const updateOrderStatus = async (orderid, status) => {
+    const res = await fetch(`/api/storeOrders/${orderid}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+    });
+    if (!res.ok) throw new Error("Failed to update status");
+    return res.json();
+};
+
+export default function AdminOrders() {
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
+    const [filter, setFilter] = useState("");
+    const [statusUpdate, setStatusUpdate] = useState({});
+
+    useEffect(() => {
+        fetchOrders()
+            .then(setOrders)
+            .catch((e) => setError(e.message))
+            .finally(() => setLoading(false));
+    }, []);
+
+    const handleStatusChange = async (orderid, newStatus) => {
+        setStatusUpdate((prev) => ({ ...prev, [orderid]: true }));
+        try {
+            await updateOrderStatus(orderid, newStatus);
+            setOrders((prev) =>
+                prev.map((order) =>
+                    order.orderid === orderid ? { ...order, status: newStatus } : order
+                )
+            );
+        } catch (e) {
+            alert("Failed to update status: " + e.message);
+        } finally {
+            setStatusUpdate((prev) => ({ ...prev, [orderid]: false }));
+        }
+    };
+
+    const filteredOrders = filter
+        ? orders.filter(
+            (order) =>
+                order.patientName?.toLowerCase().includes(filter.toLowerCase()) ||
+                order.orderid?.toLowerCase().includes(filter.toLowerCase())
+        )
+        : orders;
+
+    return (
+        <section className="max-w-[100vw] px-6 pb-16 xl:pr-2">
+            <div className="flex flex-col-reverse justify-between gap-6 xl:flex-row">
+                <div className="w-full max-w-6xl flex-grow pt-10">
+                    <h1 className="text-2xl font-bold mb-4">Admin Orders</h1>
+                    <div className="mb-4 flex flex-wrap gap-2 items-center">
+                        <input
+                            type="text"
+                            placeholder="Search by patient or order ID..."
+                            className="input input-bordered input-sm w-64"
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                        />
+                    </div>
+                    {loading ? (
+                        <div>Loading orders...</div>
+                    ) : error ? (
+                        <div className="text-red-500">{error}</div>
+                    ) : (
+                        <div className="relative mb-10 mt-6 shadow-md overflow-x-auto">
+                            <table className="table-xs md:table-sm table-pin-rows table w-full">
+                                <thead>
+                                    <tr className="bg-base-300 border-b-0 font-bold">
+                                        <th>Order ID</th>
+                                        <th>Patient Name</th>
+                                        <th>Order Items</th>
+                                        <th>Status</th>
+                                        <th>Order Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredOrders.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={6} className="text-center py-4">
+                                                No orders found.
+                                            </td>
+                                        </tr>
+                                    ) : (
+                                        filteredOrders.map((order) => (
+                                            <tr key={order.orderid}>
+                                                <td>{order.orderid}</td>
+                                                <td>{order.patientName || order.patient?.name || "-"}</td>
+                                                <td>
+                                                    {order.items
+                                                        ? order.items.map((item, idx) => (
+                                                            <div key={idx}>{item.name} x{item.quantity}</div>
+                                                        ))
+                                                        : "-"}
+                                                </td>
+                                                <td>
+                                                    <select
+                                                        className="select select-bordered select-xs"
+                                                        value={order.status}
+                                                        disabled={statusUpdate[order.orderid]}
+                                                        onChange={(e) =>
+                                                            handleStatusChange(order.orderid, e.target.value)
+                                                        }
+                                                    >
+                                                        {statusOptions.map((opt) => (
+                                                            <option key={opt} value={opt}>
+                                                                {opt.charAt(0).toUpperCase() + opt.slice(1)}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                </td>
+                                                <td>{order.orderDate ? new Date(order.orderDate).toLocaleString() : "-"}</td>
+                                                <td>
+                                                    {/* Additional actions can be added here, e.g., view details */}
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             </div>
-                <table class="table table-striped mt-4 text-center w-full">
-                    <thead>
-                        <tr className='text-left'>
-                            <th scope="col">Order ID</th>
-                            <th scope="col">Customer Name</th>
-                            <th scope="col">Product Name</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Price per Item ($)</th>
-                            <th scope="col">Total Price ($)</th>
-                            <th scope="col"></th>
-                            </tr>
-                    </thead>
-                        <tbody>
-                                <tr className='text-sm md:text-base odd:bg-gray-100'>
-                                    <td>0001</td>
-                                    <td>John Doe</td>
-                                    <td>iPhone 13 Pro Max</td>
-                                    <td>2</td>
-                                    <td>950.00</td>
-                                    <td>1900.00</td>
-                                    <td><button type="button" class="btn btn-primary">View Details
-                                    </button></td>
-                                </tr>
-                            </tbody>
-                </table>
-                                   {/* <nav aria-label="Page navigation example">
-                                        <ul class="pagination justify-content-end">
-                                            <li class="page-item disabled">
-                                                <a class="page-link" href="#" tabindex="-1"
-                                                aria-disabled="true"><span
-                                                aria-hidden="true">&laquo;</span></a>
-                                                </li>
-                                                <li class="page-item active"><a class="page-link" href="#">1<span class="sr-only">(current)</span></a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#
-                                                2">2</a></li>
-                                                <li class="page-item">
-                                                <a class="page-link" href="#3">3</a>
-                                                </li>
-                                                <li class="page-item">
-                                                <a class="page-link" href="#" aria-label="Next">
-                                                    <span aria-hidden="true">&raquo;</span>
-    </a>
-    </li>
-    </ul>
-    </nav> */}
-    </div>
-                                                    
-                                               
-    </>
-  )
+        </section>
+    );
 }
-
-export default OrdersPage

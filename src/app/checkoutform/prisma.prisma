@@ -35,6 +35,45 @@ model Password {
   userId String @unique
 }
 
+model Post {
+  id        String     @id @default(cuid())
+  title     String
+  content   String  
+  createdAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  tagId        String
+  tags        Tag @relation(fields: [tagId], references: [id])
+  // pharmacy          PharmacyStore @relation(fields: [pharmacyId]  , references: [id ])
+  // pharmacyId        String 
+  // user              User       @relation(fields: [userEmail], references: [email])
+  // userEmail         String     @unique
+
+  
+
+  // published Boolean @default(false)
+  // author    User    @relation(fields: [authorId], references: [id])
+  // authorId  Int
+}
+
+model Prescribe {
+  id        String @id  @default(cuid())
+  userId    String
+  createdAt   DateTime @default(now())
+  updateAt   DateTime @updatedAt
+  name        String
+  description String
+  upload      String?
+
+}
+
+model Admin{
+  id           Int     @id @default(100)
+  email        String  @unique
+  password     String
+  isActive     Boolean    @default(true)
+  lastLogin    DateTime @default(now())
+  privileges    String
+}
 
 model PharmacyStore{
   id   String  @id @default(cuid())
@@ -65,17 +104,17 @@ model Pharmacist {
 
 model Prescription {
   id                String      @id @default(cuid())
-  patient           User?       @relation("UserPrescriptions", fields: [patientId], references: [id])
-  patientId         String?     // Make optional
+  patient           User        @relation("UserPrescriptions", fields: [patientId], references: [id])
+  patientId         String
   patientName       String
-  medication        String
-  dosage            String?     // Make optional
-  frequency         String?     // Make optional
-  quantity          Int?        // Make optional
-  instructions      String?
+  medication        String      // Name of the medication
+  dosage            String      // Prescribed dosage
+  frequency         String      // How often to take the medication
+  quantity          Int         // Number of units prescribed
+  instructions      String?     // Special instructions for taking the medication
   doctorName        String
   phoneNumber       String
-  prescriptionDate  String
+  prescriptionDate  String 
   prescriptionFilePath String?
   status            StatusOrderEnum  @default(pending)
   declineReason     String?   @db.VarChar(255)
@@ -85,9 +124,21 @@ model Prescription {
   updatedAt         DateTime  @updatedAt
 }
 
+model Tag{
+  id          String   @id @default(cuid())
+  name        String   @db.VarChar(100)  
+  // description String?   @db.Text
+  Post Post[]
+}
+
+model ShoppingCart{
+  id               String   @id @default(uuid())
+  cartid        String
+  userId         String
+}
 
 
-model Order {
+model Order{
   id                  Int             @id @default(autoincrement())
   quantity            Float           
   price               Float         
@@ -99,9 +150,31 @@ model Order {
   deliveryDate        DateTime?      
   clientEmail         String          @db.VarChar(50)
   clientPhoneNumber   BigInt          @db.BigInt
+  // adressDelivery      AddressTypeEnum
+  // cityDelivery         CityTypeEnum    @map("city_delivery")
+  // reference            String?         @db.VarChar(255)
+  // specialInstructions SpecialInstructionEnum?
+  // product              Product
   createdAt            DateTime        @default(now())
   updatedAt            DateTime        @updatedAt
-}
+  }
+
+
+// model Post {
+//   id          String   @id @default(cuid())
+//   name        String   @db.VarChar(225)  
+//   title       String   
+//   content     String
+//   createdAt   DateTime @default(now())
+//   updateAt   DateTime @updatedAt
+//   tagId        String
+//   tags        Tag @relation(fields: [tagId], references: [id])
+//   // description String?  @db.Text
+//   // date        DateTime @default(now())
+//   // views       Int      @default(0)
+//   }
+
+
 
 
 
