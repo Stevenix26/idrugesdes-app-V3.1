@@ -1,186 +1,173 @@
 'use client'
-import React, { useState } from "react";
-import { EditIcon } from "../../EditIcon";
-import { DeleteIcon } from "../../DeleteIcon";
-import { EyeIcon } from "../../EyeIcon";
-import { columns } from "../../data/data";
+import React, { useState, useEffect } from 'react';
 
-const statusColorMap = {
-  submitted: "primary",
-  accepted: "success",
-  declined: "danger",
+const fetchMedications = async () => {
+  const res = await fetch('/api/medications');
+  if (!res.ok) throw new Error('Failed to fetch medications');
+  const data = await res.json();
+  return data.medications;
 };
 
-const generateRandomData = () => {
-  const data = [];
-  for (let i = 1; i <= 10; i++) {
-    data.push({
-      id: i,
-      name: `User ${i}`,
-      email: `user${i}@example.com`,
-      role: "Patient",
-      status: "submitted",
-      prescriptionDetails: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      reasonForCancellation: "",
-    });
+const createOrder = async (orderData) => {
+  const res = await fetch('/api/admin/orders', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(orderData),
+  });
+  if (!res.ok) {
+    const data = await res.json();
+    throw new Error(data.error || 'Failed to create order');
   }
-  return data;
+  return res.json();
 };
 
-export default function Orders() {
-  const [users, setUsers] = useState(generateRandomData());
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [modalVisible, setModalVisible] = useState(false);
+export default function OrdersPage() {
+  const [medications, setMedications] = useState([]);
+  const [selectedDrug, setSelectedDrug] = useState('');
+  const [quantity, setQuantity] = useState(1);
+  const [price, setPrice] = useState(0);
+  const [clientEmail, setClientEmail] = useState('');
+  const [clientPhoneNumber, setClientPhoneNumber] = useState('');
+  const [status, setStatus] = useState('pending');
+  const [success, setSuccess] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleActionClick = (action, user) => {
-    setSelectedUser(user);
+  useEffect(() => {
+    fetchMedications()
+      .then(setMedications)
+      .catch(() => setMedications([]));
+  }, []);
 
-    if (action === "delete") {
-      handleDelete();
-    } else if (action === "edit") {
-      handleEdit();
-    } else if (action === "preview") {
-      handlePreview();
-    } else if (action === "accept") {
-      handleAccept();
-    } else if (action === "decline") {
-      handleDecline();
+  useEffect(() => {
+    if (selectedDrug) {
+      const med = medications.find(m => m.id === selectedDrug);
+      setPrice(med ? med.price : 0);
+    }
+  }, [selectedDrug, medications]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setSuccess('');
+    setError('');
+    try {
+      const med = medications.find(m => m.id === selectedDrug);
+      if (!med) throw new Error('Please select a drug.');
+      const orderData = {
+        drugs: med.name,
+        quantity: Number(quantity),
+        price: Number(price),
+        totalAmount: Number(price) * Number(quantity),
+        status,
+        clientEmail,
+        clientPhoneNumber,
+      };
+      await createOrder(orderData);
+      setSuccess('Order placed successfully!');
+      setSelectedDrug('');
+      setQuantity(1);
+      setPrice(0);
+      setClientEmail('');
+      setClientPhoneNumber('');
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDelete = () => {
-    const updatedUsers = users.filter((user) => user.id !== selectedUser.id);
-    setUsers(updatedUsers);
-  };
-
-  const handleEdit = () => {
-    setModalVisible(true);
-  };
-
-  const handlePreview = () => {
-    console.log(selectedUser);
-  };
-
-  const handleAccept = () => {
-    const updatedUsers = users.map((user) =>
-      user.id === selectedUser.id ? { ...user, status: "accepted" } : user
-    );
-    setUsers(updatedUsers);
-  };
-
-  const handleDecline = () => {
-    setModalVisible(true);
-  };
-
-  const handleModalClose = () => {
-    setModalVisible(false);
-  };
-
-  const handleReasonChange = (e) => {
-    const updatedUser = { ...selectedUser, reasonForCancellation: e.target.value };
-    setSelectedUser(updatedUser);
-  };
-
   return (
-    <div className="container p-5">
-      <div className="row text-orange-800">
-        <table aria-label="Prescription Details">
-          <div className="table-header-group" columns={columns}>
-            {(column) => (
-              <div className="table-column" key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
-                {column.name}
-              </div>
-            )}
+    <section className="min-h-screen bg-gradient-to-br from-indigo-50 to-slate-100 p-8">
+      <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 mt-10">
+        <h1 className="text-2xl font-bold text-indigo-900 mb-6">Order Medication</h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block mb-1 font-medium">Drug</label>
+            <select
+              className="w-full border rounded px-3 py-2"
+              value={selectedDrug}
+              onChange={e => setSelectedDrug(e.target.value)}
+              required
+            >
+              <option value="">Select a drug</option>
+              {medications.map(med => (
+                <option key={med.id} value={med.id}>{med.name} ({med.strength})</option>
+              ))}
+            </select>
           </div>
-          <div className="table-caption" items={users}>
-            {(user) => (
-              <div className="table-row" key={user.id}>
-                {(columnKey) => (
-                  <div className="table-cell">
-                    {columnKey === "actions" ? (
-                      <div className="relative flex items-center gap-2">
-                        <div className="tooltip" content="Details">
-                          <span
-                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                            onClick={() => handleActionClick("preview", user)}
-                          >
-                            <EyeIcon />
-                          </span>
-                        </div>
-                        <div className=" tooltip" content="Edit user">
-                          <span
-                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                            onClick={() => handleActionClick("edit", user)}
-                          >
-                            <EditIcon />
-                          </span>
-                        </div>
-                        <div className=" tooltip" color="danger" content="Delete user">
-                          <span
-                            className="text-lg text-danger cursor-pointer active:opacity-50"
-                            onClick={() => handleActionClick("delete", user)}
-                          >
-                            <DeleteIcon />
-                          </span>
-                        </div>
-                        {user.status === "submitted" && (
-                          <div className=" tooltip" content="Accept prescription">
-                            <span
-                              className="text-lg text-success cursor-pointer active:opacity-50"
-                              onClick={() => handleActionClick("accept", user)}
-                            >
-                              ✓
-                            </span>
-                          </div>
-                        )}
-                        {user.status === "submitted" && (
-                          <div  color="danger" content="Decline prescription">
-                            <span
-                              className="text-lg text-danger cursor-pointer active:opacity-50"
-                              onClick={() => handleActionClick("decline", user)}
-                            >
-                              ✗
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      user[columnKey]
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </table>
-        <div className=" modal modal-scroll" visible={modalVisible} onClose={handleModalClose}>
-          <div className="modal header">Decline Prescription</div>
-          <div className="modal body">
-            <p>Please provide a reason for declining the prescription:</p>
+          <div>
+            <label className="block mb-1 font-medium">Quantity</label>
             <input
-              className=" input input-bordered"
-              type="text"
-              value={selectedUser ? selectedUser.reasonForCancellation : ""}
-              onChange={handleReasonChange}
-              placeholder="Reason for cancellation"
+              type="number"
+              className="w-full border rounded px-3 py-2"
+              value={quantity}
+              min={1}
+              onChange={e => setQuantity(e.target.value)}
+              required
             />
           </div>
-          <div className="modal footer">
-            <button className="btn" color="default" onClick={handleModalClose}>
-              Cancel
-            </button>
-            <button className="btn"
-              color="danger"
-              onClick={() => {
-                handleModalClose();
-                handleDecline();
-              }}
-            >
-              Decline
-            </button>
+          <div>
+            <label className="block mb-1 font-medium">Price per unit</label>
+            <input
+              type="number"
+              className="w-full border rounded px-3 py-2 bg-gray-100"
+              value={price}
+              readOnly
+            />
           </div>
-        </div>
+          <div>
+            <label className="block mb-1 font-medium">Total Amount</label>
+            <input
+              type="number"
+              className="w-full border rounded px-3 py-2 bg-gray-100"
+              value={Number(price) * Number(quantity)}
+              readOnly
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Email</label>
+            <input
+              type="email"
+              className="w-full border rounded px-3 py-2"
+              value={clientEmail}
+              onChange={e => setClientEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Phone Number</label>
+            <input
+              type="tel"
+              className="w-full border rounded px-3 py-2"
+              value={clientPhoneNumber}
+              onChange={e => setClientPhoneNumber(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block mb-1 font-medium">Status</label>
+            <select
+              className="w-full border rounded px-3 py-2"
+              value={status}
+              onChange={e => setStatus(e.target.value)}
+            >
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+            disabled={loading}
+          >
+            {loading ? 'Placing...' : 'Place Order'}
+          </button>
+          {success && <div className="text-green-600 mt-2">{success}</div>}
+          {error && <div className="text-red-600 mt-2">{error}</div>}
+        </form>
       </div>
-    </div>
+    </section>
   );
 }

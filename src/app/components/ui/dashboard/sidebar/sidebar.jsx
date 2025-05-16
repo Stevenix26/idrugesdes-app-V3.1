@@ -20,17 +20,17 @@ const Sidebar = () => {
           icon: <House />
         },
         {
-          title: "Prescription",
+          title: "Make a prescription",
           path: "/dashboard/prescription",
           icon: <Prescription />
         },
         {
-          title: "Orders",
+          title: "Make Order",
           path: "/dashboard/orders",
           icon: <ShoppingBag />
         },
         {
-          title: "Submitted",
+          title: "Submitted prescriptions",
           path: "/dashboard/submitted",
           icon: <SubtractSquare />
 

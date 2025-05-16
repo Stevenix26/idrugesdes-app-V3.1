@@ -1,4 +1,4 @@
-import { db } from '../../../../../../lib/db';
+import { db } from '../../../lib/db';
 import { NextResponse } from 'next/server';
 
 export async function PUT(request, { params }) {
@@ -19,12 +19,14 @@ export async function PUT(request, { params }) {
             return NextResponse.json({ error: 'Prescription not found' }, { status: 404 });
         }
 
+        let updateData = { status };
+        if (status === 'rejected') {
+            updateData.declineReason = declineReason;
+        }
+
         const updatedPrescription = await db.prescription.update({
             where: { id: prescriptionIdNumber },
-            data: {
-                status,
-                ...(status === 'rejected' && { declineReason }),
-            },
+            data: updateData,
         });
 
         return NextResponse.json(updatedPrescription);

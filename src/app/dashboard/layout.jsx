@@ -1,6 +1,8 @@
 "use client"
 import React, { useState } from 'react'
 import Sidebar from '../components/ui/dashboard/sidebar/sidebar'
+import { Prescription } from '@phosphor-icons/react/dist/ssr';
+
 
 import styles from '../components/ui/dashboard/dashboard.module.css';
 
@@ -15,7 +17,7 @@ const Layout = ({ children }) => {
         aria-label="Toggle sidebar"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
-        <span className="material-icons">menu</span>
+        <span className="material-icons"><Prescription/></span>
       </button>
 
       {/* Sidebar */}

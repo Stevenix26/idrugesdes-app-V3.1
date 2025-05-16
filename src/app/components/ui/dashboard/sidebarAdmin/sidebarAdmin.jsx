@@ -12,7 +12,7 @@ import { UserButton } from '@clerk/nextjs';
 const SidebarAdmin = () => {
   const menuItems = [
     {
-      title: "Pages",
+      title: "Admin",
       list: [
         {
           title: "Dashboard",
@@ -34,25 +34,10 @@ const SidebarAdmin = () => {
           path: "/admin/users",
           icon: <Users />
         },
-        {
-          title: "Reports",
-          path: "/admin/reports",
-          icon: <ChartBar />
-        },
-        {
-          title: "Teams",
-          path: "/admin/team",
-          icon: <Person />
-        },
-        {
-          title: "Drug Checkout",
-          path: "/admin/drugCheckout",
-          icon: <SubtractSquare />
-        }
       ]
     },
     {
-      title: "Admin",
+      title: "advance",
       list: [
         {
           title: "Settings",
@@ -87,7 +72,7 @@ const SidebarAdmin = () => {
         </div>
         <div className="flex items-center gap-2 px-4 mt-2 mb-4">
           <UserButton afterSignOutUrl="/" />
-          {!collapsed && <span className="font-bold text-indigo-700 text-lg">Admin Panel</span>}
+          {!collapsed && <span className="font-bold text-lg">ADMIN PANEL</span>}
         </div>
         <div className="mt-6">
           <nav>
