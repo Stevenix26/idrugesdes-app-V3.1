@@ -60,24 +60,25 @@ const Product = ({ product }) => {
             {/* Image selector */}
             <div className='mx-auto mt-6 hidden w-full max-w-2xl sm:block lg:max-w-none'>
               <Tab.List className='grid grid-cols-4 gap-6'>
-                {product.images.map(image => (
+                {product.images?.map(image => (
                   <Tab
-                    key={image.id}
+                    key={image?.id}
                     className='relative flex h-24 cursor-pointer items-center justify-center rounded-md bg-white text-sm font-medium uppercase text-stone-900 hover:bg-stone-50 focus:outline-none'
                   >
                     {({ selected }) => (
                       <>
                         <span className='sr-only'>
-                          {' '}
-                          {image?.file?.metadata}{' '}
+                          {image?.file?.metadata || ''}
                         </span>
                         <span className='absolute inset-0 overflow-hidden rounded-md'>
-                          <Image
-                            alt=''
-                            fill
-                            src={image?.file?.url}
-                            className='h-full w-full object-cover object-center'
-                          />
+                          {image?.file?.url && (
+                            <Image
+                              alt=''
+                              fill
+                              src={image.file.url}
+                              className='h-full w-full object-cover object-center'
+                            />
+                          )}
                         </span>
                         <span
                           className={clsx(
@@ -95,13 +96,15 @@ const Product = ({ product }) => {
 
             <Tab.Panels className='aspect-w-1 aspect-h-1 w-full'>
               {product.images?.map(image => (
-                <Tab.Panel key={image.id}>
-                  <Image
-                    fill
-                    src={image.file.url}
-                    alt={image.file.metadata || ''}
-                    className='h-full w-full object-cover object-center sm:rounded-lg'
-                  />
+                <Tab.Panel key={image?.id}>
+                  {image?.file?.url && (
+                    <Image
+                      fill
+                      src={image.file.url}
+                      alt={image.file.metadata || ''}
+                      className='h-full w-full object-cover object-center sm:rounded-lg'
+                    />
+                  )}
                 </Tab.Panel>
               ))}
             </Tab.Panels>

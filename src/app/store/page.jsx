@@ -39,8 +39,17 @@ const Store = () => {
     <div key={i} className="group relative card bordered shadow-xl hover:shadow-2xl transition-shadow duration-300 bg-white rounded-2xl overflow-hidden flex flex-col">
       <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 group-hover:opacity-90 lg:h-56">
         <img
-          src={pharmacy.image}
-          alt={pharmacy.name}
+          src={pharmacy.image && (pharmacy.image.startsWith('http') || pharmacy.image.startsWith('/')) ? pharmacy.image : "/images/placeholder.jpg"}
+          alt={pharmacy.name || "Pharmacy Image"}
+          // width={200}
+          // height={200}
+          // layout="responsive"
+          // quality={100}
+          // priority
+          // sizes="100vw"
+          // placeholder="blur"
+          // blurDataURL={pharmacy.image && (pharmacy.image.startsWith('http') || pharmacy.image.startsWith('/')) ? pharmacy.image : "/images/placeholder.jpg"}
+          // style={{ objectFit: "cover" }}
           className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
         />
       </div>
@@ -105,3 +114,24 @@ const Store = () => {
 };
 
 export default Store;
+
+// - CDN-4829-ABCD
+// - CDN-1938-XZPQ
+// - CDN-5721-LKJM
+// - CDN-9043-TRWE
+// - CDN-2387-QWER
+// - CDN-6712-PLMN
+// - CDN-8456-BVCX
+// - CDN-1209-HJKL
+// - CDN-3345-UIOP
+// - CDN-7782-ASDF
+// - CDN-5567-ZXCV
+// - CDN-9910-ERTY
+// - CDN-6634-MNBV
+// - CDN-4421-POIU
+// - CDN-2876-GHJK
+// - CDN-3598-DFGH
+// - CDN-7102-QAZX
+// - CDN-8245-WSXC
+// - CDN-1357-EDCV
+// - CDN-2468-RFVT

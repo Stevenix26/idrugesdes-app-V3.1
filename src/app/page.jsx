@@ -2,8 +2,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import PharmacySvg from '/public/pharmacy.svg';
-import HeroImage from '/public/images/shelf.jpg';
 import { FaClinicMedical, FaTruck, FaUserMd, FaShieldAlt, FaClock, FaHospitalUser, FaStethoscope, FaMobileAlt, FaUserShield } from 'react-icons/fa';
 import { MdOutlineHealthAndSafety } from 'react-icons/md';
 
@@ -11,27 +9,13 @@ const Page = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800">
       <div className="absolute inset-0">
-        <Image
-          src={HeroImage}
-          alt="Pharmacy Background"
-          layout="fill"
-          objectFit="cover"
-          className="opacity-10"
-          priority
-        />
+
       </div>
 
       <div className="relative z-10">
         <nav className="p-4 backdrop-blur-sm bg-black/20">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <div className="flex items-center space-x-2">
-              <Image
-                src={PharmacySvg}
-                alt="Idrugdes Logo"
-                width={48}
-                height={48}
-                className="hover:scale-105 transition-transform"
-              />
               <span className="text-white text-2xl font-bold tracking-tight">Idrugdes</span>
             </div>
             <Link href="/sign-in" className="text-white hover:text-blue-400 transition-colors">

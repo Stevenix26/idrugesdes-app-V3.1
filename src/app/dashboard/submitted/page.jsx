@@ -156,6 +156,14 @@ const Prescriptions = () => {
               <div><span className="font-semibold text-gray-700">Date:</span> {typeof selectedPrescription.createdAt === 'string' ? selectedPrescription.createdAt.slice(0, 10) : new Date(selectedPrescription.createdAt).toLocaleDateString()}</div>
               <div><span className="font-semibold text-gray-700">Status:</span> <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusBadgeStyles[statusColor[selectedPrescription.status]]}`}>{selectedPrescription.status}</span></div>
               <div><span className="font-semibold text-gray-700">Decline Reason:</span> {selectedPrescription.declineReason || '-'}</div>
+              {selectedPrescription.prescriptionFilePath && (
+                <div className="mt-4">
+                  <span className="font-semibold text-gray-700">Prescription Image:</span>
+                  <div className="mt-2">
+                    <img src={selectedPrescription.prescriptionFilePath} alt="Prescription" className="max-w-full max-h-60 rounded shadow" />
+                  </div>
+                </div>
+              )}
             </div>
             <div className="mt-6 flex justify-end">
               <button onClick={closeModal} className="px-6 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">Close</button>

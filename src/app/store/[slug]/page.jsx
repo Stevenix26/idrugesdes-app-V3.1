@@ -82,7 +82,21 @@ const PharmacyDetails = ({ params }) => {
 
   ]);
 
-  const selectedPharmacy = pharmacies.find((pharmacy) => pharmacy.id === Number(params.slug));
+  // Unwrap params using React.use()
+  const unwrappedParams = React.use(params);
+  const selectedPharmacy = pharmacies.find((pharmacy) => pharmacy.id === Number(unwrappedParams.slug));
+
+  // Handle case where selectedPharmacy is undefined
+  if (!selectedPharmacy) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Pharmacy Not Found</h2>
+          <p className="text-gray-700">The pharmacy you are looking for does not exist.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-blue-100 py-10 px-2">
@@ -93,13 +107,13 @@ const PharmacyDetails = ({ params }) => {
         </div>
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8">
           <div className="relative min-h-[260px] md:min-h-[340px] flex items-center justify-center bg-gradient-to-br from-blue-100 to-blue-200">
-            <Image
-              src={selectedPharmacy.image}
-              alt={selectedPharmacy.name}
-              width={500}
-              height={340}
+            <img
+              src={selectedPharmacy.image || "/images/placeholder.jpg"}
+              alt={selectedPharmacy.name || "Pharmacy Image"}
+              // width={500}
+              // height={340}
               className="rounded-none object-cover w-full h-full max-h-[340px] transition-transform duration-300 hover:scale-105"
-              priority
+            // priority
             />
           </div>
           <div className="flex flex-col justify-center p-8">

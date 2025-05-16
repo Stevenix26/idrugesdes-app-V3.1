@@ -40,8 +40,16 @@ const PrescriptionPage = () => {
   });
 
   const handleFormSubmit = (values) => {
-    console.log(values);
-    createPrescription(values);
+    const formData = new FormData();
+    formData.append("patientName", values.patientName);
+    formData.append("medication", values.medication);
+    formData.append("phoneNumber", values.phoneNumber);
+    formData.append("doctorName", values.doctorName);
+    formData.append("prescriptionDate", values.prescriptionDate);
+    if (values.uploadedPrescription && values.uploadedPrescription[0]) {
+      formData.append("uploadedPrescription", values.uploadedPrescription[0]);
+    }
+    createPrescription(formData);
     notify();
   };
 
@@ -274,9 +282,9 @@ const PrescriptionPage = () => {
 
           />
         </form>
-      <ToastContainer position="top-right" theme="colored" transition={Bounce} />
-    </motion.div>
-    </div >
+        <ToastContainer position="top-right" theme="colored" transition={Bounce} />
+      </motion.div>
+    </div>
   );
 };
 

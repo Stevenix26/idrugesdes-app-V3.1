@@ -16,12 +16,16 @@ const Products = ({ products }) => {
               className='group'
             >
               <div className='aspect-w-1 aspect-h-1 w-full overflow-hidden rounded-lg bg-stone-200 xl:aspect-w-7 xl:aspect-h-8'>
-                <Image
-                  src={product.images[0].file.url}
-                  alt={product.description}
-                  fill
-                  className='h-full w-full object-cover object-center transition-opacity group-hover:opacity-75'
-                />
+                {product.images && Array.isArray(product.images) && product.images.length > 0 && product.images[0] && product.images[0].file && product.images[0].file.url ? (
+                  <Image
+                    src={product.images[0]?.file?.url || "/images/placeholder.jpg"}
+                    alt={product.description || product.name || 'Product Image'}
+                    fill
+                    className='h-full w-full object-cover object-center transition-opacity group-hover:opacity-75'
+                  />
+                ) : (
+                  <div className='h-full w-full flex items-center justify-center bg-gray-200 text-gray-500'>No Image</div>
+                )}
               </div>
               <h3 className='mt-4 text-sm text-stone-700'>{product.name}</h3>
               <p className='mt-1 text-lg font-medium text-stone-900'>

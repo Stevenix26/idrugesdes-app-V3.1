@@ -1,5 +1,12 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../prisma/client';
+import { v2 as cloudinary } from 'cloudinary';
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function GET() {
     const stores = await prisma.pharmacyStore.findMany();
@@ -13,12 +20,26 @@ export async function POST(req) {
     const address = formData.get('address');
     const phone = formData.get('phone');
     const pcn = formData.get('pcn');
-    // For image, you may want to handle file upload to a storage service and save the URL
-    // Here, we'll just save the filename as a placeholder
     const imageFile = formData.get('image');
     let image = '';
-    if (imageFile && typeof imageFile.name === 'string') {
-        image = imageFile.name;
+    if (imageFile && typeof imageFile === 'object' && imageFile.arrayBuffer) {
+        const buffer = Buffer.from(await imageFile.arrayBuffer());
+        // Upload to sellerstore folder
+        const uploadSellerStore = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream({ folder: 'sellerstore' }, (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+            }).end(buffer);
+        });
+        // Upload to store folder
+        const uploadStore = await new Promise((resolve, reject) => {
+            cloudinary.uploader.upload_stream({ folder: 'store' }, (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+            }).end(buffer);
+        });
+        // Use the URL from one of the uploads (e.g., sellerstore)
+        image = uploadSellerStore.secure_url;
     }
     const newStore = await prisma.pharmacyStore.create({
         data: {
