@@ -2,7 +2,7 @@ const Footer = () => {
   return (
     <>
       <footer className="text-primary p-3 py-12 z-10 md:p-1 sm:p-3 xl:p-3">
-        {/* <div className=" bg-white rounded-lg py-4 sm:py-32 items-center justify-center">
+        <div className=" bg-white rounded-lg py-4 sm:py-32 items-center justify-center">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <h2 className="text-center text-lg font-semibold leading-8 text-gray-900">
               Trusted by the world’s most innovative teams
@@ -45,7 +45,7 @@ const Footer = () => {
               />
             </div>
           </div>
-        </div> */}
+        </div>
 
         {/* <div >
           <svg
@@ -62,7 +62,7 @@ const Footer = () => {
           </svg>
         </div> */}
 
-        <div className="p-3 items-start justify-between mt-2">
+        {/* <div className="p-3 items-start justify-between mt-2">
           <h5 className="text-lg">IDRUGDES CO.</h5>
           <p className="mt-4 text-sm ">
             &copy; {new Date().getFullYear()} idrugdes Co.
@@ -70,19 +70,10 @@ const Footer = () => {
           <div className="text-sm ">
             Developed by{" Agboola Stephen "}
             <span className="text-secondary">CPE/17/3096</span>
-            {/* {' '}
-          using{' '}
-          <a
-            className='text-cyan-600'
-            href='https://www.swell.is/'
-            rel='noreferrer'
-            target='_blank'
-          >
-            React
-          </a> */}
+           
             .
           </div>
-        </div>
+        </div> */}
       </footer>
     </>
   );
