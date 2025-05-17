@@ -46,7 +46,7 @@
     "src/app/api/posts/creates/route.js",
     "src/app/dashboard/prescription/page.jsx",
     "src/app/admin/prescriptionList/page.jsx"
-  ],
+, "src/app/api/prescriptions/[prescriptionid]/status/route.js"  ],
   "exclude": [
     "node_modules"
   ]

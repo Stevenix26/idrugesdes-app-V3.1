@@ -1,33 +1,48 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Sidebar from '../components/ui/dashboard/sidebar/sidebar'
-import { Prescription } from '@phosphor-icons/react/dist/ssr';
-
-
-import styles from '../components/ui/dashboard/dashboard.module.css';
+import { List, X, Bell, Gear } from '@phosphor-icons/react/dist/ssr';
+import { useUser } from '@clerk/nextjs';
 
 const Layout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [theme, setTheme] = useState('light');
+  const { user } = useUser();
+
+  // Check for user's preferred theme on component mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    setTheme(savedTheme);
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+
+  // Toggle theme function
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+  };
 
   return (
-    <div className="flex h-full min-h-screen">
+    <div className="flex h-full min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300">
       {/* Mobile menu toggle */}
       <button
-        className="md:hidden fixed top-4 left-4 z-50 bg-base-200 p-2 rounded shadow-lg"
+        className="md:hidden fixed top-4 left-4 z-50 bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg text-gray-700 dark:text-gray-200"
         aria-label="Toggle sidebar"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
-        <span className="material-icons"><Prescription/></span>
+        {sidebarOpen ? (
+          <X weight="bold" size={24} />
+        ) : (
+          <List weight="bold" size={24} />
+        )}
       </button>
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed z-40 top-0 left-0 h-full w-64 bg-base-200 shadow-lg transition-transform duration-300 md:static md:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:block`}
-      >
-        <div className="h-full w-64 p-4 overflow-y-auto">
-          <Sidebar />
-        </div>
-      </aside>
+      {/* Sidebar - Only show on mobile when sidebarOpen is true */}
+      <div className={`md:block ${sidebarOpen ? 'block' : 'hidden'}`}>
+        <Sidebar />
+      </div>
 
       {/* Overlay for mobile when sidebar is open */}
       {sidebarOpen && (
@@ -38,11 +53,69 @@ const Layout = ({ children }) => {
       )}
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col overflow-y-auto bg-base-100 p-4 xl:p-2 md:p-3 transition-all duration-300 ml-0 md:ml-4">
-        <div className="max-w-7xl w-full mx-auto">
-          {children}
-        </div>
-      </main>
+      <div className="flex-1 flex flex-col">
+        {/* Top navigation bar */}
+        <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="flex items-center justify-between px-4 py-3 md:px-6 lg:px-8">
+            <div className="flex items-center space-x-2">
+              <h1 className="text-xl font-bold text-indigo-600 dark:text-indigo-400 hidden md:block">iDrugDes</h1>
+            </div>
+
+            <div className="flex items-center space-x-3">
+              {/* Theme toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </button>
+
+              {/* Notifications */}
+              <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 relative">
+                <Bell size={20} />
+                <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+              </button>
+
+              {/* Settings */}
+              <button className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300">
+                <Gear size={20} />
+              </button>
+
+              {/* User profile */}
+              {user && (
+                <div className="flex items-center space-x-2 ml-2">
+                  <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden">
+                    {user.imageUrl ? (
+                      <img src={user.imageUrl} alt={user.fullName || 'User'} className="h-full w-full object-cover" />
+                    ) : (
+                      <span className="text-indigo-600 font-medium">{(user.fullName || 'User').charAt(0)}</span>
+                    )}
+                  </div>
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300 hidden md:block">
+                    {user.fullName || 'User'}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Page content */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 transition-all duration-300 bg-gray-50 dark:bg-gray-900">
+          <div className="max-w-7xl w-full mx-auto">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   )
 }

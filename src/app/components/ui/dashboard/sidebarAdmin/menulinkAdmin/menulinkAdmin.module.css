@@ -1,15 +1,27 @@
-.container{
+/* This CSS module is kept for backward compatibility */
+/* The styles are now directly applied in the component using Tailwind classes */
+
+.container {
     padding: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
     margin: 5px 0px;
     border-radius: 10px;
+    transition: all 0.2s ease;
 }
 
-.container:hover, .active{
-    background-color: #2e374a;
+.container:hover {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: rgb(79, 70, 229);
 }
+
+.active {
+    background-color: rgba(99, 102, 241, 0.1);
+    color: rgb(79, 70, 229);
+    font-weight: 500;
+}
+
 .list {
     list-style: none;
 }

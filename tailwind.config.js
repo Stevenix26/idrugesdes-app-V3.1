@@ -11,10 +11,22 @@ const config = {
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './src/**/*.{js,ts,jsx,tsx}',
-   
+
   ],
+  darkMode: ['class', '[data-theme="dark"]'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        sidebar: {
+          bg: 'hsl(var(--sidebar-bg))',
+          text: 'hsl(var(--sidebar-text))',
+          accent: 'hsl(var(--sidebar-accent))',
+          'accent-hover': 'hsl(var(--sidebar-accent-hover))',
+          border: 'hsl(var(--sidebar-border))',
+          hover: 'hsl(var(--sidebar-hover))'
+        }
+      }
+    },
   },
   plugins: [require("@tailwindcss/typography"), require('@tailwindcss/forms'), require('@tailwindcss/aspect-ratio'), require("daisyui")],
   daisyui: {

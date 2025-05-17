@@ -1,31 +1,54 @@
-.container{
-    position: sticky;
-    top: 40px;
+/* Dark mode support */
+:root {
+  --bg-light: #ffffff;
+  --bg-dark: #1f2937;
+  --text-light: #4b5563;
+  --text-dark: #e5e7eb;
+  --accent-light: #6366f1;
+  --accent-dark: #818cf8;
+  --border-light: #e5e7eb;
+  --border-dark: #374151;
+  --hover-light: #f3f4f6;
+  --hover-dark: #374151;
 }
 
-.li{
-    list-style: none;
+[data-theme='dark'] {
+  --bg-primary: var(--bg-dark);
+  --text-primary: var(--text-dark);
+  --accent-primary: var(--accent-dark);
+  --border-primary: var(--border-dark);
+  --hover-primary: var(--hover-dark);
 }
 
-.cat{
-    font-weight: 500;
-    font-size: medium;
-    margin: 10px 0px;
+[data-theme='light'] {
+  --bg-primary: var(--bg-light);
+  --text-primary: var(--text-light);
+  --accent-primary: var(--accent-light);
+  --border-primary: var(--border-light);
+  --hover-primary: var(--hover-light);
 }
-/* styles/sidebar.module.css */
+
+/* Sidebar transitions */
 .sidebarClosed {
-    transform: translateX(-100%);
+  transform: translateX(-100%);
 }
 
 .sidebarOpen {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
-.row {
-    transition: transform 0.3s ease;
+/* Animation */
+.transition {
+  transition: all 0.3s ease-in-out;
 }
 
-.menuToggle {
-    cursor: pointer;
-    /* Your menu icon styles */
+/* Active indicator */
+.activeIndicator {
+  position: absolute;
+  left: 0;
+  width: 4px;
+  height: 24px;
+  background-color: var(--accent-primary);
+  border-radius: 0 4px 4px 0;
+  transition: all 0.2s ease-in-out;
 }

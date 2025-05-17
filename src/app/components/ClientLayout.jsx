@@ -10,13 +10,15 @@ const ClientLayout = ({ children }) => {
         <ClerkProvider>
             <Providing>
                 <CssBaseline />
-                <header className="sticky top-0 z-50 w-full bg-inherit shadow-sm">
-                    <Navnew />
-                </header>
-                <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    {children}
-                </main>
-                <Footer />
+                <div className="flex flex-col min-h-screen">
+                    <header className="sticky top-0 z-50 w-full bg-white bg-opacity-95 backdrop-blur-sm shadow-sm">
+                        <Navnew />
+                    </header>
+                    <main className="flex-1 w-full mx-auto">
+                        {children}
+                    </main>
+                    <Footer />
+                </div>
             </Providing>
         </ClerkProvider>
     );
