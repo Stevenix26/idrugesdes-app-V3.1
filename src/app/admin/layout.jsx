@@ -1,27 +1,3 @@
-// import React from 'react'
-//import SidebarAdmin from '../components/ui/dashboard/sidebarAdmin/sidebarAdmin'
-
-
-// const Layout = ({ children }) => {
-//     return (
-//         <div className="flex h-full">
-//             <aside className="hidden md:block w-64 bg-base-200 shadow-lg">
-//                 <div className="fixed h-full w-64 p-4 overflow-y-auto">
-//                     <SidebarAdmin />
-//                 </div>
-//             </aside>
-
-//             <main className="flex-1 overflow-y-auto bg-base-100 p-6">
-//                 <div className="max-w-7xl mx-auto">
-//                     {children}
-//                 </div>
-//             </main>
-//         </div>
-//     )
-// }
-
-// export default Layout
-
 "use client"
 import React, { useState, useEffect } from 'react'
 import SidebarAdmin from '../components/ui/dashboard/sidebarAdmin/sidebarAdmin'
@@ -78,7 +54,7 @@ const Layout = ({ children }) => {
 
             {/* Main content */}
             <div className="flex-1 flex flex-col">
-                {/* Top navigation bar */}
+                {/* Top navigation bar for admin */}
                 <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
                     <div className="flex items-center justify-between px-4 py-3 md:px-6 lg:px-8">
                         <div className="flex items-center space-x-2">
@@ -134,7 +110,7 @@ const Layout = ({ children }) => {
                 </header>
                 
                 {/* Page content */}
-                <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 transition-all duration-300 bg-gray-50 dark:bg-gray-900">
+                <main className="flex-1 p-4 md:p-6 lg:p-8 transition-all duration-300 bg-gray-50 dark:bg-gray-900">
                     <div className="max-w-7xl w-full mx-auto">
                         {children}
                     </div>

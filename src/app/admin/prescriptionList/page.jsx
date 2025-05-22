@@ -43,59 +43,84 @@ const Prescriptions = () => {
     if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
 
     return (
-        <div>
-            <section>
-                <div className="max-w-[100vw] px-6 pb-16 xl:pr-2">
-                    <div className="flex flex-col-reverse justify-between gap-6 xl:flex-row">
-                        <div className="w-full max-w-6xl flex-grow pt-10">
-                            <h1 className="text-3xl font-bold mb-6">Prescriptions</h1>
-                            <div className="relative mb-10 mt-6 shadow-xl rounded-lg overflow-x-auto">
-                                <table className="table table-zebra w-full">
-                                    <thead>
-                                        <tr className="bg-base-300 border-b-0 font-bold">
-                                            <th>Prescription ID</th>
-                                            <th>Patient Name</th>
-                                            <th>Medication</th>
-                                            <th>Phone Number</th>
-                                            <th>Doctor Name</th>
-                                            <th>Request Date</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {prescriptions.map((prescription) => (
-                                            <tr key={prescription.id} className="hover:bg-base-200 transition">
-                                                <td>{prescription.id}</td>
-                                                <td>{prescription.patientName}</td>
-                                                <td>{prescription.medication}</td>
-                                                <td>{prescription.phoneNumber}</td>
-                                                <td>{prescription.doctorName}</td>
-                                                <td>{prescription.createdAt ? prescription.createdAt.toString().slice(0, 10) : ''}</td>
-                                                <td>
-                                                    <span className={`badge ${prescription.status === 'approved' ? 'badge-success' : prescription.status === 'rejected' ? 'badge-error' : 'badge-warning'}`}>{prescription.status}</span>
-                                                </td>
-                                                <td className="flex gap-2">
-                                                    <button className="btn btn-info btn-xs" onClick={() => handleOpenModal(prescription)}>
-                                                        View Details
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
+        <section className="min-h-screen bg-gradient-to-bl from-slate-50 to-indigo-100 p-6">
+            <div className="max-w-4xl mx-auto">
+                <div className="bg-white rounded-2xl shadow-2xl p-4 md:p-8">
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-6 md:mb-8 gap-3 md:gap-4">
+                        <h1 className="text-2xl md:text-4xl font-extrabold text-indigo-900 tracking-tight">Prescription Analytics</h1>
+                        <div className="flex flex-wrap gap-2 md:gap-4">
+                            <div className="bg-indigo-100 rounded-xl p-2 md:p-4 flex flex-col items-center shadow-md min-w-[90px]">
+                                <span className="text-lg md:text-2xl font-bold text-indigo-700">{prescriptions.length}</span>
+                                <span className="text-indigo-500 text-xs md:text-sm">Total Prescriptions</span>
+                            </div>
+                            <div className="bg-green-100 rounded-xl p-2 md:p-4 flex flex-col items-center shadow-md min-w-[90px]">
+                                <span className="text-lg md:text-2xl font-bold text-green-700">{prescriptions.filter(p => p.status === 'approved').length}</span>
+                                <span className="text-green-500 text-xs md:text-sm">Approved</span>
+                            </div>
+                            <div className="bg-yellow-100 rounded-xl p-2 md:p-4 flex flex-col items-center shadow-md min-w-[90px]">
+                                <span className="text-lg md:text-2xl font-bold text-yellow-700">{prescriptions.filter(p => p.status === 'pending').length}</span>
+                                <span className="text-yellow-500 text-xs md:text-sm">Pending</span>
+                            </div>
+                            <div className="bg-red-100 rounded-xl p-2 md:p-4 flex flex-col items-center shadow-md min-w-[90px]">
+                                <span className="text-lg md:text-2xl font-bold text-red-700">{prescriptions.filter(p => p.status === 'rejected').length}</span>
+                                <span className="text-red-500 text-xs md:text-sm">Rejected</span>
                             </div>
                         </div>
                     </div>
+                    <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                        {loading ? (
+                            <div className="text-center py-12 md:py-16 text-base md:text-lg text-gray-500">Loading prescriptions...</div>
+                        ) : prescriptions.length === 0 ? (
+                            <div className="text-center py-12 md:py-16 text-gray-400">No prescriptions found.</div>
+                        ) : (
+                            <table className="w-full min-w-[700px] table-auto text-xs md:text-sm">
+                                <thead>
+                                    <tr className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white">
+                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left font-semibold">Prescription ID</th>
+                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left font-semibold">Patient Name</th>
+                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left font-semibold">Medication</th>
+                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left font-semibold">Phone Number</th>
+                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left font-semibold">Doctor Name</th>
+                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left font-semibold">Request Date</th>
+                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left font-semibold">Status</th>
+                                        <th className="px-2 md:px-4 py-2 md:py-3 text-left font-semibold">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {prescriptions.map((prescription) => (
+                                        <tr key={prescription.id} className="hover:bg-indigo-50 cursor-pointer transition">
+                                            <td className="px-2 md:px-4 py-2 md:py-3 font-medium text-gray-900">{prescription.id}</td>
+                                            <td className="px-2 md:px-4 py-2 md:py-3">{prescription.patientName}</td>
+                                            <td className="px-2 md:px-4 py-2 md:py-3">{prescription.medication}</td>
+                                            <td className="px-2 md:px-4 py-2 md:py-3">{prescription.phoneNumber}</td>
+                                            <td className="px-2 md:px-4 py-2 md:py-3">{prescription.doctorName}</td>
+                                            <td className="px-2 md:px-4 py-2 md:py-3">{prescription.createdAt ? prescription.createdAt.toString().slice(0, 10) : ''}</td>
+                                            <td className="px-2 md:px-4 py-2 md:py-3">
+                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold shadow-sm ${prescription.status === 'approved' ? 'bg-green-100 text-green-800' : prescription.status === 'rejected' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'} capitalize`}>
+                                                    {prescription.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-2 md:px-4 py-2 md:py-3">
+                                                <button className="btn btn-info btn-xs rounded-lg px-3 md:px-4 py-1 font-semibold shadow-sm hover:bg-indigo-600 hover:text-white transition" onClick={() => handleOpenModal(prescription)}>
+                                                    View Details
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                    </div>
                 </div>
-                <PrescriptionModal
-                    prescription={selectedPrescription}
-                    isOpen={modalOpen}
-                    onClose={handleCloseModal}
-                    onStatusChange={handleStatusChange}
-                />
-            </section>
-        </div>
+            </div>
+            <PrescriptionModal
+                prescription={selectedPrescription}
+                isOpen={modalOpen}
+                onClose={handleCloseModal}
+                onStatusChange={handleStatusChange}
+            />
+        </section>
+
     );
 };
 

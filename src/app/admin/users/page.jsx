@@ -63,74 +63,92 @@ const UsersPage = () => {
 
     return (
         <section className="min-h-screen bg-gradient-to-br from-indigo-50 to-slate-100 p-8">
-            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 mt-10">
-                <h1 className="text-2xl font-bold text-indigo-900 mb-6">User Management</h1>
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead>
-                        <tr>
-                            <th className="px-4 py-2">Name</th>
-                            <th className="px-4 py-2">Email</th>
-                            <th className="px-4 py-2">Role</th>
-                            <th className="px-4 py-2">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user) => (
-                            <tr key={user.id} className="border-b">
-                                <td className="px-4 py-2">{user.fname} {user.lname}</td>
-                                <td className="px-4 py-2">{user.email}</td>
-                                <td className="px-4 py-2">
-                                    {editId === user.id ? (
-                                        <select
-                                            value={editRole}
-                                            onChange={(e) => setEditRole(e.target.value)}
-                                            className="border rounded px-2 py-1"
-                                        >
-                                            <option value="PATIENT">PATIENT</option>
-                                            <option value="PHARMACIST">PHARMACIST</option>
-                                            <option value="ADMIN">ADMIN</option>
-                                        </select>
-                                    ) : (
-                                        user.role
-                                    )}
-                                </td>
-                                <td className="px-4 py-2 space-x-2">
-                                    {editId === user.id ? (
-                                        <>
-                                            <button
-                                                onClick={handleSave}
-                                                className="bg-green-500 text-white px-3 py-1 rounded"
-                                            >
-                                                Save
-                                            </button>
-                                            <button
-                                                onClick={() => setEditId(null)}
-                                                className="bg-gray-300 px-3 py-1 rounded"
-                                            >
-                                                Cancel
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <button
-                                                onClick={() => handleEdit(user)}
-                                                className="bg-blue-500 text-white px-3 py-1 rounded"
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeactivate(user.id)}
-                                                className="bg-red-500 text-white px-3 py-1 rounded"
-                                            >
-                                                Deactivate
-                                            </button>
-                                        </>
-                                    )}
-                                </td>
+            <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-2xl p-8 mt-10">
+                <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-8 gap-4">
+                    <h1 className="text-4xl font-extrabold text-indigo-900 tracking-tight">User Analytics</h1>
+                    <div className="flex gap-4">
+                        <div className="bg-indigo-100 rounded-xl p-4 flex flex-col items-center shadow-md">
+                            <span className="text-2xl font-bold text-indigo-700">{users.length}</span>
+                            <span className="text-indigo-500 text-sm">Total Users</span>
+                        </div>
+                        <div className="bg-green-100 rounded-xl p-4 flex flex-col items-center shadow-md">
+                            <span className="text-2xl font-bold text-green-700">{users.filter(u => u.role === 'PHARMACIST').length}</span>
+                            <span className="text-green-500 text-sm">Pharmacists</span>
+                        </div>
+                        <div className="bg-yellow-100 rounded-xl p-4 flex flex-col items-center shadow-md">
+                            <span className="text-2xl font-bold text-yellow-700">{users.filter(u => u.role === 'PATIENT').length}</span>
+                            <span className="text-yellow-500 text-sm">Patients</span>
+                        </div>
+                    </div>
+                </div>
+                <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                    <table className="w-full table-auto text-sm">
+                        <thead>
+                            <tr className="bg-gradient-to-r from-indigo-600 to-purple-500 text-white">
+                                <th className="px-4 py-3 text-left font-semibold">Name</th>
+                                <th className="px-4 py-3 text-left font-semibold">Email</th>
+                                <th className="px-4 py-3 text-left font-semibold">Role</th>
+                                <th className="px-4 py-3 text-left font-semibold">Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {users.map((user) => (
+                                <tr key={user.id} className="hover:bg-indigo-50 cursor-pointer transition">
+                                    <td className="px-4 py-3 font-medium text-gray-900">{user.fname} {user.lname}</td>
+                                    <td className="px-4 py-3">{user.email}</td>
+                                    <td className="px-4 py-3">
+                                        {editId === user.id ? (
+                                            <select
+                                                value={editRole}
+                                                onChange={(e) => setEditRole(e.target.value)}
+                                                className="border rounded px-2 py-1"
+                                            >
+                                                <option value="PATIENT">PATIENT</option>
+                                                <option value="PHARMACIST">PHARMACIST</option>
+                                                <option value="ADMIN">ADMIN</option>
+                                            </select>
+                                        ) : (
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold shadow-sm ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-800' : user.role === 'PHARMACIST' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>{user.role}</span>
+                                        )}
+                                    </td>
+                                    <td className="px-4 py-3 space-x-2">
+                                        {editId === user.id ? (
+                                            <>
+                                                <button
+                                                    onClick={handleSave}
+                                                    className="bg-green-500 text-white px-3 py-1 rounded"
+                                                >
+                                                    Save
+                                                </button>
+                                                <button
+                                                    onClick={() => setEditId(null)}
+                                                    className="bg-gray-300 px-3 py-1 rounded"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <button
+                                                    onClick={() => handleEdit(user)}
+                                                    className="bg-blue-500 text-white px-3 py-1 rounded"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeactivate(user.id)}
+                                                    className="bg-red-500 text-white px-3 py-1 rounded"
+                                                >
+                                                    Deactivate
+                                                </button>
+                                            </>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
     );

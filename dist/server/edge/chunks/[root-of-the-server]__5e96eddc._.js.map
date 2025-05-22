@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 23, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/middleware.js"],"sourcesContent":["import { authMiddleware } from \"@clerk/nextjs\";\r\n \r\nexport default authMiddleware({\r\n  // \"/\" will be accessible to all users\r\n  publicRoutes: [\"/\"]\r\n});\r\n \r\nexport const config = {\r\n  matcher: ['/((?!.+\\\\.[\\\\w]+$|_next).*)', '/', '/(api|trpc)(.*)'],\r\n};\r\n"],"names":[],"mappings":";;;;AAAA;;uCAEe,CAAA,GAAA,iLAAA,CAAA,iBAAc,AAAD,EAAE;IAC5B,sCAAsC;IACtC,cAAc;QAAC;KAAI;AACrB;AAEO,MAAM,SAAS;IACpB,SAAS;QAAC;QAA+B;QAAK;KAAkB;AAClE"}}]
+}

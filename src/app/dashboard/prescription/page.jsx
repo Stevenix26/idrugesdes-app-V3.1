@@ -26,14 +26,50 @@ const PrescriptionPage = () => {
   // Define your mutation
   const { mutate: createPrescription, isLoading } = useMutation({
     mutationFn: async (newPrescription) => {
-      // Send a POST request to your backend API
-      const response = await axios.post('../../api/prescription', newPrescription);
-      return response.data; // Assuming your API returns data upon successful creation
+      try {
+        const response = await axios.post('/api/prescriptions', newPrescription, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        return response.data;
+      } catch (error) {
+        console.error('API Error:', error);
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          throw new Error(error.response.data.message || 'Failed to submit prescription');
+        } else if (error.request) {
+          // The request was made but no response was received
+          throw new Error('No response from server. Please try again.');
+        } else {
+          // Something happened in setting up the request
+          throw new Error('Error submitting prescription. Please try again.');
+        }
+      }
     },
     onError: (error) => {
-      console.error('Error:', error);
+      console.error('Mutation Error:', error);
+      toast.error(error.message || 'Failed to submit prescription', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      toast.success('Prescription submitted successfully!', {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
       router.push('/dashboard');
       router.refresh();
     },
@@ -50,7 +86,6 @@ const PrescriptionPage = () => {
       formData.append("uploadedPrescription", values.uploadedPrescription[0]);
     }
     createPrescription(formData);
-    notify();
   };
 
   const nextStep = () => setStep(step + 1);
@@ -66,22 +101,6 @@ const PrescriptionPage = () => {
       reader.readAsDataURL(file);
     }
   };
-
-  const notify = () => {
-    toast.success('Prescription Submitted!', {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-      transition: Bounce,
-
-    });
-  };
-
 
   return (
     <div className="min-h-screen p-4 flex items-center justify-center bg-gradient-to-br from-primary/5 to-base-200">

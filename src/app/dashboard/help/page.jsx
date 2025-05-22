@@ -1,60 +1,118 @@
 // pages/help.js
 
 import React from 'react';
+import {
+    QuestionMarkCircleIcon,
+    DocumentTextIcon,
+    TruckIcon,
+    PhoneIcon,
+} from '@heroicons/react/24/outline';
 
 const HelpPage = () => {
+    const faqs = [
+        {
+            icon: DocumentTextIcon,
+            title: "How to Submit a Prescription",
+            content: "To submit a prescription, navigate to the \"Submit Prescription\" section in your dashboard. Upload a clear image of your prescription and fill in the required details. Our pharmacists will review and process your request."
+        },
+        {
+            icon: TruckIcon,
+            title: "Tracking Your Orders",
+            content: "You can track your orders in the \"My Orders\" section. Each order will show its current status, from processing to delivery. You'll receive notifications at each step."
+        },
+        {
+            icon: PhoneIcon,
+            title: "Contact Support",
+            content: "Need more help? Our support team is available 24/7. Use the \"Contact Us\" form or email us at support@idrugdes.com."
+        }
+    ];
+
+    const contactInfo = [
+        {
+            title: "Email",
+            content: "support@idrugdes.com",
+            link: "mailto:support@idrugdes.com"
+        },
+        {
+            title: "Phone",
+            content: "+234-81-0518-7774",
+            link: "tel:+2348105187774"
+        },
+        {
+            title: "Business Hours",
+            content: "Monday to Friday, 9 AM to 6 PM (WAT)",
+            link: null
+        }
+    ];
+
     return (
-        <div className="min-h-screen bg-gray-100 p-3">
-            <header className="bg-primary text-white p-8">
-                <div className="container mx-auto">
-                    <h1 className="text-4xl font-bold">Prescription Help Center</h1>
-                    <p className="mt-2">Welcome to our Prescription Help Center. Find answers to common questions about prescriptions and our services below.</p>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            <header className="bg-gradient-to-r from-indigo-600 to-indigo-800 text-white py-12 px-4">
+                <div className="container mx-auto max-w-4xl">
+                    <div className="flex items-center space-x-4 mb-6">
+                        <QuestionMarkCircleIcon className="h-10 w-10 text-indigo-200" />
+                        <h1 className="text-3xl md:text-4xl font-bold">Help Center</h1>
+                    </div>
+                    <p className="text-indigo-100 text-lg max-w-2xl">
+                        Find answers to common questions and learn how to make the most of iDrugdes.
+                    </p>
                 </div>
             </header>
 
-            <div className="container mx-auto mt-8 p-4">
+            <main className="container mx-auto max-w-4xl px-4 py-8">
+                <section className="mb-12">
+                    <h2 className="text-2xl font-bold mb-8 text-gray-900 dark:text-white">
+                        Frequently Asked Questions
+                    </h2>
+                    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                        {faqs.map((faq, index) => (
+                            <div
+                                key={index}
+                                className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-transform hover:scale-105"
+                            >
+                                <div className="flex items-center space-x-3 mb-4">
+                                    <faq.icon className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                        {faq.title}
+                                    </h3>
+                                </div>
+                                <p className="text-gray-600 dark:text-gray-300">
+                                    {faq.content}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+
                 <section>
-                    <h2 className="text-2xl font-bold mb-4">Frequently Asked Questions (FAQ)</h2>
-
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold mb-2">How do I upload a prescription?</h3>
-                        <p>To upload your prescription, log in to your account and navigate to the "Prescriptions" section. Click on the "Upload Prescription" button, choose the file from your device, and submit it. Our team will review and process your prescription.</p>
-                    </div>
-
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold mb-2">What medications are available through your pharmacy?</h3>
-                        <p>We offer a wide range of prescription medications for various health conditions. You can browse our online catalog or search for specific medications. If you can't find a particular medication, feel free to contact our support team for assistance.</p>
-                    </div>
-
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold mb-2">How can I track the status of my prescription order?</h3>
-                        <p>Once your prescription order is placed, you can track its status by logging into your account and checking the "Order History" section. We provide real-time updates on the processing and shipping status of your prescription. You will also receive email notifications for important updates.</p>
-                    </div>
-                </section>
-
-                <section className="mt-8">
-                    <h2 className="text-2xl font-bold mb-4">Contact Us</h2>
-
-                    <div className="mb-6">
-                        <p>If you have additional questions or need personalized assistance, our support team is here to help.</p>
-                    </div>
-
-                    <div className="mb-4">
-                        <h3 className="text-lg font-semibold mb-2">Email:</h3>
-                        <p>Contact our support team via email at <a href="mailto:support@pharmacyexample.com">support@pharmacyexample.com</a></p>
-                    </div>
-                    
-                    <div className="mb-4">
-                        <h3 className="text-lg font-semibold mb-2">Phone:</h3>
-                        <p>Reach us by phone at <a href="tel:+11234567890">+1 (123) 456-7890</a></p>
-                    </div>
-
-                    <div>
-                        <h3 className="text-lg font-semibold mb-2">Business Hours:</h3>
-                        <p>Our customer support team is available during our business hours from Monday to Friday, 9 AM to 6 PM (EST).</p>
+                    <h2 className="text-2xl font-bold mb-8 text-gray-900 dark:text-white">
+                        Contact Information
+                    </h2>
+                    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+                        <div className="grid gap-6 md:grid-cols-3">
+                            {contactInfo.map((info, index) => (
+                                <div key={index} className="text-center">
+                                    <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">
+                                        {info.title}
+                                    </h3>
+                                    {info.link ? (
+                                        <a
+                                            href={info.link}
+                                            className="text-indigo-600 dark:text-indigo-400 hover:underline"
+                                        >
+                                            {info.content}
+                                        </a>
+                                    ) : (
+                                        <p className="text-gray-600 dark:text-gray-300">
+                                            {info.content}
+                                        </p>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </section>
-            </div>
+            </main>
         </div>
     );
 };
