@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -252,58 +252,58 @@ const Page = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="flex flex-col items-center text-center"
+              className="text-center"
             >
-              <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mb-6 shadow-md">
-                <FaStethoscope className="w-10 h-10 text-white" />
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-blue-600">1</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">1. Get Prescription</h3>
-              <p className="text-gray-600">Visit your doctor and get your digital or physical prescription</p>
+              <h3 className="text-lg font-semibold mb-2">Upload Prescription</h3>
+              <p className="text-gray-600">Upload your prescription or enter details manually</p>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1, duration: 0.5 }}
+              className="text-center"
+            >
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-blue-600">2</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Select Pharmacy</h3>
+              <p className="text-gray-600">Choose from our network of verified pharmacies</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.5 }}
-              className="flex flex-col items-center text-center"
+              className="text-center"
             >
-              <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mb-6 shadow-md">
-                <FaMobileAlt className="w-10 h-10 text-white" />
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-blue-600">3</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">2. Upload Prescription</h3>
-              <p className="text-gray-600">Upload your prescription through our secure platform</p>
+              <h3 className="text-lg font-semibold mb-2">Confirm Order</h3>
+              <p className="text-gray-600">Review and confirm your medication order</p>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              className="flex flex-col items-center text-center"
+              transition={{ delay: 0.3, duration: 0.5 }}
+              className="text-center"
             >
-              <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mb-6 shadow-md">
-                <FaUserShield className="w-10 h-10 text-white" />
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl font-bold text-blue-600">4</span>
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">3. Verification</h3>
-              <p className="text-gray-600">Our pharmacists verify your prescription for accuracy</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6, duration: 0.5 }}
-              className="flex flex-col items-center text-center"
-            >
-              <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mb-6 shadow-md">
-                <FaTruck className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">4. Delivery</h3>
+              <h3 className="text-lg font-semibold mb-2">Get Delivery</h3>
               <p className="text-gray-600">Receive your medications at your doorstep</p>
             </motion.div>
           </div>
@@ -314,109 +314,53 @@ const Page = () => {
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">Hear from people who have experienced our services.</p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">What Our Users Say</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">Trusted by healthcare professionals and patients nationwide.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
-            >
-              <div className="flex items-center mb-6">
-                <div className="flex text-yellow-400 mr-2">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} className="w-5 h-5" />
-                  ))}
-                </div>
-                <span className="text-gray-600 ml-2">5.0</span>
-              </div>
-              <div className="mb-6 text-gray-700">
-                <FaQuoteLeft className="w-8 h-8 text-blue-100 mb-3" />
-                <p>iDrugDes has transformed how I manage my medications. The delivery is always on time, and their customer service is exceptional.</p>
-              </div>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full mr-4"></div>
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.2, duration: 0.5 }}
+                className="bg-white p-8 rounded-2xl shadow-lg"
+              >
+                <FaQuoteLeft className="w-8 h-8 text-blue-400 mb-4" />
+                <p className="text-gray-600 mb-6">{testimonial.content}</p>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Sarah Johnson</h4>
-                  <p className="text-gray-600 text-sm">Regular Customer</p>
+                  <h4 className="font-semibold text-gray-900">{testimonial.author}</h4>
+                  <p className="text-gray-500">{testimonial.role}</p>
                 </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
-            >
-              <div className="flex items-center mb-6">
-                <div className="flex text-yellow-400 mr-2">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} className="w-5 h-5" />
-                  ))}
-                </div>
-                <span className="text-gray-600 ml-2">5.0</span>
-              </div>
-              <div className="mb-6 text-gray-700">
-                <FaQuoteLeft className="w-8 h-8 text-blue-100 mb-3" />
-                <p>As a busy professional, iDrugDes saves me so much time. The digital prescription feature is incredibly convenient and secure.</p>
-              </div>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full mr-4"></div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Michael Chen</h4>
-                  <p className="text-gray-600 text-sm">Tech Consultant</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.5 }}
-              className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
-            >
-              <div className="flex items-center mb-6">
-                <div className="flex text-yellow-400 mr-2">
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar key={i} className="w-5 h-5" />
-                  ))}
-                </div>
-                <span className="text-gray-600 ml-2">5.0</span>
-              </div>
-              <div className="mb-6 text-gray-700">
-                <FaQuoteLeft className="w-8 h-8 text-blue-100 mb-3" />
-                <p>The pharmacist consultation feature helped me understand my medication better. Highly recommend iDrugDes to everyone!</p>
-              </div>
-              <div className="flex items-center">
-                <div className="w-12 h-12 bg-blue-100 rounded-full mr-4"></div>
-                <div>
-                  <h4 className="font-semibold text-gray-900">Amina Patel</h4>
-                  <p className="text-gray-600 text-sm">Healthcare Worker</p>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+      <section className="py-20 bg-blue-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6">Ready to experience modern healthcare?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">Join thousands of satisfied customers who have simplified their healthcare journey.</p>
-          <Link
-            href="/sign-up"
-            className="px-8 py-4 bg-white text-blue-700 rounded-full font-semibold hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 hover:shadow-lg inline-block"
-          >
-            Get Started Today
-          </Link>
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-8">Ready to Get Started?</h2>
+          <p className="text-xl text-blue-100 mb-12 max-w-3xl mx-auto">
+            Join thousands of users who trust iDrugDes for their healthcare needs.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link
+              href="/sign-up"
+              className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 hover:shadow-lg w-full sm:w-auto text-center"
+            >
+              Sign Up Now
+            </Link>
+            <Link
+              href="/store"
+              className="px-8 py-4 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-400 transition-all duration-300 transform hover:scale-105 w-full sm:w-auto text-center"
+            >
+              Find a Pharmacy
+            </Link>
+          </div>
         </div>
       </section>
     </div>

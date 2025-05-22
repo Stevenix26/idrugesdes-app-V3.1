@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
 
 export default function DashboardRedirect() {
   const router = useRouter();
@@ -14,19 +14,29 @@ export default function DashboardRedirect() {
       if (!isLoaded || !user) return;
 
       try {
-        // Fetch user data from our database
-        const response = await fetch(
-          `/api/users?email=${user.primaryEmailAddress?.emailAddress}`
-        );
-        const userData = await response.json();
+        // First ensure user is synced with our database
+        const syncResponse = await fetch("/api/test/sync-user");
+        if (!syncResponse.ok) {
+          console.error("Failed to sync user");
+          throw new Error("Failed to sync user");
+        }
 
-        if (!userData || !userData.role) {
-          router.push("/auth/sign-up/verify-email-address");
+        // Then fetch the user data
+        const testResponse = await fetch("/api/test/users");
+        if (!testResponse.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const { currentUser } = await testResponse.json();
+
+        if (!currentUser || !currentUser.role) {
+          console.error("No role found for user");
+          router.push("/role-selection"); // Redirect to role selection instead
           return;
         }
 
         // Redirect based on role
-        switch (userData.role.toUpperCase()) {
+        switch (currentUser.role.toUpperCase()) {
           case "PATIENT":
             router.push("/dashboard/patient");
             break;
@@ -34,25 +44,78 @@ export default function DashboardRedirect() {
             router.push("/dashboard/pharmacist");
             break;
           case "ADMIN":
-            router.push("/dashboard/admin");
+            router.push("/admin");
             break;
           default:
-            router.push("/auth/sign-up/verify-email-address");
+            // If role exists but is not one of the expected values
+            router.push("/role-selection");
         }
       } catch (error) {
-        console.error("Error fetching user role:", error);
-        router.push("/auth/sign-up/verify-email-address");
+        console.error("Error in dashboard redirect:", error);
+        // Show error page instead of defaulting to patient
+        router.push(
+          "/error?message=Failed to load your dashboard. Please try again."
+        );
       }
     }
 
     redirectBasedOnRole();
   }, [user, isLoaded, router]);
 
+  if (!isLoaded) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center">
+        <div className="text-center space-y-4 p-8 rounded-lg bg-white shadow-lg">
+          <Loader2 className="h-12 w-12 animate-spin text-indigo-600 mx-auto" />
+          <div>
+            <p className="text-xl font-semibold text-gray-900">
+              Setting up your dashboard
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
+              Please wait while we prepare everything for you...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center">
+        <div className="text-center space-y-4 p-8 rounded-lg bg-white shadow-lg">
+          <AlertCircle className="h-12 w-12 text-red-600 mx-auto" />
+          <div>
+            <p className="text-xl font-semibold text-gray-900">
+              Authentication Required
+            </p>
+            <p className="mt-2 text-sm text-gray-500">
+              Please sign in to access your dashboard.
+            </p>
+            <button
+              onClick={() => router.push("/sign-in")}
+              className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              Sign In
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="text-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <p className="mt-4 text-sm text-gray-500">Loading your dashboard...</p>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white flex items-center justify-center">
+      <div className="text-center space-y-4 p-8 rounded-lg bg-white shadow-lg">
+        <Loader2 className="h-12 w-12 animate-spin text-indigo-600 mx-auto" />
+        <div>
+          <p className="text-xl font-semibold text-gray-900">
+            Loading your profile
+          </p>
+          <p className="mt-2 text-sm text-gray-500">
+            We&apos;re getting everything ready for you...
+          </p>
+        </div>
       </div>
     </div>
   );

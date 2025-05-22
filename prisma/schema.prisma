@@ -11,17 +11,19 @@ datasource db {
 }
 
 model User {
-  id    String @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email String @unique
-  password Password?
-  firstName String
-  lastName String
-  role UserRole @default(PATIENT)
-  phoneNumber String?
-  prescriptions Prescription[] @relation("UserPrescriptions")
-  pharmacistProfile Pharmacist? @relation("PharmacistProfile")
+  id                    String                @id @default(cuid())
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
+  email                 String                @unique
+  password              Password?
+  firstName             String
+  lastName              String
+  role                  UserRole              @default(PATIENT)
+  phoneNumber           String?
+  prescriptions         Prescription[]        @relation("UserPrescriptions")
+  pharmacistProfile     Pharmacist?          @relation("PharmacistProfile")
+  pharmacistVerification PharmacistVerification?
+  orders                Order[]               @relation("UserOrders")
 }
 
 enum UserRole {
@@ -29,103 +31,155 @@ enum UserRole {
   PHARMACIST
   ADMIN
 }
+
 model Password {
-  hash String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+  hash    String
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId  String  @unique
 }
 
-
-model PharmacyStore{
-  id   String  @id @default(cuid())
-  name String
-  address String
-  phoneNumber String
-  description String
-  pcn String
-  image String
-  // Post Post[]
-  medications Medication[]
-  Pharmacist Pharmacist[]
+model PharmacyStore {
+  id            String        @id @default(cuid())
+  name          String
+  address       String
+  phoneNumber   String
+  description   String
+  pcn           String
+  image         String
+  medications   Medication[]
+  pharmacists   Pharmacist[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model Pharmacist {
-  id                String      @id @default(cuid())
-  user              User        @relation("PharmacistProfile", fields: [userId], references: [id])
-  userId            String      @unique
-  licenseNumber     String      @unique
-  specialization    String?
-  yearsOfExperience Int
-  pharmacy          PharmacyStore @relation(fields: [pharmacyId], references: [id])
-  pharmacyId        String
+  id                    String        @id @default(cuid())
+  user                  User          @relation("PharmacistProfile", fields: [userId], references: [id])
+  userId                String        @unique
+  licenseNumber         String        @unique
+  specialization        String?
+  yearsOfExperience    Int
+  pharmacy             PharmacyStore @relation(fields: [pharmacyId], references: [id])
+  pharmacyId           String
   managedPrescriptions Prescription[] @relation("PharmacistPrescriptions")
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
 }
 
 model Prescription {
-  id                String      @id @default(cuid())
-  patient           User?       @relation("UserPrescriptions", fields: [patientId], references: [id])
-  patientId         String?     // Make optional
-  patientName       String
-  medication        String
-  dosage            String?     // Make optional
-  frequency         String?     // Make optional
-  quantity          Int?        // Make optional
-  instructions      String?
-  doctorName        String
-  phoneNumber       String
-  prescriptionDate  String
+  id                  String            @id @default(cuid())
+  patient             User?             @relation("UserPrescriptions", fields: [patientId], references: [id])
+  patientId           String?
+  patientName         String
+  medication          String
+  dosage              String?
+  frequency           String?
+  quantity            Int?
+  instructions        String?
+  doctorName          String
+  phoneNumber         String
+  prescriptionDate    String
   prescriptionFilePath String?
-  status            StatusOrderEnum  @default(pending)
-  declineReason     String?   @db.VarChar(255)
-  pharmacist        Pharmacist? @relation("PharmacistPrescriptions", fields: [pharmacistId], references: [id])
-  pharmacistId      String?
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  status              StatusOrderEnum   @default(pending)
+  declineReason       String?          @db.VarChar(255)
+  pharmacist          Pharmacist?       @relation("PharmacistPrescriptions", fields: [pharmacistId], references: [id])
+  pharmacistId        String?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  bill                PrescriptionBill?
 }
-
-
 
 model Order {
-  id                  Int             @id @default(autoincrement())
-  quantity            Float           
-  price               Float         
-  orderid             String
-  drugs               String
-  totalAmount         Float
-  status              StatusOrderEnum
-  orderDate           DateTime        @default(now())
-  deliveryDate        DateTime?      
-  clientEmail         String          @db.VarChar(50)
-  clientPhoneNumber   BigInt          @db.BigInt
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
+  id                Int             @id @default(autoincrement())
+  quantity          Float
+  price             Float
+  orderId           String          @unique
+  drugs             String
+  totalAmount       Float
+  status            StatusOrderEnum
+  orderDate         DateTime        @default(now())
+  deliveryDate      DateTime?
+  clientEmail       String          @db.VarChar(50)
+  clientPhoneNumber BigInt          @db.BigInt
+  user              User            @relation("UserOrders", fields: [userId], references: [id])
+  userId            String
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }
 
-
-
 enum StatusOrderEnum {
-  pending       
-  approved 
+  pending
+  approved
   rejected
-  }
+}
 
 model Medication {
-  id                String      @id @default(cuid())
-  name              String
-  description       String?
-  dosageForm        String      // e.g., tablet, capsule, liquid
-  strength          String      // e.g., 500mg, 50ml
-  manufacturer      String
-  price             Float
-  stockQuantity     Int
-  reorderLevel      Int         // minimum quantity before reorder
-  expiryDate        DateTime
-  pharmacy          PharmacyStore @relation(fields: [pharmacyId], references: [id])
-  pharmacyId        String
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  id            String        @id @default(cuid())
+  name          String
+  description   String?
+  dosageForm    String        // e.g., tablet, capsule, liquid
+  strength      String        // e.g., 500mg, 50ml
+  manufacturer  String
+  price         Float
+  stockQuantity Int
+  reorderLevel  Int           // minimum quantity before reorder
+  expiryDate    DateTime
+  pharmacy      PharmacyStore @relation(fields: [pharmacyId], references: [id])
+  pharmacyId    String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model PharmacistVerification {
+  id              String              @id @default(cuid())
+  user            User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String              @unique
+  licenseNumber   String              @unique
+  licenseImage    String
+  pharmacyName    String
+  pharmacyAddress String
+  status          VerificationStatus  @default(PENDING)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model PrescriptionBill {
+  id              String       @id @default(cuid())
+  prescription    Prescription @relation(fields: [prescriptionId], references: [id])
+  prescriptionId  String       @unique
+  subtotal       Float
+  tax            Float
+  total          Float
+  status         BillStatus   @default(PENDING)
+  dueDate        DateTime
+  items          BillItem[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model BillItem {
+  id              String           @id @default(cuid())
+  bill            PrescriptionBill @relation(fields: [billId], references: [id])
+  billId          String
+  medicationName  String
+  quantity        Int
+  unitPrice       Float
+  total           Float
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+}
+
+enum BillStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
 }
 
   

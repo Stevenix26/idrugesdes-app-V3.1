@@ -1,7 +1,8 @@
 "use client"
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, Legend, CartesianGrid } from "recharts";
+import { ArrowDownTrayIcon, FunnelIcon, ArrowPathIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 
 const summaryStats = [
   { label: "Total Orders", value: 1240 },
@@ -46,14 +47,150 @@ const timeRanges = ["Last 7 days", "Last 30 days", "This Year"];
 
 const AdminDashboard = () => {
   const [selectedRange, setSelectedRange] = useState(timeRanges[1]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredData, setFilteredData] = useState({
+    summaryStats,
+    orderData,
+    prescriptionData,
+    userGrowthData,
+    recentActivity
+  });
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    loadData();
+    // Set up real-time updates
+    const interval = setInterval(loadData, 30000); // Refresh every 30 seconds
+    return () => clearInterval(interval);
+  }, [selectedRange]);
+
+  const loadData = async () => {
+    try {
+      setIsRefreshing(true);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Update data based on selected range
+      const updatedData = {
+        summaryStats: summaryStats.map(stat => ({
+          ...stat,
+          value: Math.floor(stat.value * (1 + Math.random() * 0.1))
+        })),
+        orderData: orderData.map(item => ({
+          ...item,
+          orders: Math.floor(item.orders * (1 + Math.random() * 0.1))
+        })),
+        prescriptionData: prescriptionData.map(item => ({
+          ...item,
+          value: Math.floor(item.value * (1 + Math.random() * 0.1))
+        })),
+        userGrowthData: userGrowthData.map(item => ({
+          ...item,
+          users: Math.floor(item.users * (1 + Math.random() * 0.1))
+        })),
+        recentActivity: [
+          {
+            type: "Order",
+            desc: `Order #${Math.floor(Math.random() * 1000)} placed`,
+            time: "Just now"
+          },
+          ...recentActivity.slice(0, 3)
+        ]
+      };
+
+      setFilteredData(updatedData);
+      setIsLoading(false);
+      setIsRefreshing(false);
+    } catch (err) {
+      setError('Failed to load dashboard data');
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    // Implement search logic here
+    const filtered = {
+      ...filteredData,
+      recentActivity: recentActivity.filter(activity =>
+        activity.desc.toLowerCase().includes(query.toLowerCase())
+      )
+    };
+    setFilteredData(filtered);
+  };
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700">
+          <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{label}</p>
+          {payload.map((entry, index) => (
+            <p key={index} className="text-sm" style={{ color: entry.color }}>
+              {entry.name}: {entry.value}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const exportData = (type) => {
+    const data = {
+      summaryStats,
+      orderData,
+      prescriptionData,
+      userGrowthData,
+      recentActivity
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `admin-dashboard-${type}-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="bg-red-50 p-4 rounded-lg text-red-700">
+          <p className="font-semibold">Error</p>
+          <p>{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <>
     <section className="min-h-screen bg-gradient-to-br from-indigo-50 to-slate-100 p-4 md:p-8">
       <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-lg p-4 md:p-8 mt-6 md:mt-10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
           <h1 className="text-3xl font-bold text-indigo-900">Admin Analytics Dashboard</h1>
-          <div className="flex gap-2 items-center">
-            <span className="text-sm text-gray-500">Time Range:</span>
+          <div className="flex gap-4 items-center">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              />
+              <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            </div>
             <select
               className="border rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
               value={selectedRange}
@@ -63,110 +200,81 @@ const AdminDashboard = () => {
                 <option key={range} value={range}>{range}</option>
               ))}
             </select>
+            <button
+              onClick={loadData}
+              disabled={isRefreshing}
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
+            >
+              <ArrowPathIcon className={`h-5 w-5 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span>Refresh</span>
+            </button>
+            <button
+              onClick={() => exportData(selectedRange)}
+              className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            >
+              <ArrowDownTrayIcon className="h-5 w-5" />
+              <span>Export</span>
+            </button>
           </div>
         </div>
-        {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          {summaryStats.map(stat => (
-            <div key={stat.label} className="bg-indigo-50 rounded-lg p-4 flex flex-col items-center shadow">
-              <span className="text-2xl font-bold text-indigo-700">{stat.value}</span>
-              <span className="text-sm text-gray-600 mt-1">{stat.label}</span>
+
+        {isLoading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          </div>
+        ) : (
+          <>
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              {filteredData.summaryStats.map(stat => (
+                <div key={stat.label} className="bg-indigo-50 rounded-lg p-4 flex flex-col items-center shadow hover:shadow-md transition-shadow">
+                  <span className="text-2xl font-bold text-indigo-700">{stat.value}</span>
+                  <span className="text-sm text-gray-600 mt-1">{stat.label}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-        {/* Charts Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          {/* Orders Bar Chart */}
-          <div className="bg-slate-50 rounded-lg p-4 shadow flex flex-col items-center">
-            <h2 className="text-lg font-semibold text-indigo-800 mb-2">Orders Trend</h2>
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={orderData}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="orders" fill="#6366f1" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-          {/* Prescriptions Pie Chart */}
-          <div className="bg-slate-50 rounded-lg p-4 shadow flex flex-col items-center">
-            <h2 className="text-lg font-semibold text-indigo-800 mb-2">Prescriptions Status</h2>
-            <ResponsiveContainer width="100%" height={180}>
-              <PieChart>
-                <Pie data={prescriptionData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} label>
-                  {prescriptionData.map((entry, idx) => (
-                    <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          {/* User Growth Line Chart */}
-          <div className="bg-slate-50 rounded-lg p-4 shadow flex flex-col items-center">
-            <h2 className="text-lg font-semibold text-indigo-800 mb-2">User Growth</h2>
-            <ResponsiveContainer width="100%" height={180}>
-              <LineChart data={userGrowthData}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="users" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        {/* Recent Activity Feed */}
-        <div className="bg-slate-50 rounded-lg p-4 shadow mb-8">
-          <h2 className="text-lg font-semibold text-indigo-800 mb-4">Recent Activity</h2>
-          <ul className="divide-y divide-indigo-100">
-            {recentActivity.map((item, idx) => (
-              <li key={idx} className="py-2 flex items-center justify-between">
-                <span className="text-gray-700">{item.desc}</span>
-                <span className="text-xs text-gray-400">{item.time}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {/* Quick Links Section */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="col-span-1">
-            <h2 className="text-lg font-semibold text-indigo-800 mb-2">Quick Admin Links</h2>
-            <div className="grid grid-cols-2 gap-4">
-              <Link href="/admin/orders">
-                <div className="cursor-pointer bg-indigo-100 hover:bg-indigo-200 transition rounded-lg p-4 flex flex-col items-center shadow-md">
-                  <span className="text-base font-semibold text-indigo-800 mb-1">Orders</span>
-                  <span className="text-indigo-500 text-xs">Go to Orders</span>
-                </div>
-              </Link>
-              <Link href="/admin/prescriptionList">
-                <div className="cursor-pointer bg-indigo-100 hover:bg-indigo-200 transition rounded-lg p-4 flex flex-col items-center shadow-md">
-                  <span className="text-base font-semibold text-indigo-800 mb-1">Prescriptions</span>
-                  <span className="text-indigo-500 text-xs">Go to Prescriptions</span>
-                </div>
-              </Link>
-              <Link href="/admin/contacts">
-                <div className="cursor-pointer bg-indigo-100 hover:bg-indigo-200 transition rounded-lg p-4 flex flex-col items-center shadow-md">
-                  <span className="text-base font-semibold text-indigo-800 mb-1">Users</span>
-                  <span className="text-indigo-500 text-xs">Go to Users</span>
-                </div>
-              </Link>
-              <Link href="/admin/inbox">
-                <div className="cursor-pointer bg-indigo-100 hover:bg-indigo-200 transition rounded-lg p-4 flex flex-col items-center shadow-md">
-                  <span className="text-base font-semibold text-indigo-800 mb-1">Inbox</span>
-                  <span className="text-indigo-500 text-xs">Go to Inbox</span>
-                </div>
-              </Link>
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+              {/* Orders Bar Chart */}
+              <div className="bg-slate-50 rounded-lg p-4 shadow flex flex-col items-center hover:shadow-md transition-shadow">
+                <h2 className="text-lg font-semibold text-indigo-800 mb-2">Orders Trend</h2>
+                <ResponsiveContainer width="100%" height={180}>
+                  <BarChart data={filteredData.orderData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Bar dataKey="orders" fill="#6366f1" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              {/* Prescriptions Pie Chart */}
+              <div className="bg-slate-50 rounded-lg p-4 shadow flex flex-col items-center hover:shadow-md transition-shadow">
+                <h2 className="text-lg font-semibold text-indigo-800 mb-2">Prescriptions Status</h2>
+                <ResponsiveContainer width="100%" height={180}>
+                  <PieChart>
+                    <Pie
+                      data={filteredData.prescriptionData}
+                      dataKey="value"
+                      nameKey="name"
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={60}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    >
+                      {filteredData.prescriptionData.map((entry, idx) => (
+                        <Cell key={`cell-${idx}`} fill={COLORS[idx % COLORS.length]} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </div>
-          </div>
-          {/* Placeholder for future advanced features */}
-          <div className="col-span-1 flex flex-col items-center justify-center bg-indigo-50 rounded-lg p-4 shadow-md">
-            <span className="text-indigo-700 font-semibold mb-2">Advanced Features Coming Soon</span>
-            <span className="text-xs text-gray-500">AI-powered analytics, export tools, and more will be available here.</span>
-          </div>
-        </div>
+          </>
+        )}
       </div>
     </section>
-    </>
-  );};
+  );
+};
+
 export default AdminDashboard;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -8,31 +8,59 @@ import { motion } from "framer-motion";
 export default function VerifyEmailPage() {
   const { signUp, isLoaded, setActive } = useSignUp();
   const router = useRouter();
+  const [verificationError, setVerificationError] = useState("");
 
   useEffect(() => {
     if (!isLoaded) return;
 
+    // Check the current status
+    if (!signUp || signUp.status === "complete") {
+      // If sign up is complete, redirect to dashboard
+      router.push("/dashboard");
+      return;
+    }
+
     // Check if there's an attempted sign up
     const attemptVerification = async () => {
       try {
-        // Attempt to complete sign up
-        if (signUp?.status === "missing_requirements") {
+        if (signUp.status === "missing_requirements") {
           // If email verification is required, start the verification process
           await signUp.prepareEmailAddressVerification();
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error during verification:", err);
+        setVerificationError(err.message || "Failed to send verification code");
       }
     };
 
     attemptVerification();
-  }, [isLoaded, signUp]);
+  }, [isLoaded, signUp, router]);
 
   const handleResendCode = async () => {
+    if (!signUp) return;
+
     try {
-      await signUp?.prepareEmailAddressVerification();
-    } catch (err) {
+      setVerificationError("");
+      await signUp.prepareEmailAddressVerification();
+    } catch (err: any) {
       console.error("Error resending code:", err);
+      setVerificationError(err.message || "Failed to resend verification code");
+    }
+  };
+
+  const handleVerification = async (code: string) => {
+    if (!signUp || !setActive) return;
+
+    try {
+      setVerificationError("");
+      const result = await signUp.attemptEmailAddressVerification({ code });
+      if (result.status === "complete" && result.createdSessionId) {
+        await setActive({ session: result.createdSessionId });
+        router.push("/dashboard");
+      }
+    } catch (err: any) {
+      console.error("Error verifying code:", err);
+      setVerificationError(err.message || "Invalid verification code");
     }
   };
 
@@ -47,8 +75,8 @@ export default function VerifyEmailPage() {
           Verify Your Email
         </h1>
         <p className="text-gray-600 mb-6">
-          We've sent a verification code to your email address. Please check
-          your inbox and enter the code below.
+          We&apos;ve sent a verification code to your email address. Please
+          check your inbox and enter the code below.
         </p>
 
         <div className="space-y-4">
@@ -59,24 +87,27 @@ export default function VerifyEmailPage() {
             onChange={(e) => {
               const code = e.target.value;
               if (code.length === 6) {
-                // When 6 digits are entered, attempt verification
-                signUp?.attemptEmailAddressVerification({ code });
+                handleVerification(code);
               }
             }}
           />
+
+          {verificationError && (
+            <p className="text-red-500 text-sm">{verificationError}</p>
+          )}
 
           <button
             onClick={handleResendCode}
             className="text-blue-600 hover:text-blue-800 text-sm"
           >
-            Didn't receive a code? Click to resend
+            Didn&apos;t receive a code? Click to resend
           </button>
         </div>
 
         <div className="mt-8">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
           <p className="text-sm text-gray-500 mt-4">
-            You'll be automatically redirected once your email is verified
+            You&apos;ll be automatically redirected once your email is verified
           </p>
         </div>
       </motion.div>

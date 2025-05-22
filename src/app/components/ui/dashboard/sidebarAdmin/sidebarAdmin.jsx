@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { Prescription, ShoppingBag, House, Gear, Info, AddressBook, Users, CaretLineLeft, CaretLineRight, Bell, SignOut, Moon, Sun } from '@phosphor-icons/react/dist/ssr';
+import { Prescription, ShoppingBag, House, Gear, Info, AddressBook, Users, CaretLineLeft, CaretLineRight, Bell, SignOut, Moon, Sun, Receipt } from '@phosphor-icons/react/dist/ssr';
 import Link from 'next/link';
 import { UserButton, useUser, useClerk } from '@clerk/nextjs';
 import { usePathname } from 'next/navigation';
@@ -25,7 +25,7 @@ const SidebarAdmin = () => {
   useEffect(() => {
     if (isMobile) setCollapsed(true);
   }, [isMobile]);
-  
+
   // Check for user's preferred theme on component mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') || 'light';
@@ -48,22 +48,27 @@ const SidebarAdmin = () => {
         {
           title: "Dashboard",
           path: "/admin",
-          icon: <House weight="duotone" />
+          icon: <House weight={pathname === "/admin" ? "fill" : "duotone"} />
         },
         {
           title: "Prescriptions",
           path: "/admin/prescriptionList",
-          icon: <Prescription weight="duotone" />
+          icon: <Prescription weight={pathname === "/admin/prescriptionList" ? "fill" : "duotone"} />
         },
         {
           title: "Orders",
           path: "/admin/orders",
-          icon: <ShoppingBag weight="duotone" />
+          icon: <ShoppingBag weight={pathname === "/admin/orders" ? "fill" : "duotone"} />
         },
         {
           title: "Users",
           path: "/admin/users",
-          icon: <Users weight="duotone" />
+          icon: <Users weight={pathname === "/admin/users" ? "fill" : "duotone"} />
+        },
+        {
+          title: "Bills",
+          path: "/admin/bills",
+          icon: <Receipt weight={pathname === "/admin/bills" ? "fill" : "duotone"} />
         },
       ]
     },

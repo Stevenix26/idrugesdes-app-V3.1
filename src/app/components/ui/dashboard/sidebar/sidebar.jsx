@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { Prescription, CaretLineLeft, CaretLineRight, ShoppingBag, House, Gear, Info, AddressBook, SubtractSquare, Moon, Sun, SignOut } from '@phosphor-icons/react/dist/ssr';
+import { CurrencyDollarIcon } from '@heroicons/react/24/solid';
 import MenuLink from "./menulink/menulink"
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -70,6 +71,11 @@ const Sidebar = () => {
           title: "Submitted Prescriptions",
           path: "/dashboard/submitted",
           icon: <SubtractSquare weight={pathname === "/dashboard/submitted" ? "fill" : "regular"} />
+        },
+        {
+          title: "Billing",
+          path: "/dashboard/bills",
+          icon: <CurrencyDollarIcon className={pathname === "/dashboard/billing" ? "h-6 w-6" : "h-5 w-5"} />
         }
       ]
     },

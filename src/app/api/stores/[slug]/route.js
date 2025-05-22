@@ -1,11 +1,22 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../../../prisma/client';
+import { prisma } from '../../../../lib/prisma';
 
-export async function GET(request, { params }) {
+export async function GET(request, context) {
     try {
+        const { params } = context;
+        const slug = await params.slug;
+
+        // Ensure slug is available
+        if (!slug) {
+            return NextResponse.json(
+                { error: 'Store ID is required' },
+                { status: 400 }
+            );
+        }
+
         const pharmacy = await prisma.pharmacyStore.findUnique({
             where: {
-                id: params.slug
+                id: slug
             }
         });
 

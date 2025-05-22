@@ -29,10 +29,12 @@ export default function SignUpPage() {
       const result = await signUp.create({
         emailAddress: formData.email,
         password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
       });
 
-      // Create the user profile in your database with role and additional info
-      const response = await fetch("/api/users/create", {
+      // Update the user profile with additional information
+      const response = await fetch("/api/users/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -42,7 +44,7 @@ export default function SignUpPage() {
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to create user profile");
+      if (!response.ok) throw new Error("Failed to update user profile");
 
       // Redirect based on role
       const redirectPath =

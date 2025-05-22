@@ -1,9 +1,7 @@
 import { Webhook } from "svix";
+import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { PrismaClient } from "@prisma/client";
-import { NextRequest } from "next/server";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 // Disable the default middleware for this route
 export const config = {
@@ -12,214 +10,94 @@ export const config = {
   },
 };
 
-export async function POST(req: NextRequest) {
-  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
+export async function POST(req: Request) {
+  // Get the headers
+  const headerPayload = headers();
+  const svix_id = headerPayload.get("svix-id");
+  const svix_timestamp = headerPayload.get("svix-timestamp");
+  const svix_signature = headerPayload.get("svix-signature");
 
-  if (!WEBHOOK_SECRET) {
-    console.error("Missing CLERK_WEBHOOK_SECRET in environment variables");
-    return new Response(
-      JSON.stringify({
-        error: "Webhook secret not configured",
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+  // If there are no headers, error out
+  if (!svix_id || !svix_timestamp || !svix_signature) {
+    return new Response("Error occured -- no svix headers", {
+      status: 400,
+    });
   }
 
+  // Get the body
+  const payload = await req.json();
+  const body = JSON.stringify(payload);
+
+  // Create a new Svix instance with your secret
+  const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET || "");
+
+  let evt: WebhookEvent;
+
+  // Verify the payload with the headers
   try {
-    // Get the headers directly from the request
-    const svix_id = req.headers.get("svix-id") ?? "";
-    const svix_timestamp = req.headers.get("svix-timestamp") ?? "";
-    const svix_signature = req.headers.get("svix-signature") ?? "";
-
-    // If there are no headers, error out
-    if (!svix_id || !svix_timestamp || !svix_signature) {
-      return new Response(
-        JSON.stringify({
-          error: "Missing required Svix headers",
-        }),
-        {
-          status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    }
-
-    // Get the body
-    const payload = await req.json();
-    const body = JSON.stringify(payload);
-
-    // Create a new Svix instance with your webhook secret
-    const wh = new Webhook(WEBHOOK_SECRET);
-
-    // Verify the webhook
-    const evt = wh.verify(body, {
+    evt = wh.verify(body, {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     }) as WebhookEvent;
+  } catch (err) {
+    console.error("Error verifying webhook:", err);
+    return new Response("Error occured", {
+      status: 400,
+    });
+  }
 
-    // Get the event type and data
-    const { type, data } = evt;
+  // Handle the webhook
+  const eventType = evt.type;
 
-    console.log(`Webhook received: ${type}`);
-    console.log("Webhook data:", data);
+  if (eventType === "user.created" || eventType === "user.updated") {
+    const { id, email_addresses, first_name, last_name, phone_numbers } =
+      evt.data;
 
-    // Handle the event
-    switch (type) {
-      case "user.created":
-        await handleUserCreated(data as ClerkUserData);
-        break;
-      case "user.updated":
-        await handleUserUpdated(data as ClerkUserData);
-        break;
-      case "user.deleted":
-        await handleUserDeleted(data as { id: string });
-        break;
-      default:
-        console.log(`Unhandled event type: ${type}`);
+    const primaryEmail = email_addresses?.[0]?.email_address;
+    const primaryPhone = phone_numbers?.[0]?.phone_number;
+
+    if (!primaryEmail) {
+      return new Response("No email found", { status: 400 });
     }
 
-    return new Response(
-      JSON.stringify({ message: "Webhook processed successfully" }),
-      {
-        status: 200,
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      await prisma.user.upsert({
+        where: { email: primaryEmail },
+        create: {
+          id: id,
+          email: primaryEmail,
+          firstName: first_name || "",
+          lastName: last_name || "",
+          phoneNumber: primaryPhone || null,
+          role: "PATIENT", // Default role
         },
-      }
-    );
-  } catch (error) {
-    console.error("Error processing webhook:", error);
-    return new Response(
-      JSON.stringify({
-        error: "Error processing webhook",
-        details: error instanceof Error ? error.message : "Unknown error",
-      }),
-      {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
+        update: {
+          firstName: first_name || "",
+          lastName: last_name || "",
+          phoneNumber: primaryPhone || null,
         },
-      }
-    );
-  }
-}
+      });
 
-interface ClerkUserData {
-  id: string;
-  email_addresses: Array<{
-    email_address: string;
-    verification: { status: string };
-  }>;
-  first_name?: string | null;
-  last_name?: string | null;
-  phone_numbers?: Array<{ phone_number: string }>;
-}
-
-// Handler functions for different webhook events
-async function handleUserCreated(data: ClerkUserData) {
-  try {
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { id: data.id },
-    });
-
-    if (existingUser) {
-      console.log("User already exists:", data.id);
-      return;
+      return new Response("User synchronized", { status: 200 });
+    } catch (error) {
+      console.error("Error syncing user:", error);
+      return new Response("Error syncing user", { status: 500 });
     }
-
-    // Get the verified email address
-    const verifiedEmail = data.email_addresses.find(
-      (email) => email.verification.status === "verified"
-    )?.email_address;
-
-    if (!verifiedEmail) {
-      console.log("No verified email found for user:", data.id);
-      return;
-    }
-
-    // Create a new user in your database
-    await prisma.user.create({
-      data: {
-        id: data.id,
-        email: verifiedEmail,
-        firstName: data.first_name || "",
-        lastName: data.last_name || "",
-        role: "PATIENT", // Default role
-        phoneNumber: data.phone_numbers?.[0]?.phone_number || "",
-      },
-    });
-
-    console.log("User created successfully:", data.id);
-  } catch (error) {
-    console.error("Error creating user:", error);
-    throw error;
   }
-}
 
-async function handleUserUpdated(data: ClerkUserData) {
-  try {
-    // Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: { id: data.id },
-    });
+  if (eventType === "user.deleted") {
+    try {
+      await prisma.user.delete({
+        where: { id: evt.data.id },
+      });
 
-    if (!existingUser) {
-      console.log("User not found:", data.id);
-      return;
+      return new Response("User deleted", { status: 200 });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return new Response("Error deleting user", { status: 500 });
     }
-
-    // Get the verified email address
-    const verifiedEmail = data.email_addresses.find(
-      (email) => email.verification.status === "verified"
-    )?.email_address;
-
-    // Update the user in your database
-    await prisma.user.update({
-      where: { id: data.id },
-      data: {
-        email: verifiedEmail || existingUser.email, // Keep existing email if no verified email found
-        firstName: data.first_name || "",
-        lastName: data.last_name || "",
-        phoneNumber: data.phone_numbers?.[0]?.phone_number || "",
-      },
-    });
-
-    console.log("User updated successfully:", data.id);
-  } catch (error) {
-    console.error("Error updating user:", error);
-    throw error;
   }
-}
 
-async function handleUserDeleted(data: { id: string }) {
-  try {
-    // Check if user exists
-    const existingUser = await prisma.user.findUnique({
-      where: { id: data.id },
-    });
-
-    if (!existingUser) {
-      console.log("User not found:", data.id);
-      return;
-    }
-
-    // Delete the user from your database
-    await prisma.user.delete({
-      where: { id: data.id },
-    });
-
-    console.log("User deleted successfully:", data.id);
-  } catch (error) {
-    console.error("Error deleting user:", error);
-    throw error;
-  }
+  return new Response("Webhook processed", { status: 200 });
 }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { db } from '../../../lib/db'
 import { v2 as cloudinary } from 'cloudinary'
 import { auth } from '@clerk/nextjs'
+import { prisma } from '../../../lib/prisma'
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -11,59 +12,71 @@ cloudinary.config({
 
 export async function GET() {
     try {
-        const { userId } = auth()
+        const { userId } = await auth()
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         // Get the user's role
-        const user = await db.user.findUnique({
+        const user = await prisma.user.findUnique({
             where: { id: userId },
             select: { role: true }
         })
 
-        // Check if user has permission to view prescriptions
-        if (!user || (user.role !== 'ADMIN' && user.role !== 'PHARMACIST')) {
-            return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+        if (!user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 })
         }
 
-        // Fetch all prescriptions with related data
-        const prescriptions = await db.prescription.findMany({
-            orderBy: [
-                { status: 'asc' }, // PENDING first, then APPROVED, then REJECTED
-                { createdAt: 'desc' } // Most recent first
-            ],
-            include: {
-                patient: {
-                    select: {
-                        name: true
-                    }
+        let prescriptions
+        if (user.role === 'ADMIN') {
+            // Admin can see all prescriptions
+            prescriptions = await prisma.prescription.findMany({
+                include: {
+                    patient: true,
+                    pharmacist: true,
+                    medications: true
                 },
-                doctor: {
-                    select: {
-                        name: true
-                    }
+                orderBy: {
+                    createdAt: 'desc'
                 }
-            }
-        })
+            })
+        } else if (user.role === 'PHARMACIST') {
+            // Pharmacists can see prescriptions assigned to them
+            prescriptions = await prisma.prescription.findMany({
+                where: {
+                    pharmacistId: userId
+                },
+                include: {
+                    patient: true,
+                    pharmacist: true,
+                    medications: true
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            })
+        } else {
+            // Patients can only see their own prescriptions
+            prescriptions = await prisma.prescription.findMany({
+                where: {
+                    patientId: userId
+                },
+                include: {
+                    patient: true,
+                    pharmacist: true,
+                    medications: true
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            })
+        }
 
-        // Format the prescriptions for the frontend
-        const formattedPrescriptions = prescriptions.map(prescription => ({
-            id: prescription.id,
-            patientName: prescription.patient.name,
-            doctorName: prescription.doctor.name,
-            medication: prescription.medication,
-            status: prescription.status,
-            createdAt: prescription.createdAt,
-            updatedAt: prescription.updatedAt,
-            declineReason: prescription.declineReason
-        }))
-
-        return NextResponse.json(formattedPrescriptions)
+        return NextResponse.json(prescriptions)
     } catch (error) {
         console.error('Error fetching prescriptions:', error)
         return NextResponse.json(
-            { error: 'Failed to fetch prescriptions' },
+            { error: 'Internal server error' },
             { status: 500 }
         )
     }
@@ -71,23 +84,36 @@ export async function GET() {
 
 export async function POST(req) {
     try {
+        const { userId } = await auth();
+        if (!userId) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const formData = await req.formData();
-        const patientName = formData.get('patientName');
         const medication = formData.get('medication');
         const doctorName = formData.get('doctorName');
-        const phoneNumber = formData.get('phoneNumber');
-        const prescriptionDate = formData.get('prescriptionDate');
+        const dosage = formData.get('dosage');
+        const frequency = formData.get('frequency');
+        const duration = formData.get('duration');
+        const notes = formData.get('notes');
         const file = formData.get('uploadedPrescription');
 
-        if (!patientName || !medication || !doctorName || !phoneNumber || !prescriptionDate || !file) {
+        // Get the current user's data
+        const user = await prisma.user.findUnique({
+            where: { id: userId },
+            select: { id: true, role: true, name: true }
+        });
+
+        if (!user) {
+            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+        }
+
+        if (!medication || !doctorName || !file) {
             return NextResponse.json({
-                message: 'Missing required fields',
+                error: 'Missing required fields',
                 received: {
-                    patientName: !!patientName,
                     medication: !!medication,
                     doctorName: !!doctorName,
-                    phoneNumber: !!phoneNumber,
-                    prescriptionDate: !!prescriptionDate,
                     file: !!file
                 }
             }, { status: 400 });
@@ -110,22 +136,44 @@ export async function POST(req) {
             stream.end(buffer);
         });
 
-        const prescription = await db.prescription.create({
+        // Create the prescription with the new schema
+        const prescription = await prisma.prescription.create({
             data: {
-                patientName,
-                medication,
+                patient: {
+                    connect: { id: userId }
+                },
                 doctorName,
-                phoneNumber,
-                prescriptionDate,
+                status: 'PENDING',
                 prescriptionFilePath: uploadResult.secure_url,
+                dosage,
+                frequency,
+                duration,
+                notes,
+                medications: {
+                    create: [
+                        {
+                            name: medication,
+                            dosage,
+                            frequency,
+                            duration
+                        }
+                    ]
+                }
             },
+            include: {
+                patient: true,
+                medications: true
+            }
         });
 
-        return NextResponse.json({ message: 'Prescription created successfully', prescription }, { status: 201 });
+        return NextResponse.json({
+            message: 'Prescription created successfully',
+            prescription
+        }, { status: 201 });
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error creating prescription:', error);
         if (error.code === 'P2002') {
-            return NextResponse.json({ message: 'Duplicate prescription' }, { status: 409 });
+            return NextResponse.json({ error: 'Duplicate prescription' }, { status: 409 });
         }
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }

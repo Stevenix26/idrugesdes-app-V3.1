@@ -79,6 +79,10 @@ const PrescriptionPage = () => {
     const formData = new FormData();
     formData.append("patientName", values.patientName);
     formData.append("medication", values.medication);
+    formData.append("dosage", values.dosage);
+    formData.append("frequency", values.frequency);
+    formData.append("quantity", values.quantity);
+    formData.append("instructions", values.instructions);
     formData.append("phoneNumber", values.phoneNumber);
     formData.append("doctorName", values.doctorName);
     formData.append("prescriptionDate", values.prescriptionDate);
@@ -156,9 +160,80 @@ const PrescriptionPage = () => {
                     </label>
                   )}
                 </div>
+                <div className="form-control">
+                  <label htmlFor="dosage" className="label">
+                    <span className="label-text font-semibold">Dosage</span>
+                  </label>
+                  <input
+                    {...register("dosage", { required: "Dosage is required" })}
+                    type="text"
+                    placeholder="Enter medication dosage (e.g., 500mg)"
+                    className={`input input-bordered w-full ${errors.dosage ? 'input-error' : 'input-primary'}`}
+                  />
+                  {errors.dosage && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">{errors.dosage.message}</span>
+                    </label>
+                  )}
+                </div>
               </>
             )}
             {step === 2 && (
+              <>
+                <div className="form-control">
+                  <label htmlFor="frequency" className="label">
+                    <span className="label-text font-semibold">Frequency</span>
+                  </label>
+                  <input
+                    {...register("frequency", { required: "Frequency is required" })}
+                    type="text"
+                    placeholder="How often to take (e.g., twice daily)"
+                    className={`input input-bordered w-full ${errors.frequency ? 'input-error' : 'input-primary'}`}
+                  />
+                  {errors.frequency && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">{errors.frequency.message}</span>
+                    </label>
+                  )}
+                </div>
+                <div className="form-control">
+                  <label htmlFor="quantity" className="label">
+                    <span className="label-text font-semibold">Quantity</span>
+                  </label>
+                  <input
+                    {...register("quantity", {
+                      required: "Quantity is required",
+                      min: { value: 1, message: "Quantity must be at least 1" },
+                      pattern: { value: /^[0-9]+$/, message: "Please enter a valid number" }
+                    })}
+                    type="number"
+                    placeholder="Number of units prescribed"
+                    className={`input input-bordered w-full ${errors.quantity ? 'input-error' : 'input-primary'}`}
+                  />
+                  {errors.quantity && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">{errors.quantity.message}</span>
+                    </label>
+                  )}
+                </div>
+                <div className="form-control">
+                  <label htmlFor="instructions" className="label">
+                    <span className="label-text font-semibold">Instructions</span>
+                  </label>
+                  <textarea
+                    {...register("instructions", { required: "Instructions are required" })}
+                    placeholder="Special instructions for taking the medication"
+                    className={`textarea textarea-bordered w-full h-24 ${errors.instructions ? 'textarea-error' : 'textarea-primary'}`}
+                  />
+                  {errors.instructions && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">{errors.instructions.message}</span>
+                    </label>
+                  )}
+                </div>
+              </>
+            )}
+            {step === 3 && (
               <>
                 <div className="form-control">
                   <label htmlFor="doctorName" className="label">
@@ -184,8 +259,8 @@ const PrescriptionPage = () => {
                     {...register("phoneNumber", {
                       required: "Phone number is required",
                       pattern: {
-                        value: /^[0-9]{10}$/,
-                        message: "Please enter a valid 10-digit phone number"
+                        value: /^[0-9]{11}$/,
+                        message: "Please enter a valid 11-digit phone number"
                       }
                     })}
                     type="tel"
@@ -200,7 +275,7 @@ const PrescriptionPage = () => {
                 </div>
               </>
             )}
-            {step === 3 && (
+            {step === 4 && (
               <>
                 <div className="form-control">
                   <label htmlFor="prescriptionDate" className="label">
@@ -243,7 +318,7 @@ const PrescriptionPage = () => {
                   <ChevronLeftIcon className="w-5 h-5" /> Previous
                 </button>
               )}
-              {step < 3 ? (
+              {step < 4 ? (
                 <button type="button" onClick={nextStep} className="btn btn-primary gap-2 ml-auto">
                   Next <ChevronRightIcon className="w-5 h-5" />
                 </button>

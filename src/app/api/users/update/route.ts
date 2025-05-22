@@ -1,16 +1,11 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "../../../../lib/prisma";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const {
       clerkId,
-      email,
-      firstName,
-      lastName,
       role,
       phoneNumber,
       licenseNumber,
@@ -18,13 +13,10 @@ export async function POST(req: Request) {
       yearsOfExperience,
     } = body;
 
-    // Create the user
-    const user = await prisma.user.create({
+    // Update the user with role and phone number
+    const user = await prisma.user.update({
+      where: { id: clerkId },
       data: {
-        id: clerkId,
-        email,
-        firstName,
-        lastName,
         role,
         phoneNumber,
       },
@@ -42,20 +34,23 @@ export async function POST(req: Request) {
           // TODO: Implement pharmacy selection or creation during signup
           pharmacy: {
             create: {
-              name: `${firstName}'s Pharmacy`,
+              name: `${user.firstName}'s Pharmacy`,
               address: "TBD",
               phoneNumber,
+              description: "New pharmacy",
+              pcn: "TBD",
+              image: "https://placehold.co/400x300",
             },
           },
         },
       });
     }
 
-    return NextResponse.json({ success: true, user }, { status: 201 });
+    return NextResponse.json({ success: true, user }, { status: 200 });
   } catch (error: any) {
-    console.error("Error creating user:", error);
+    console.error("Error updating user:", error);
     return NextResponse.json(
-      { error: "Failed to create user", details: error.message },
+      { error: "Failed to update user", details: error.message },
       { status: 500 }
     );
   }

@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
-import { prisma } from "../../../../lib/prisma";
+import { NextResponse } from "next/server";
+import prisma from "../../../../lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
+    const { userId } = await auth();
     if (!userId) {
       return NextResponse.json(
         { error: "Authentication required" },
@@ -12,43 +12,24 @@ export async function POST(req: Request) {
       );
     }
 
-    // Get the user's verification data
-    const data = await req.json();
-    const { licenseNumber, licenseImage, pharmacyName, pharmacyAddress } = data;
+    // Get the user's role
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
 
-    // Validate required fields
-    if (!licenseNumber || !licenseImage || !pharmacyName || !pharmacyAddress) {
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    if (user.role !== "PHARMACIST") {
       return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
+        { error: "Access denied. Only pharmacists can access this endpoint." },
+        { status: 403 }
       );
     }
 
-    // Update user with verification details
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: {
-        role: "PHARMACIST",
-        pharmacistVerification: {
-          create: {
-            licenseNumber,
-            licenseImage,
-            pharmacyName,
-            pharmacyAddress,
-            status: "PENDING",
-          },
-        },
-      },
-    });
-
-    return NextResponse.json({
-      message: "Verification request submitted successfully",
-      user: {
-        id: updatedUser.id,
-        email: updatedUser.email,
-        role: updatedUser.role,
-      },
-    });
+    return NextResponse.json({ verified: true });
   } catch (error) {
     console.error("Error in pharmacist verification:", error);
     return NextResponse.json(

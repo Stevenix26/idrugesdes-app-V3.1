@@ -25,16 +25,29 @@ export default function SignInPage() {
         password,
       });
 
-      // Fetch user data to determine role
-      const response = await fetch(`/api/users/${result.createdSessionId}`);
-      const userData = await response.json();
+      if (result.status === "complete") {
+        // Get user data from our Prisma database
+        const response = await fetch(
+          `/api/users?email=${encodeURIComponent(email)}`
+        );
 
-      // Redirect based on user role
-      const redirectPath =
-        userData.role === "PHARMACIST" ? "/pharmacist/dashboard" : "/dashboard";
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
 
-      router.push(redirectPath);
+        const userData = await response.json();
+
+        // Redirect based on user role
+        if (userData.role === "PHARMACIST") {
+          router.push("/pharmacist/dashboard");
+        } else if (userData.role === "ADMIN") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/dashboard");
+        }
+      }
     } catch (err: any) {
+      console.error("Sign-in error:", err);
       setError(err.message || "An error occurred during sign-in");
     } finally {
       setIsLoading(false);
@@ -100,7 +113,11 @@ export default function SignInPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${isLoading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+                className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  isLoading
+                    ? "bg-indigo-400"
+                    : "bg-indigo-600 hover:bg-indigo-700"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
               >
                 {isLoading ? "Signing in..." : "Sign in"}
               </button>

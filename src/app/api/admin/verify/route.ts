@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "../../../../lib/prisma";
 
 // This should be stored securely in environment variables
 const ADMIN_VERIFICATION_CODE =

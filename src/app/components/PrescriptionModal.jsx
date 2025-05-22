@@ -4,8 +4,10 @@ import { XMarkIcon, ExclamationCircleIcon, ClockIcon } from '@heroicons/react/24
 import { format } from 'date-fns';
 import { NotificationsContainer, NotificationTypes } from './Notifications';
 import PrescriptionHistory from './PrescriptionHistory';
+import { useUser } from '@clerk/nextjs';
 
-const PrescriptionModal = ({ prescription, onClose }) => {
+const PrescriptionModal = ({ prescription, onClose, addNotification }) => {
+    const { user, isLoaded } = useUser();
     const [showDeclineInput, setShowDeclineInput] = useState(false);
     const [declineReason, setDeclineReason] = useState('');
     const [error, setError] = useState('');
@@ -14,6 +16,8 @@ const PrescriptionModal = ({ prescription, onClose }) => {
     const [isLoadingHistory, setIsLoadingHistory] = useState(false);
     const [auditLogs, setAuditLogs] = useState([]);
     const [notifications, setNotifications] = useState([]);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [notes, setNotes] = useState('');
 
     useEffect(() => {
         const handleKeyDown = (e) => {
@@ -25,7 +29,7 @@ const PrescriptionModal = ({ prescription, onClose }) => {
             } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && prescription.status === 'PENDING') {
                 e.preventDefault();
                 if (!showDeclineInput) {
-                    handleStatusChange('approved');
+                    handleStatusUpdate('approved');
                 }
             }
         };
@@ -70,26 +74,25 @@ const PrescriptionModal = ({ prescription, onClose }) => {
 
     if (!prescription) return null;
 
-    const handleStatusChange = async (newStatus, reason = '') => {
-        setIsSubmitting(true);
+    const handleStatusUpdate = async (newStatus) => {
+        setIsUpdating(true);
         setError('');
 
         try {
-            const response = await fetch(`/api/prescriptions/${prescription.id}/status`, {
-                method: 'PUT',
+            const response = await fetch(`/api/prescriptions/${prescription.id}`, {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    status: newStatus.toUpperCase(),
-                    declineReason: reason,
+                    status: newStatus,
+                    notes: notes.trim()
                 }),
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                throw new Error(data.error || 'Failed to update status');
+                const data = await response.json();
+                throw new Error(data.error || 'Failed to update prescription status');
             }
 
             addNotification({
@@ -100,15 +103,15 @@ const PrescriptionModal = ({ prescription, onClose }) => {
 
             onClose();
         } catch (error) {
-            setError(error.message || 'Error updating prescription status');
+            console.error('Error updating prescription:', error);
+            setError(error.message);
             addNotification({
                 type: NotificationTypes.ERROR,
                 title: 'Error',
-                message: error.message || 'Failed to update prescription status'
+                message: error.message
             });
-            console.error('Error updating prescription status:', error);
         } finally {
-            setIsSubmitting(false);
+            setIsUpdating(false);
         }
     };
 
@@ -123,13 +126,50 @@ const PrescriptionModal = ({ prescription, onClose }) => {
             setError('Please provide a reason for rejection');
             return;
         }
-        handleStatusChange('rejected', declineReason);
+        handleStatusUpdate('rejected');
     };
 
     const handleCancelDecline = () => {
         setShowDeclineInput(false);
         setDeclineReason('');
         setError('');
+    };
+
+    const renderStatusButtons = () => {
+        if (!isLoaded || !user) return null;
+
+        return (
+            <div className="mt-6 flex flex-col space-y-4">
+                <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Notes
+                    </label>
+                    <textarea
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+                        rows="3"
+                        value={notes}
+                        onChange={(e) => setNotes(e.target.value)}
+                        placeholder="Add any notes about this prescription..."
+                    />
+                </div>
+                <div className="flex justify-end space-x-3">
+                    <button
+                        onClick={() => handleStatusUpdate('REJECTED')}
+                        disabled={isUpdating}
+                        className="inline-flex justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50"
+                    >
+                        Reject
+                    </button>
+                    <button
+                        onClick={() => handleStatusUpdate('APPROVED')}
+                        disabled={isUpdating}
+                        className="inline-flex justify-center rounded-md border border-transparent bg-green-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50"
+                    >
+                        Approve
+                    </button>
+                </div>
+            </div>
+        );
     };
 
     return (
@@ -277,23 +317,7 @@ const PrescriptionModal = ({ prescription, onClose }) => {
 
                     {!showDeclineInput && prescription.status === 'PENDING' && (
                         <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                            <button
-                                type="button"
-                                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
-                                onClick={() => handleStatusChange('approved')}
-                                disabled={isSubmitting}
-                                title="Approve (Ctrl/⌘ + Enter)"
-                            >
-                                {isSubmitting ? 'Approving...' : 'Approve'}
-                            </button>
-                            <button
-                                type="button"
-                                className="mt-3 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50"
-                                onClick={handleRejectClick}
-                                disabled={isSubmitting}
-                            >
-                                Reject
-                            </button>
+                            {renderStatusButtons()}
                             <button
                                 type="button"
                                 className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"

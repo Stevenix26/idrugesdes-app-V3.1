@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../../../prisma/client";
+import { prisma } from "../../../../lib/prisma";
 
 // GET: Fetch all users
 export async function GET() {

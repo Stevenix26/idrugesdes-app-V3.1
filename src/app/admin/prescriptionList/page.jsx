@@ -1,9 +1,9 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import PrescriptionModal from '../../components/PrescriptionModal';
+import PrescriptionModal from '../modals/PrescriptionModal';
 
 const fetchPrescriptions = async () => {
-    const response = await fetch('/api/prescriptions');
+    const response = await fetch('/api/admin/prescriptions');
     if (!response.ok) throw new Error('Failed to fetch prescriptions');
     return response.json();
 };
@@ -39,8 +39,26 @@ const Prescriptions = () => {
         loadPrescriptions();
     };
 
-    if (loading) return <div className="p-8 text-center">Loading prescriptions...</div>;
-    if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
+    if (loading) return (
+        <div className="min-h-screen bg-gradient-to-bl from-slate-50 to-indigo-100 p-6 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        </div>
+    );
+
+    if (error) return (
+        <div className="min-h-screen bg-gradient-to-bl from-slate-50 to-indigo-100 p-6 flex items-center justify-center">
+            <div className="bg-red-50 p-4 rounded-lg">
+                <p className="text-red-700 font-semibold">Error</p>
+                <p className="text-red-600">{error}</p>
+                <button
+                    onClick={loadPrescriptions}
+                    className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                    Retry
+                </button>
+            </div>
+        </div>
+    );
 
     return (
         <section className="min-h-screen bg-gradient-to-bl from-slate-50 to-indigo-100 p-6">
@@ -68,9 +86,7 @@ const Prescriptions = () => {
                         </div>
                     </div>
                     <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
-                        {loading ? (
-                            <div className="text-center py-12 md:py-16 text-base md:text-lg text-gray-500">Loading prescriptions...</div>
-                        ) : prescriptions.length === 0 ? (
+                        {prescriptions.length === 0 ? (
                             <div className="text-center py-12 md:py-16 text-gray-400">No prescriptions found.</div>
                         ) : (
                             <table className="w-full min-w-[700px] table-auto text-xs md:text-sm">
@@ -101,7 +117,10 @@ const Prescriptions = () => {
                                                 </span>
                                             </td>
                                             <td className="px-2 md:px-4 py-2 md:py-3">
-                                                <button className="btn btn-info btn-xs rounded-lg px-3 md:px-4 py-1 font-semibold shadow-sm hover:bg-indigo-600 hover:text-white transition" onClick={() => handleOpenModal(prescription)}>
+                                                <button
+                                                    onClick={() => handleOpenModal(prescription)}
+                                                    className="inline-flex items-center px-3 py-1 text-xs font-semibold rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-600 hover:text-white transition-colors duration-200"
+                                                >
                                                     View Details
                                                 </button>
                                             </td>
@@ -120,7 +139,6 @@ const Prescriptions = () => {
                 onStatusChange={handleStatusChange}
             />
         </section>
-
     );
 };
 
