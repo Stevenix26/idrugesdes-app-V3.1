@@ -19,7 +19,7 @@ export async function PATCH(req, { params }) {
             return NextResponse.json({ error: 'Only pharmacists can update prescription status' }, { status: 403 });
         }
 
-        const { id } = params;
+        const { prescriptionId } = params;
         const { status, notes } = await req.json();
 
         if (!['APPROVED', 'REJECTED', 'PENDING'].includes(status)) {
@@ -28,7 +28,7 @@ export async function PATCH(req, { params }) {
 
         // Update the prescription
         const updatedPrescription = await prisma.prescription.update({
-            where: { id },
+            where: { id: prescriptionId },
             data: {
                 status,
                 pharmacist: {
@@ -61,7 +61,7 @@ export async function GET(req, { params }) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id } = params;
+        const { prescriptionId } = params;
 
         // Get the user's role
         const user = await prisma.user.findUnique({
@@ -75,7 +75,7 @@ export async function GET(req, { params }) {
 
         // Get the prescription
         const prescription = await prisma.prescription.findUnique({
-            where: { id },
+            where: { id: prescriptionId },
             include: {
                 patient: true,
                 pharmacist: true,

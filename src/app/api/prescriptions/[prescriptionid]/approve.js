@@ -2,16 +2,16 @@ import { NextResponse } from 'next/server'
 import { db } from '../../../../lib/db'
 
 export async function PUT(request, { params }) {
-    const { prescriptionid } = params;
+    const { prescriptionId } = params;
 
     // Validate prescription ID
-    if (!prescriptionid) {
+    if (!prescriptionId) {
         return NextResponse.json({ error: 'Invalid prescription ID' }, { status: 400 });
     }
 
     try {
         // Parse and validate the prescription ID
-        const prescriptionIdNumber = Number.parseInt(prescriptionid, 10);
+        const prescriptionIdNumber = Number.parseInt(prescriptionId, 10);
         if (isNaN(prescriptionIdNumber)) {
             return NextResponse.json({ error: 'Invalid prescription ID format' }, { status: 400 });
         }

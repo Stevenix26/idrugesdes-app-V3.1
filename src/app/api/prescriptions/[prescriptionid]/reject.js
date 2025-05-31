@@ -4,49 +4,36 @@ import { db } from "../../../../lib/db";
 const inputValidation = /^[a-zA-Z0-9\s.,!?]{1,255}$/;
 
 export async function PUT(request, { params }) {
-  const { prescriptionid } = params;
+  const { prescriptionId } = params;
 
   // Validate prescription ID
-  if (!prescriptionid) {
+  if (!prescriptionId) {
     return NextResponse.json(
       { error: "Invalid prescription ID" },
       { status: 400 }
     );
   }
 
-  // Parse and validate the reason from request body
-  let reason;
   try {
     const body = await request.json();
-    reason = body.reason;
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
+    const { reason } = body;
 
-  // Validate all inputs
-  const prescriptionIdNumber = Number.parseInt(prescriptionid, 10);
-  if (isNaN(prescriptionIdNumber)) {
-    return NextResponse.json(
-      { error: "Invalid prescription ID format" },
-      { status: 400 }
-    );
-  }
+    if (!reason) {
+      return NextResponse.json(
+        { error: "Rejection reason is required" },
+        { status: 400 }
+      );
+    }
 
-  if (typeof reason !== "string" || reason.trim().length === 0) {
-    return NextResponse.json(
-      { error: "Decline reason is required" },
-      { status: 400 }
-    );
-  }
+    // Parse and validate the prescription ID
+    const prescriptionIdNumber = Number.parseInt(prescriptionId, 10);
+    if (isNaN(prescriptionIdNumber)) {
+      return NextResponse.json(
+        { error: "Invalid prescription ID format" },
+        { status: 400 }
+      );
+    }
 
-  if (!inputValidation.test(reason)) {
-    return NextResponse.json(
-      { error: "Invalid decline reason format" },
-      { status: 400 }
-    );
-  }
-
-  try {
     // Find the prescription
     const prescription = await db.prescription.findUnique({
       where: { id: prescriptionIdNumber },
@@ -69,7 +56,7 @@ export async function PUT(request, { params }) {
 
     // Update the prescription status
     const updatedPrescription = await db.prescription.update({
-      where: { id: prescription.id },
+      where: { id: prescriptionIdNumber },
       data: {
         status: "rejected",
         declineReason: reason,
