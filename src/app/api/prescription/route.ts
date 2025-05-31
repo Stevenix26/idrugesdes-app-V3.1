@@ -34,14 +34,23 @@ export async function POST(request: NextRequest) {
       const file = formData.get("uploadedPrescription");
       if (file && typeof file === "object" && file.arrayBuffer) {
         const buffer = Buffer.from(await file.arrayBuffer());
-        const uploadResult = await new Promise((resolve, reject) => {
-          cloudinary.uploader
-            .upload_stream({ folder: "prescriptions" }, (err, result) => {
-              if (err) reject(err);
-              else resolve(result);
-            })
-            .end(buffer);
-        });
+        let uploadResult;
+        try {
+          uploadResult = await new Promise((resolve, reject) => {
+            cloudinary.uploader
+              .upload_stream({ folder: "prescriptions" }, (err, result) => {
+                if (err) reject(err);
+                else resolve(result);
+              })
+              .end(buffer);
+          });
+        } catch (uploadError) {
+          console.error("Cloudinary upload error:", uploadError);
+          return NextResponse.json(
+            { error: "Failed to upload prescription image" },
+            { status: 500 }
+          );
+        }
         imageUrl = uploadResult.secure_url;
       }
     } else {
@@ -51,15 +60,17 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(validation.error.errors, { status: 400 });
     }
-    const newPrescription = await db.prescription.create({
-      data: {
-        patientName: body.patientName,
-        medication: body.medication,
-        phoneNumber: body.phoneNumber,
-        doctorName: body.doctorName,
-        prescriptionDate: body.prescriptionDate,
-        prescriptionFilePath: imageUrl,
-      },
+    const newPrescription = await db.$transaction(async (tx) => {
+      return await tx.prescription.create({
+        data: {
+          patientName: body.patientName,
+          medication: body.medication,
+          phoneNumber: body.phoneNumber,
+          doctorName: body.doctorName,
+          prescriptionDate: body.prescriptionDate,
+          prescriptionFilePath: imageUrl,
+        },
+      });
     });
     return NextResponse.json(newPrescription, { status: 200 });
   } catch (error) {

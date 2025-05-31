@@ -71,6 +71,9 @@ export async function GET() {
     return NextResponse.json(transformedBills);
   } catch (error) {
     console.error("[BILLS_GET] Detailed error:", error);
-    return new NextResponse("Internal error", { status: 500 });
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }

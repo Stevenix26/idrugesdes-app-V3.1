@@ -77,18 +77,51 @@ const PrescriptionPage = () => {
 
   const handleFormSubmit = (values) => {
     const formData = new FormData();
-    formData.append("patientName", values.patientName);
-    formData.append("medication", values.medication);
-    formData.append("dosage", values.dosage);
-    formData.append("frequency", values.frequency);
-    formData.append("quantity", values.quantity);
-    formData.append("instructions", values.instructions);
-    formData.append("phoneNumber", values.phoneNumber);
-    formData.append("doctorName", values.doctorName);
-    formData.append("prescriptionDate", values.prescriptionDate);
-    if (values.uploadedPrescription && values.uploadedPrescription[0]) {
-      formData.append("uploadedPrescription", values.uploadedPrescription[0]);
+
+    // Required fields validation
+    const requiredFields = ['patientName', 'medication', 'doctorName', 'dosage', 'frequency', 'phoneNumber'];
+    const missingFields = requiredFields.filter(field => !values[field]);
+
+    if (missingFields.length > 0) {
+      toast.error(`Please fill in all required fields: ${missingFields.join(', ')}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+      return;
     }
+
+    // Append all fields to formData
+    Object.keys(values).forEach(key => {
+      if (values[key]) {
+        if (key === 'uploadedPrescription') {
+          if (values[key][0]) {
+            formData.append(key, values[key][0]);
+          }
+        } else {
+          formData.append(key, values[key]);
+        }
+      }
+    });
+
+    // Validate file upload
+    if (!values.uploadedPrescription?.[0]) {
+      toast.error("Please upload a prescription file", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+      });
+      return;
+    }
+
     createPrescription(formData);
   };
 
@@ -98,6 +131,23 @@ const PrescriptionPage = () => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      // Check file size (5MB = 5 * 1024 * 1024 bytes)
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        toast.error('File size must be less than 5MB', {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
+        e.target.value = ''; // Clear the file input
+        setPreview(null);
+        return;
+      }
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
@@ -125,12 +175,11 @@ const PrescriptionPage = () => {
         </div>
         <form onSubmit={handleSubmit(handleFormSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
-
             {step === 1 && (
               <>
                 <div className="form-control">
                   <label htmlFor="patientName" className="label">
-                    <span className="label-text font-semibold">Patient Name</span>
+                    <span className="label-text font-semibold">Patient Name *</span>
                   </label>
                   <input
                     {...register("patientName", { required: "Patient name is required" })}
@@ -146,7 +195,7 @@ const PrescriptionPage = () => {
                 </div>
                 <div className="form-control">
                   <label htmlFor="medication" className="label">
-                    <span className="label-text font-semibold">Medication</span>
+                    <span className="label-text font-semibold">Medication *</span>
                   </label>
                   <input
                     {...register("medication", { required: "Medication is required" })}
@@ -162,7 +211,7 @@ const PrescriptionPage = () => {
                 </div>
                 <div className="form-control">
                   <label htmlFor="dosage" className="label">
-                    <span className="label-text font-semibold">Dosage</span>
+                    <span className="label-text font-semibold">Dosage *</span>
                   </label>
                   <input
                     {...register("dosage", { required: "Dosage is required" })}
@@ -182,7 +231,7 @@ const PrescriptionPage = () => {
               <>
                 <div className="form-control">
                   <label htmlFor="frequency" className="label">
-                    <span className="label-text font-semibold">Frequency</span>
+                    <span className="label-text font-semibold">Frequency *</span>
                   </label>
                   <input
                     {...register("frequency", { required: "Frequency is required" })}
@@ -197,47 +246,8 @@ const PrescriptionPage = () => {
                   )}
                 </div>
                 <div className="form-control">
-                  <label htmlFor="quantity" className="label">
-                    <span className="label-text font-semibold">Quantity</span>
-                  </label>
-                  <input
-                    {...register("quantity", {
-                      required: "Quantity is required",
-                      min: { value: 1, message: "Quantity must be at least 1" },
-                      pattern: { value: /^[0-9]+$/, message: "Please enter a valid number" }
-                    })}
-                    type="number"
-                    placeholder="Number of units prescribed"
-                    className={`input input-bordered w-full ${errors.quantity ? 'input-error' : 'input-primary'}`}
-                  />
-                  {errors.quantity && (
-                    <label className="label">
-                      <span className="label-text-alt text-error">{errors.quantity.message}</span>
-                    </label>
-                  )}
-                </div>
-                <div className="form-control">
-                  <label htmlFor="instructions" className="label">
-                    <span className="label-text font-semibold">Instructions</span>
-                  </label>
-                  <textarea
-                    {...register("instructions", { required: "Instructions are required" })}
-                    placeholder="Special instructions for taking the medication"
-                    className={`textarea textarea-bordered w-full h-24 ${errors.instructions ? 'textarea-error' : 'textarea-primary'}`}
-                  />
-                  {errors.instructions && (
-                    <label className="label">
-                      <span className="label-text-alt text-error">{errors.instructions.message}</span>
-                    </label>
-                  )}
-                </div>
-              </>
-            )}
-            {step === 3 && (
-              <>
-                <div className="form-control">
                   <label htmlFor="doctorName" className="label">
-                    <span className="label-text font-semibold">Doctor Name</span>
+                    <span className="label-text font-semibold">Doctor Name *</span>
                   </label>
                   <input
                     {...register("doctorName", { required: "Doctor name is required" })}
@@ -252,15 +262,53 @@ const PrescriptionPage = () => {
                   )}
                 </div>
                 <div className="form-control">
+                  <label htmlFor="quantity" className="label">
+                    <span className="label-text font-semibold">Quantity</span>
+                  </label>
+                  <input
+                    {...register("quantity", {
+                      min: { value: 1, message: "Quantity must be at least 1" },
+                      pattern: { value: /^[0-9]+$/, message: "Please enter a valid number" }
+                    })}
+                    type="number"
+                    placeholder="Number of units prescribed"
+                    className={`input input-bordered w-full ${errors.quantity ? 'input-error' : 'input-primary'}`}
+                  />
+                  {errors.quantity && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">{errors.quantity.message}</span>
+                    </label>
+                  )}
+                </div>
+              </>
+            )}
+            {step === 3 && (
+              <>
+                <div className="form-control">
+                  <label htmlFor="instructions" className="label">
+                    <span className="label-text font-semibold">Instructions</span>
+                  </label>
+                  <textarea
+                    {...register("instructions")}
+                    placeholder="Special instructions for taking the medication"
+                    className={`textarea textarea-bordered w-full h-24 ${errors.instructions ? 'textarea-error' : 'textarea-primary'}`}
+                  />
+                  {errors.instructions && (
+                    <label className="label">
+                      <span className="label-text-alt text-error">{errors.instructions.message}</span>
+                    </label>
+                  )}
+                </div>
+                <div className="form-control">
                   <label htmlFor="phoneNumber" className="label">
-                    <span className="label-text font-semibold">Phone Number</span>
+                    <span className="label-text font-semibold">Phone Number *</span>
                   </label>
                   <input
                     {...register("phoneNumber", {
                       required: "Phone number is required",
                       pattern: {
-                        value: /^[0-9]{11}$/,
-                        message: "Please enter a valid 11-digit phone number"
+                        value: /^[0-9+\-\s()]*$/,
+                        message: "Please enter a valid phone number"
                       }
                     })}
                     type="tel"
@@ -273,16 +321,12 @@ const PrescriptionPage = () => {
                     </label>
                   )}
                 </div>
-              </>
-            )}
-            {step === 4 && (
-              <>
                 <div className="form-control">
                   <label htmlFor="prescriptionDate" className="label">
                     <span className="label-text font-semibold">Prescription Date</span>
                   </label>
                   <input
-                    {...register("prescriptionDate", { required: "Prescription date is required" })}
+                    {...register("prescriptionDate")}
                     type="date"
                     className={`input input-bordered w-full ${errors.prescriptionDate ? 'input-error' : 'input-primary'}`}
                   />
@@ -294,12 +338,27 @@ const PrescriptionPage = () => {
                 </div>
                 <div className="form-control">
                   <label htmlFor="uploadedPrescription" className="label">
-                    <span className="label-text font-semibold">Upload Prescription</span>
+                    <span className="label-text font-semibold">Upload Prescription *</span>
+                    <span className="label-text-alt text-gray-500">(Max size: 5MB, Formats: PDF, JPG, PNG)</span>
                   </label>
                   <input
-                    {...register("uploadedPrescription", { required: "Prescription file is required" })}
+                    {...register("uploadedPrescription", {
+                      required: "Prescription file is required",
+                      validate: {
+                        fileSize: (files) => {
+                          if (!files?.[0]) return true;
+                          const maxSize = 5 * 1024 * 1024; // 5MB
+                          return files[0].size <= maxSize || 'File size must be less than 5MB';
+                        },
+                        fileType: (files) => {
+                          if (!files?.[0]) return true;
+                          const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+                          return allowedTypes.includes(files[0].type) || 'Only PDF, JPG, and PNG files are allowed';
+                        }
+                      }
+                    })}
                     type="file"
-                    accept=".pdf, .jpg, .png"
+                    accept=".pdf, .jpg, .jpeg, .png"
                     onChange={handleFileChange}
                     className={`file-input file-input-bordered w-full ${errors.uploadedPrescription ? 'file-input-error' : 'file-input-primary'}`}
                   />
@@ -308,6 +367,9 @@ const PrescriptionPage = () => {
                       <span className="label-text-alt text-error">{errors.uploadedPrescription.message}</span>
                     </label>
                   )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Please ensure your prescription file is clear and readable. Supported formats: PDF, JPG, PNG. Maximum file size: 5MB.
+                  </p>
                 </div>
               </>
             )}
@@ -318,13 +380,26 @@ const PrescriptionPage = () => {
                   <ChevronLeftIcon className="w-5 h-5" /> Previous
                 </button>
               )}
-              {step < 4 ? (
+              {step < 3 ? (
                 <button type="button" onClick={nextStep} className="btn btn-primary gap-2 ml-auto">
                   Next <ChevronRightIcon className="w-5 h-5" />
                 </button>
               ) : (
-                <button type="submit" className="btn btn-primary gap-2 ml-auto">
-                  Submit Prescription <DocumentIcon className="w-5 h-5" />
+                <button
+                  type="submit"
+                  className="btn btn-primary gap-2 ml-auto"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <span className="loading loading-spinner"></span>
+                      Submitting...
+                    </>
+                  ) : (
+                    <>
+                      Submit Prescription <DocumentIcon className="w-5 h-5" />
+                    </>
+                  )}
                 </button>
               )}
             </div>
@@ -361,22 +436,20 @@ const PrescriptionPage = () => {
               )}
             </div>
           </div>
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-            transition={Bounce}
-
-          />
         </form>
-        <ToastContainer position="top-right" theme="colored" transition={Bounce} />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+          transition={Bounce}
+        />
       </motion.div>
     </div>
   );

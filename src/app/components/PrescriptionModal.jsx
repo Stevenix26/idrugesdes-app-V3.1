@@ -63,11 +63,6 @@ const PrescriptionModal = ({ prescription, onClose, addNotification }) => {
         }
     }, [showHistory, prescription.id]);
 
-    const addNotification = (notification) => {
-        const id = Date.now();
-        setNotifications(prev => [...prev, { ...notification, id }]);
-    };
-
     const removeNotification = (id) => {
         setNotifications(prev => prev.filter(notification => notification.id !== id));
     };

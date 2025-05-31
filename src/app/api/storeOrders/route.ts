@@ -35,6 +35,14 @@ export async function POST(req: NextRequest) {
 
 // GET: List all store orders (for demonstration)
 export async function GET() {
-  // TODO: Fetch orders from database
-  return NextResponse.json({ orders: [] });
+  try {
+    // TODO: Fetch orders from database
+    return NextResponse.json({ orders: [] });
+  } catch (error) {
+    console.error("Error in storeOrders API:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }

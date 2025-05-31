@@ -12,10 +12,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // Get the user's role
+    // Get the user's role and verification status
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: { role: true },
+      select: {
+        role: true,
+        pharmacistVerification: {
+          select: {
+            status: true,
+            licenseNumber: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -29,11 +37,41 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({ verified: true });
+    // Check if pharmacist is verified
+    if (!user.pharmacistVerification) {
+      return NextResponse.json(
+        {
+          error: "Pharmacist verification required",
+          details: "Please complete the verification process",
+        },
+        { status: 403 }
+      );
+    }
+
+    if (user.pharmacistVerification.status !== "APPROVED") {
+      return NextResponse.json(
+        {
+          error: "Pharmacist verification pending",
+          details: "Your verification is still being processed",
+          status: user.pharmacistVerification.status,
+        },
+        { status: 403 }
+      );
+    }
+
+    // Return verification status with minimal necessary information
+    return NextResponse.json({
+      verified: true,
+      licenseNumber: user.pharmacistVerification.licenseNumber,
+    });
   } catch (error) {
     console.error("Error in pharmacist verification:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      {
+        error: "Internal server error",
+        details:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
       { status: 500 }
     );
   }

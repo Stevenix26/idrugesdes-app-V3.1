@@ -24,32 +24,40 @@ export async function POST(req) {
     let image = '';
     if (imageFile && typeof imageFile === 'object' && imageFile.arrayBuffer) {
         const buffer = Buffer.from(await imageFile.arrayBuffer());
-        // Upload to sellerstore folder
-        const uploadSellerStore = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream({ folder: 'sellerstore' }, (err, result) => {
-                if (err) reject(err);
-                else resolve(result);
-            }).end(buffer);
-        });
-        // Upload to store folder
-        const uploadStore = await new Promise((resolve, reject) => {
-            cloudinary.uploader.upload_stream({ folder: 'store' }, (err, result) => {
-                if (err) reject(err);
-                else resolve(result);
-            }).end(buffer);
-        });
+        let uploadSellerStore, uploadStore;
+        try {
+            // Upload to sellerstore folder
+            uploadSellerStore = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream({ folder: 'sellerstore' }, (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                }).end(buffer);
+            });
+            // Upload to store folder
+            uploadStore = await new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream({ folder: 'store' }, (err, result) => {
+                    if (err) reject(err);
+                    else resolve(result);
+                }).end(buffer);
+            });
+        } catch (uploadError) {
+            console.error('Cloudinary upload error:', uploadError);
+            return NextResponse.json({ error: 'Failed to upload store image' }, { status: 500 });
+        }
         // Use the URL from one of the uploads (e.g., sellerstore)
         image = uploadSellerStore.secure_url;
     }
-    const newStore = await prisma.pharmacyStore.create({
-        data: {
-            name,
-            description,
-            address,
-            phoneNumber: phone,
-            pcn,
-            image
-        }
+    const newStore = await prisma.$transaction(async (tx) => {
+        return await tx.pharmacyStore.create({
+            data: {
+                name,
+                description,
+                address,
+                phoneNumber: phone,
+                pcn,
+                image
+            }
+        });
     });
     return NextResponse.json(newStore, { status: 201 });
 }

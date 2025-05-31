@@ -18,21 +18,18 @@ export async function POST(req) {
                 title: body.title,
                 content: body.content,
                 tagId: body.tagId,
-
             }
         });
 
-
         return NextResponse.json({
-            message: 'post'
-        },
-            { status: 200 })
+            message: 'Post updated successfully'
+        }, { status: 200 });
     }
     catch (error) {
-        return NextResponse.json({
-            message: 'sorry, could not update post'
-        },
-            { status: 500 })
+        console.error("Error in routes API:", error);
+        return NextResponse.json(
+            { error: "Internal server error" },
+            { status: 500 }
+        );
     }
-
 }
