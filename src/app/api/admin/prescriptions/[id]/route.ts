@@ -4,7 +4,7 @@ import prismadb from "@/lib/prismadb";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { prescriptionId: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const { userId } = auth();
@@ -24,14 +24,14 @@ export async function PATCH(
       return new NextResponse("Rejection reason is required", { status: 400 });
     }
 
-    if (!params.prescriptionId) {
+    if (!params.id) {
       return new NextResponse("Prescription ID is required", { status: 400 });
     }
 
     // Update the prescription status
     const prescription = await prismadb.prescription.update({
       where: {
-        id: params.prescriptionId,
+        id: params.id,
       },
       data: {
         status,
