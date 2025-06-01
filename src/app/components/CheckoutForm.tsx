@@ -59,19 +59,31 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ amount = 2000 }) => {
     }
 
     try {
-      const { error, paymentIntent } = await stripe.confirmPayment({
+      const result = await stripe.confirmPayment({
         elements,
         confirmParams: {
           return_url: `${window.location.origin}/payment-success`,
+          payment_method_data: {
+            billing_details: {
+              name: "Customer Name", // You might want to collect this
+            },
+          },
         },
+        redirect: "if_required",
       });
 
-      if (error) {
-        setPaymentError(error.message || "An error occurred");
-      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+      if (result.error) {
+        setPaymentError(result.error.message || "An error occurred");
+      } else {
+        // Payment successful or requires further action
         setPaymentError(null);
         setPrescription("");
-        alert("Payment successful! Prescription received for verification.");
+        if (result.paymentIntent?.status === "succeeded") {
+          alert("Payment successful! Prescription received for verification.");
+        } else {
+          // Handle other statuses or redirect if needed
+          window.location.href = `${window.location.origin}/payment-success`;
+        }
       }
     } catch (error) {
       setPaymentError(

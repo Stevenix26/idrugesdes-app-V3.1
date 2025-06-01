@@ -1,7 +1,8 @@
+// @ts-check
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['res.cloudinary.com'],
         remotePatterns: [
             {
                 protocol: 'https',
@@ -10,6 +11,10 @@ const nextConfig = {
             {
                 protocol: 'http',
                 hostname: '**',
+            },
+            {
+                protocol: 'https',
+                hostname: 'res.cloudinary.com',
             }
         ],
         dangerouslyAllowSVG: true,
@@ -29,7 +34,14 @@ const nextConfig = {
     },
     // Add webpack configuration for Stripe
     webpack: (config) => {
-        config.resolve.fallback = {
+        if (!config.resolve) {
+            config.resolve = {};
+        }
+        if (!config.resolve.fallback) {
+            config.resolve.fallback = {};
+        }
+
+        Object.assign(config.resolve.fallback, {
             fs: false,
             net: false,
             tls: false,
@@ -43,7 +55,8 @@ const nextConfig = {
             os: require.resolve('os-browserify'),
             path: require.resolve('path-browserify'),
             'process/browser': require.resolve('process/browser'),
-        };
+        });
+
         return config;
     },
 };
