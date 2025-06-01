@@ -37,7 +37,11 @@ export async function GET() {
       include: {
         prescriptions: {
           include: {
-            bill: true,
+            bill: {
+              include: {
+                items: true,
+              },
+            },
           },
         },
       },
@@ -59,7 +63,11 @@ export async function GET() {
         billDetails: p.bill
           ? {
               id: p.bill.id,
+              subtotal: p.bill.subtotal,
+              tax: p.bill.tax,
               total: p.bill.total,
+              status: p.bill.status,
+              dueDate: p.bill.dueDate.toISOString(),
               itemCount: p.bill.items.length,
             }
           : null,
@@ -69,10 +77,14 @@ export async function GET() {
         prescriptionId: b.prescriptionId,
         patientId: b.prescription?.patientId,
         patientName: b.prescription?.patientName,
+        subtotal: b.subtotal,
+        tax: b.tax,
         total: b.total,
         status: b.status,
+        dueDate: b.dueDate.toISOString(),
         itemCount: b.items.length,
         items: b.items.map((item) => ({
+          id: item.id,
           medicationName: item.medicationName,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
@@ -84,15 +96,22 @@ export async function GET() {
         email: u.email,
         prescriptionCount: u.prescriptions.length,
         prescriptionsWithBills: u.prescriptions.filter((p) => p.bill).length,
+        prescriptions: u.prescriptions.map((p) => ({
+          id: p.id,
+          status: p.status,
+          billStatus: p.bill?.status || null,
+          total: p.bill?.total || null,
+        })),
       })),
     });
   } catch (error) {
     console.error("[BILLS_CHECK] Error:", error);
-    return new NextResponse(
-      JSON.stringify({
-        error: error.message,
-        stack: error.stack,
-      }),
+    return NextResponse.json(
+      {
+        error: "Internal server error",
+        message:
+          error instanceof Error ? error.message : "Unknown error occurred",
+      },
       { status: 500 }
     );
   }
