@@ -1,51 +1,94 @@
 import { NextResponse } from "next/server";
 import prismadb from "@/lib/prismadb";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   try {
-    // Get all prescriptions with their bills
-    const prescriptions = await prismadb.prescription.findMany({
-      include: {
-        patient: true,
-        bill: {
-          include: {
-            items: true,
+    const [prescriptions, bills, usersWithPrescriptions] = await Promise.all([
+      prismadb.prescription.findMany({
+        select: {
+          id: true,
+          patientId: true,
+          patientName: true,
+          status: true,
+          patient: {
+            select: {
+              email: true,
+            },
           },
-        },
-      },
-    });
-
-    // Get all bills directly
-    const bills = await prismadb.prescriptionBill.findMany({
-      include: {
-        items: true,
-        prescription: {
-          include: {
-            patient: true,
-          },
-        },
-      },
-    });
-
-    // Get all users who have prescriptions
-    const usersWithPrescriptions = await prismadb.user.findMany({
-      where: {
-        prescriptions: {
-          some: {},
-        },
-      },
-      include: {
-        prescriptions: {
-          include: {
-            bill: {
-              include: {
-                items: true,
+          bill: {
+            select: {
+              id: true,
+              subtotal: true,
+              tax: true,
+              total: true,
+              status: true,
+              dueDate: true,
+              items: {
+                select: {
+                  id: true,
+                  medicationName: true,
+                  quantity: true,
+                  unitPrice: true,
+                  total: true,
+                },
               },
             },
           },
         },
-      },
-    });
+      }),
+      prismadb.prescriptionBill.findMany({
+        select: {
+          id: true,
+          prescriptionId: true,
+          subtotal: true,
+          tax: true,
+          total: true,
+          status: true,
+          dueDate: true,
+          prescription: {
+            select: {
+              patientId: true,
+              patientName: true,
+            },
+          },
+          items: {
+            select: {
+              id: true,
+              medicationName: true,
+              quantity: true,
+              unitPrice: true,
+              total: true,
+            },
+          },
+        },
+      }),
+      prismadb.user.findMany({
+        where: {
+          prescriptions: {
+            some: {},
+          },
+        },
+        select: {
+          id: true,
+          email: true,
+          prescriptions: {
+            select: {
+              id: true,
+              status: true,
+              bill: {
+                select: {
+                  status: true,
+                  total: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+    ]);
 
     return NextResponse.json({
       debug: {
