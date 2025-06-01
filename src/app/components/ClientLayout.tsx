@@ -113,7 +113,7 @@ export default function ClientLayout({
                 href="/dashboard"
                 className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300"
               >
-                Dashboard
+                Dashboards
               </Link>
             </div>
           </div>
