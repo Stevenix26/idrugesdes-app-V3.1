@@ -41,7 +41,7 @@ const PharmacistSidebar = ({ stats }) => {
             count: stats?.rejected || 0
         },
         {
-            name: 'Today\'s Queue',
+            name: "Today&apos;s Queue",
             href: '/dashboard/pharmacist?filter=today',
             icon: CalendarIcon,
             count: stats?.todayCount || 0

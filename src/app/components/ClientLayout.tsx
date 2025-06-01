@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import UserMenu from "../../components/UserMenu";
 
 export default function ClientLayout({
@@ -17,10 +18,12 @@ export default function ClientLayout({
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <Link href="/" className="flex-shrink-0 flex items-center">
-                <img
+                <Image
                   className="h-8 w-auto"
                   src="/images/logo.png"
                   alt="iDrugdes"
+                  width={32}
+                  height={32}
                 />
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">

@@ -3,13 +3,11 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { UserRole } from "@prisma/client";
 
-// Disable the default middleware for this route
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Use the new route segment config
+export const runtime = "edge";
+export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   // Get the headers
@@ -83,7 +81,7 @@ export async function POST(req: Request) {
           email: primaryEmail,
           firstName: first_name || "",
           lastName: last_name || "",
-          role: (public_metadata?.role as string) || "PATIENT", // Default role
+          role: (public_metadata?.role as UserRole) || UserRole.PATIENT,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -91,7 +89,7 @@ export async function POST(req: Request) {
           email: primaryEmail,
           firstName: first_name || "",
           lastName: last_name || "",
-          role: (public_metadata?.role as string) || "PATIENT",
+          role: (public_metadata?.role as UserRole) || UserRole.PATIENT,
           updatedAt: new Date(),
         },
       });

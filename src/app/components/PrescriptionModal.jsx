@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { XMarkIcon, ExclamationCircleIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 import { NotificationsContainer, NotificationTypes } from './Notifications';
@@ -19,57 +19,7 @@ const PrescriptionModal = ({ prescription, onClose, addNotification }) => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [notes, setNotes] = useState('');
 
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                onClose();
-            } else if (e.key === 'h' && (e.ctrlKey || e.metaKey)) {
-                e.preventDefault();
-                setShowHistory(prev => !prev);
-            } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && prescription.status === 'PENDING') {
-                e.preventDefault();
-                if (!showDeclineInput) {
-                    handleStatusUpdate('approved');
-                }
-            }
-        };
-
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [onClose, prescription.status, showDeclineInput]);
-
-    useEffect(() => {
-        const fetchAuditLogs = async () => {
-            setIsLoadingHistory(true);
-            try {
-                const response = await fetch(`/api/prescriptions/${prescription.id}/audit`);
-                if (!response.ok) throw new Error('Failed to fetch audit logs');
-                const data = await response.json();
-                setAuditLogs(data);
-            } catch (error) {
-                console.error('Error fetching audit logs:', error);
-                addNotification({
-                    type: NotificationTypes.ERROR,
-                    title: 'Error',
-                    message: 'Failed to load prescription history'
-                });
-            } finally {
-                setIsLoadingHistory(false);
-            }
-        };
-
-        if (showHistory) {
-            fetchAuditLogs();
-        }
-    }, [showHistory, prescription.id]);
-
-    const removeNotification = (id) => {
-        setNotifications(prev => prev.filter(notification => notification.id !== id));
-    };
-
-    if (!prescription) return null;
-
-    const handleStatusUpdate = async (newStatus) => {
+    const handleStatusUpdate = useCallback(async (newStatus) => {
         setIsUpdating(true);
         setError('');
 
@@ -108,7 +58,57 @@ const PrescriptionModal = ({ prescription, onClose, addNotification }) => {
         } finally {
             setIsUpdating(false);
         }
+    }, [prescription.id, notes, addNotification, onClose]);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                onClose();
+            } else if (e.key === 'h' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                setShowHistory(prev => !prev);
+            } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && prescription.status === 'PENDING') {
+                e.preventDefault();
+                if (!showDeclineInput) {
+                    handleStatusUpdate('approved');
+                }
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, [onClose, prescription.status, showDeclineInput, handleStatusUpdate]);
+
+    useEffect(() => {
+        const fetchAuditLogs = async () => {
+            setIsLoadingHistory(true);
+            try {
+                const response = await fetch(`/api/prescriptions/${prescription.id}/audit`);
+                if (!response.ok) throw new Error('Failed to fetch audit logs');
+                const data = await response.json();
+                setAuditLogs(data);
+            } catch (error) {
+                console.error('Error fetching audit logs:', error);
+                addNotification({
+                    type: NotificationTypes.ERROR,
+                    title: 'Error',
+                    message: 'Failed to load prescription history'
+                });
+            } finally {
+                setIsLoadingHistory(false);
+            }
+        };
+
+        if (showHistory) {
+            fetchAuditLogs();
+        }
+    }, [showHistory, prescription.id, addNotification]);
+
+    const removeNotification = (id) => {
+        setNotifications(prev => prev.filter(notification => notification.id !== id));
     };
+
+    if (!prescription) return null;
 
     const handleRejectClick = () => {
         setShowDeclineInput(true);

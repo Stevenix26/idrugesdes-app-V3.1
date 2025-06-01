@@ -38,18 +38,13 @@ const Store = () => {
   const mapPharmacies = filteredPharmacies.map((pharmacy, i) => (
     <div key={i} className="group relative card bordered shadow-xl hover:shadow-2xl transition-shadow duration-300 bg-white rounded-2xl overflow-hidden flex flex-col">
       <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-200 group-hover:opacity-90 lg:h-56">
-        <img
+        <Image
           src={pharmacy.image && (pharmacy.image.startsWith('http') || pharmacy.image.startsWith('/')) ? pharmacy.image : "/images/placeholder.jpg"}
           alt={pharmacy.name || "Pharmacy Image"}
-          // width={200}
-          // height={200}
-          // layout="responsive"
-          // quality={100}
-          // priority
-          // sizes="100vw"
-          // placeholder="blur"
-          // blurDataURL={pharmacy.image && (pharmacy.image.startsWith('http') || pharmacy.image.startsWith('/')) ? pharmacy.image : "/images/placeholder.jpg"}
-          // style={{ objectFit: "cover" }}
+          width={800}
+          height={600}
+          quality={85}
+          priority={i < 4}
           className="h-full w-full object-cover object-center transition-transform duration-300 group-hover:scale-105"
         />
       </div>

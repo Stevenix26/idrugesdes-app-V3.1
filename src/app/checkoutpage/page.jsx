@@ -1,12 +1,13 @@
-// CheckoutPage.js
+'use client';
+
 import React from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-import CheckoutForm from '../checkoutform/page';
+import CheckoutForm from '@/app/components/CheckoutForm';
 
-const stripePromise = loadStripe('pk_test_51OFv06KpLwlpQmGqLTkbR3loULsbz1vUpyLEZJH0VslKnG1DFRbF5XfvDlxpKQMLmgycaJwVfVczJFyqSJUvCKbV00MjlU9D8Q');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-const CheckoutPage = () => {
+export default function CheckoutPage() {
   return (
     <div className='bg-gray-100 min-h-screen flex flex-col justify-center items-center'>
       <div className='max-w-md mx-auto p-6 bg-white rounded-md shadow-md'>
@@ -20,6 +21,4 @@ const CheckoutPage = () => {
       </div>
     </div>
   );
-};
-
-export default CheckoutPage;
+}
