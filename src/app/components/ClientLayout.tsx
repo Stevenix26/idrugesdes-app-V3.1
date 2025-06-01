@@ -24,7 +24,7 @@ export default function ClientLayout({
                   alt="iDrugdes"
                   width={32}
                   height={32}
-                /> jesus
+                />
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
