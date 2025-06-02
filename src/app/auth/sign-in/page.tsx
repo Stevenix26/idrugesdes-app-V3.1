@@ -105,9 +105,9 @@ export default function SignInPage() {
             signUpUrl="/auth/sign-up"
             redirectUrl={
               selectedRole === "PHARMACIST"
-                ? "/pharmacist/dashboard"
+                ? "/pharmacist"
                 : selectedRole === "ADMIN"
-                  ? "/admin/dashboard"
+                  ? "/admin"
                   : "/dashboard"
             }
             appearance={{

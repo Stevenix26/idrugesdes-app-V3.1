@@ -28,8 +28,8 @@ export async function GET(request: Request) {
 
     // Use raw SQL for case-insensitive email search
     const user = await prisma.$queryRaw`
-      SELECT id, email, firstName, lastName, role, phoneNumber, createdAt, updatedAt
-      FROM User
+      SELECT "id", "email", "firstName", "lastName", "role", "phoneNumber", "createdAt", "updatedAt"
+      FROM "User"
       WHERE LOWER(email) = LOWER(${email})
       LIMIT 1
     `;

@@ -8,6 +8,7 @@ import {
     CalendarIcon,
     UserGroupIcon,
     Cog6ToothIcon,
+    BuildingStorefrontIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -20,6 +21,11 @@ const PharmacistSidebar = ({ stats }) => {
             name: 'Dashboard Overview',
             href: '/dashboard/pharmacist',
             icon: ChartBarIcon
+        },
+        {
+            name: 'Store Management',
+            href: '/dashboard/pharmacist/store',
+            icon: BuildingStorefrontIcon
         },
         {
             name: 'Pending Reviews',
@@ -41,7 +47,7 @@ const PharmacistSidebar = ({ stats }) => {
             count: stats?.rejected || 0
         },
         {
-            name: "Today&apos;s Queue",
+            name: "Today's Queue",
             href: '/dashboard/pharmacist?filter=today',
             icon: CalendarIcon,
             count: stats?.todayCount || 0

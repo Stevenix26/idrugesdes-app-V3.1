@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import UserMenu from "../../components/UserMenu";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function ClientLayout({
   children,
@@ -10,6 +11,8 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isPharmacist, isAdmin } = useAuth();
+  const showSellerLink = isPharmacist || isAdmin;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -19,11 +22,14 @@ export default function ClientLayout({
             <div className="flex items-center">
               <Link href="/" className="flex-shrink-0 flex items-center">
                 <Image
-                  className="h-8 w-auto"
+                  // className="h-8 w-auto"
                   src="/images/logo.png"
                   alt="iDrugdes"
-                  width={32}
-                  height={32}
+                  width={92}
+                  height={92}
+                  priority
+                  loading="eager"
+                  quality={100}
                 />
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -45,6 +51,14 @@ export default function ClientLayout({
                 >
                   Dashboard
                 </Link>
+                {showSellerLink && (
+                  <Link
+                    href="/become-seller"
+                    className="text-blue-600 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-blue-300 font-medium"
+                  >
+                    Become a Seller
+                  </Link>
+                )}
               </div>
             </div>
             <div className="flex items-center">
@@ -115,6 +129,14 @@ export default function ClientLayout({
               >
                 Dashboards
               </Link>
+              {showSellerLink && (
+                <Link
+                  href="/become-seller"
+                  className="block pl-3 pr-4 py-2 border-l-4 border-blue-500 text-base font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50"
+                >
+                  Become a Seller
+                </Link>
+              )}
             </div>
           </div>
         )}

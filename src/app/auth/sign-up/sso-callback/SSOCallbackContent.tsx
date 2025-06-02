@@ -19,12 +19,12 @@ export default function SSOCallbackContent() {
         await handleRedirectCallback({
           afterSignInUrl: afterSignInUrl || "/dashboard",
           afterSignUpUrl:
-            afterSignUpUrl || "/auth/sign-up/verify-email-address",
+            afterSignUpUrl || "/dashboard",
         });
       } catch (error) {
         console.error("Error handling SSO callback:", error);
         // Redirect to sign-in page if there's an error
-        router.push("/sign-in");
+        router.push("/auth/sign-in");
       }
     }
 
