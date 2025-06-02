@@ -41,7 +41,7 @@ export default function DashboardRedirect() {
             router.push("/dashboard/patient");
             break;
           case "PHARMACIST":
-            router.push("/dashboard/pharmacist");
+            router.push("/pharmacist");
             break;
           case "ADMIN":
             router.push("/admin");
@@ -113,7 +113,7 @@ export default function DashboardRedirect() {
             Loading your profile
           </p>
           <p className="mt-2 text-sm text-gray-500">
-            We&apos;re getting everything ready for you...
+            We &apos; re getting everything ready for you...
           </p>
         </div>
       </div>

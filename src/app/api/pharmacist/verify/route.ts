@@ -1,10 +1,10 @@
-import { getAuth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { userId } = getAuth(req);
+    const { userId } = await auth();
     if (!userId) {
       return NextResponse.json(
         { error: "Authentication required" },
@@ -15,14 +15,9 @@ export async function POST(req: Request) {
     // Get the user's role and verification status
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        role: true,
-        pharmacistVerification: {
-          select: {
-            status: true,
-            licenseNumber: true,
-          },
-        },
+      include: {
+        pharmacistProfile: true,
+        pharmacistVerification: true,
       },
     });
 
@@ -33,6 +28,17 @@ export async function POST(req: Request) {
     if (user.role !== "PHARMACIST") {
       return NextResponse.json(
         { error: "Access denied. Only pharmacists can access this endpoint." },
+        { status: 403 }
+      );
+    }
+
+    // Check if pharmacist profile exists
+    if (!user.pharmacistProfile) {
+      return NextResponse.json(
+        {
+          error: "Pharmacist profile not found",
+          details: "Please complete your pharmacist profile",
+        },
         { status: 403 }
       );
     }
@@ -62,16 +68,13 @@ export async function POST(req: Request) {
     // Return verification status with minimal necessary information
     return NextResponse.json({
       verified: true,
+      pharmacistId: user.pharmacistProfile.id,
       licenseNumber: user.pharmacistVerification.licenseNumber,
     });
   } catch (error) {
-    console.error("Error in pharmacist verification:", error);
+    console.error("Error verifying pharmacist:", error);
     return NextResponse.json(
-      {
-        error: "Internal server error",
-        details:
-          process.env.NODE_ENV === "development" ? error.message : undefined,
-      },
+      { error: "Failed to verify pharmacist status" },
       { status: 500 }
     );
   }

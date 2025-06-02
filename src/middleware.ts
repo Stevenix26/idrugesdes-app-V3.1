@@ -113,7 +113,7 @@ export default clerkMiddleware({
     }
 
     // Check if accessing pharmacist routes
-    if (path.startsWith("/dashboard/pharmacist")) {
+    if (path.startsWith("/pharmacist")) {
       try {
         const verifyResponse = await fetch(
           `${req.nextUrl.origin}/api/pharmacist/verify`,

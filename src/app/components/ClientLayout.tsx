@@ -53,7 +53,7 @@ export default function ClientLayout({
                 </Link>
                 {showSellerLink && (
                   <Link
-                    href="/become-seller"
+                    href="/sellerstore"
                     className="text-blue-600 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-blue-300 font-medium"
                   >
                     Become a Seller
@@ -131,7 +131,7 @@ export default function ClientLayout({
               </Link>
               {showSellerLink && (
                 <Link
-                  href="/become-seller"
+                  href="/sellerstore"
                   className="block pl-3 pr-4 py-2 border-l-4 border-blue-500 text-base font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50"
                 >
                   Become a Seller

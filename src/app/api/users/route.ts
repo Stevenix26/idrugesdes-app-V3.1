@@ -1,18 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import { prisma } from "../../../lib/prisma";
-import { Prisma, User } from "@prisma/client";
-
-type UserSelect = {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  phoneNumber: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-};
 
 export async function GET(request: Request) {
   try {
@@ -26,23 +14,26 @@ export async function GET(request: Request) {
       );
     }
 
-    // Use raw SQL for case-insensitive email search
-    const user = await prisma.$queryRaw`
-      SELECT "id", "email", "firstName", "lastName", "role", "phoneNumber", "createdAt", "updatedAt"
-      FROM "User"
-      WHERE LOWER(email) = LOWER(${email})
-      LIMIT 1
-    `;
+    // Find user with case-insensitive email search and include pharmacist profile
+    const user = await prisma.user.findFirst({
+      where: {
+        email: {
+          equals: email,
+          mode: "insensitive",
+        },
+      },
+      include: {
+        pharmacistProfile: true,
+        pharmacistVerification: true,
+      },
+    });
 
-    if (!user || (Array.isArray(user) && user.length === 0)) {
+    if (!user) {
       console.log(`User not found for email: ${email}`);
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // If user is an array (from raw query), take the first result
-    const userData = Array.isArray(user) ? user[0] : user;
-
-    return NextResponse.json(userData);
+    return NextResponse.json(user);
   } catch (error) {
     console.error("Error in users API:", error);
     return NextResponse.json(

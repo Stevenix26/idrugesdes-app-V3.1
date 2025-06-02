@@ -59,8 +59,8 @@ model Pharmacist {
   licenseNumber         String        @unique
   specialization        String?
   yearsOfExperience    Int
-  pharmacy             PharmacyStore @relation(fields: [pharmacyId], references: [id])
-  pharmacyId           String
+  pharmacy             PharmacyStore? @relation(fields: [pharmacyId], references: [id])
+  pharmacyId           String?
   managedPrescriptions Prescription[] @relation("PharmacistPrescriptions")
   createdAt            DateTime      @default(now())
   updatedAt            DateTime      @updatedAt

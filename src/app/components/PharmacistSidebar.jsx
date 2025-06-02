@@ -19,47 +19,47 @@ const PharmacistSidebar = ({ stats }) => {
     const navigation = [
         {
             name: 'Dashboard Overview',
-            href: '/dashboard/pharmacist',
+            href: '/pharmacist',
             icon: ChartBarIcon
         },
         {
             name: 'Store Management',
-            href: '/dashboard/pharmacist/store',
+            href: '/pharmacist/store',
             icon: BuildingStorefrontIcon
         },
         {
             name: 'Pending Reviews',
-            href: '/dashboard/pharmacist?filter=pending',
+            href: '/pharmacist/prescriptions?filter=pending',
             icon: ClockIcon,
             count: stats?.pending || 0,
             highlight: true
         },
         {
             name: 'Approved Prescriptions',
-            href: '/dashboard/pharmacist?filter=approved',
+            href: '/pharmacist/prescriptions?filter=approved',
             icon: CheckCircleIcon,
             count: stats?.approved || 0
         },
         {
             name: 'Rejected Prescriptions',
-            href: '/dashboard/pharmacist?filter=rejected',
+            href: '/pharmacist/prescriptions?filter=rejected',
             icon: XCircleIcon,
             count: stats?.rejected || 0
         },
         {
-            name: "Today's Queue",
-            href: '/dashboard/pharmacist?filter=today',
+            name: "Today&apos;s Queue",
+            href: '/pharmacist/prescriptions?filter=today',
             icon: CalendarIcon,
             count: stats?.todayCount || 0
         },
         {
             name: 'Patient Records',
-            href: '/dashboard/pharmacist/patients',
+            href: '/pharmacist/patients',
             icon: UserGroupIcon
         },
         {
             name: 'Settings',
-            href: '/dashboard/pharmacist/settings',
+            href: '/pharmacist/settings',
             icon: Cog6ToothIcon
         },
     ];
@@ -87,7 +87,7 @@ const PharmacistSidebar = ({ stats }) => {
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600 dark:text-gray-300">Today's Queue</span>
+                            <span className="text-sm text-gray-600 dark:text-gray-300">Today&apos;s Queue</span>
                             <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
                                 {stats?.todayCount || 0}
                             </span>
