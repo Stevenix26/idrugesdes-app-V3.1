@@ -1,10 +1,10 @@
-import { auth } from "@clerk/nextjs";
+import { getAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {
-    const { userId } = await auth();
+    const { userId } = getAuth(req);
     if (!userId) {
       return NextResponse.json(
         { error: "Authentication required" },

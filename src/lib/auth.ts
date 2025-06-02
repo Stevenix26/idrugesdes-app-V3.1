@@ -1,8 +1,8 @@
-import { auth } from "@clerk/nextjs";
+import { getAuth } from "@clerk/nextjs/server";
 import { prisma } from "./prisma";
 
-export async function getCurrentUser() {
-  const { userId } = auth();
+export async function getCurrentUser(req?: Request) {
+  const { userId } = getAuth(req);
 
   if (!userId) {
     return null;

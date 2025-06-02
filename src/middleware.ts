@@ -1,4 +1,4 @@
-import { authMiddleware } from "@clerk/nextjs";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -50,7 +50,7 @@ setInterval(() => {
   }
 }, RATE_LIMIT_WINDOW);
 
-export default authMiddleware({
+export default clerkMiddleware({
   publicRoutes: [
     "/",
     "/store",

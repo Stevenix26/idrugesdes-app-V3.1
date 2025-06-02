@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
+import { getAuth } from "@clerk/nextjs/server";
 import prismadb from "@/lib/prismadb";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const { userId } = auth();
+    const { userId } = getAuth(req);
 
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });

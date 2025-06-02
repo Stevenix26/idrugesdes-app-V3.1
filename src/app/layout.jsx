@@ -2,7 +2,7 @@ import { Montserrat } from 'next/font/google'
 import './global/globals.css'
 import ClientLayout from './components/ClientLayout'
 // import { StagewiseToolbar } from '@stagewise/toolbar-next'
-import { ClerkProvider } from '@clerk/nextjs'
+import { ClerkProvider, SignIn, SignUp } from '@clerk/nextjs'
 import { Providers } from './provider'
 
 // Font configuration

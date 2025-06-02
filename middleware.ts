@@ -46,8 +46,21 @@ export default authMiddleware({
     "/api/webhook/clerk", // Ignore Clerk webhook
   ],
   debug: process.env.NODE_ENV === "development",
+  trustHost: true,
 
   async afterAuth(auth, req) {
+    // Enable CORS for ngrok
+    const response = NextResponse.next();
+    response.headers.set("Access-Control-Allow-Origin", "*");
+    response.headers.set(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS"
+    );
+    response.headers.set(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
+    );
+
     // Handle authentication logic
     const isApiRoute = req.url.includes("/api/");
     const isPublicApiRoute = req.url.includes("/api/webhook/clerk");

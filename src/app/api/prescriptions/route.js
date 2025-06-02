@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { v2 as cloudinary } from 'cloudinary'
-import { auth } from '@clerk/nextjs'
+import { getAuth } from '@clerk/nextjs/server'
 import { prisma } from '../../../lib/prisma'
 
 cloudinary.config({
@@ -33,9 +33,9 @@ const validateFile = (file) => {
     return { valid: true };
 };
 
-export async function GET() {
+export async function GET(req) {
     try {
-        const { userId } = await auth()
+        const { userId } = getAuth(req)
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
@@ -109,7 +109,7 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-        const { userId } = await auth();
+        const { userId } = getAuth(req);
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }

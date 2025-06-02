@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { auth, currentUser } from "@clerk/nextjs";
+import { getAuth, currentUser } from "@clerk/nextjs/server";
+import type { NextRequest } from "next/server";
 import prismadb from "@/lib/prismadb";
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const { userId } = auth();
+    const { userId } = getAuth(req);
     const user = await currentUser();
 
     if (!userId || !user) {

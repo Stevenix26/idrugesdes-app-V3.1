@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { auth } from "@clerk/nextjs";
+import { getAuth } from "@clerk/nextjs/server";
 
 // Define role-specific dashboard paths
 const ROLE_DASHBOARDS = {
@@ -25,7 +25,7 @@ const PUBLIC_PATHS = [
 ];
 
 export async function roleMiddleware(req: NextRequest) {
-  const { userId } = auth();
+  const { userId } = getAuth(req);
   const path = req.nextUrl.pathname;
 
   // Allow public paths

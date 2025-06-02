@@ -8,6 +8,9 @@ const Page = () => {
     <div className="min-h-screen bg-white">
       <HeroSection />
       <FeaturesSection />
+      <h1>
+        hello bas
+      </h1>
     </div>
   );
 };

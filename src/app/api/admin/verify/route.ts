@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs";
+import { getAuth } from "@clerk/nextjs/server";
 import { prisma } from "../../../../lib/prisma";
 
 // This should be stored securely in environment variables
@@ -8,7 +8,7 @@ const ADMIN_VERIFICATION_CODE =
 
 export async function POST(req: Request) {
   try {
-    const { userId } = auth();
+    const { userId } = getAuth(req);
     if (!userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
